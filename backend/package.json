@@ -9,7 +9,8 @@
     "db:seed": "node src/scripts/creer-base.js --demo",
     "test": "node --test --test-concurrency=1 tests/*.test.js",
     "db:dev": "node src/scripts/dev-db.js",
-    "db:creer": "node src/scripts/creer-base.js"
+    "db:creer": "node src/scripts/creer-base.js",
+    "admin:creer": "node src/scripts/creer-admin.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
