@@ -32,8 +32,9 @@ test('nuits comptées dans un mois', () => {
 
 test('charges ramenées au mois et abonnement Loka', () => {
   assert.equal(c.chargeMensuelle({ montant: 240000, periodicite: 'annuelle' }), 20000);
-  assert.equal(c.abonnementMensuel(8), 30000);
-  assert.equal(c.abonnementMensuel(20), 60000);
+  assert.equal(c.abonnementMensuel({ nuit: 8 }), 25000);
+  assert.equal(c.abonnementMensuel({ nuit: 20 }), 50000);
+  assert.equal(c.abonnementMensuel({ nuit: 10, mois: 12 }), 37000);
 });
 
 test('montants en lettres', () => {

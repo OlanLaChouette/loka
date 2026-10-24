@@ -45,9 +45,9 @@ function chargeMensuelle({ montant, periodicite }) {
   return Math.round(montant / ({ mensuelle: 1, trimestrielle: 3, annuelle: 12 }[periodicite] || 1));
 }
 
-// Abonnement Loka (formule A) : 3 000 FCFA par bien enregistré, minimum 30 000 par mois.
-function abonnementMensuel(nombreBiens, { parBien = 3000, minimum = 30000 } = {}) {
-  return Math.max(minimum, nombreBiens * parBien);
+// Abonnement Loka : 2 500 FCFA par bien loué à la nuit, 1 000 par bien loué au mois, minimum 25 000 par mois.
+function abonnementMensuel({ nuit = 0, mois = 0 } = {}, { parNuit = 2500, parMois = 1000, minimum = 25000 } = {}) {
+  return Math.max(minimum, nuit * parNuit + mois * parMois);
 }
 
 const numeroRecu = (n) => 'R-' + String(n).padStart(5, '0');

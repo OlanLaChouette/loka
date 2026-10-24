@@ -16,13 +16,17 @@ router.get('/bailleurs', route(async (req, res) => {
   const bailleurs = await Bailleur.findAll({ order: [['cree_le', 'DESC']] });
   const proprietaires = await Membre.findAll({ where: { role: 'proprietaire' }, include: [{ model: Utilisateur, attributes: ['nom', 'telephone'] }] });
   const proprioDe = Object.fromEntries(proprietaires.map(m => [m.bailleur_id, m.Utilisateur]));
-  const biens = await Bien.findAll({ attributes: ['bailleur_id', [fn('COUNT', col('id')), 'n']], where: { etat: ['disponible', 'travaux'] }, group: ['bailleur_id'], raw: true });
+  const biens = await Bien.findAll({ attributes: ['bailleur_id', 'mode', [fn('COUNT', col('id')), 'n']], where: { etat: ['disponible', 'travaux'] }, group: ['bailleur_id', 'mode'], raw: true });
   const sites = await Site.findAll({ attributes: ['bailleur_id', [fn('COUNT', col('id')), 'n']], group: ['bailleur_id'], raw: true });
   const parId = (l) => Object.fromEntries(l.map(x => [x.bailleur_id, Number(x.n)]));
-  const nb = parId(biens), ns = parId(sites);
+  const ns = parId(sites);
+  const parMode = {};
+  for (const x of biens) { parMode[x.bailleur_id] = parMode[x.bailleur_id] || { nuit: 0, mois: 0 }; parMode[x.bailleur_id][x.mode] = Number(x.n); }
+  const nb = Object.fromEntries(Object.entries(parMode).map(([k, v]) => [k, v.nuit + v.mois]));
   res.json(bailleurs.map(b => ({
     ...b.toJSON(), proprietaire: proprioDe[b.id] || null, biens_enregistres: nb[b.id] || 0, sites: ns[b.id] || 0,
-    abonnement_mensuel: abonnementMensuel(nb[b.id] || 0),
+    biens_nuit: parMode[b.id]?.nuit || 0, biens_mois: parMode[b.id]?.mois || 0,
+    abonnement_mensuel: abonnementMensuel(parMode[b.id] || {}),
   })));
 }));
 

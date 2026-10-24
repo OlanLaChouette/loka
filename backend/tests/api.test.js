@@ -104,7 +104,8 @@ test('administration Loka : biens enregistrés et abonnement', async () => {
   const liste = (await appel('GET', '/api/plateforme/bailleurs', { jeton: admin.jeton })).corps;
   const kabore = liste.find(b => b.nom === 'Résidences Kaboré');
   assert.equal(kabore.biens_enregistres, 15);
-  assert.equal(kabore.abonnement_mensuel, 45000);
+  // 11 biens à la nuit × 2 500 + 4 au mois × 1 000
+  assert.equal(kabore.abonnement_mensuel, 31500);
   const issa = await connecter('70111111');
   assert.equal((await appel('GET', '/api/plateforme/bailleurs', { jeton: issa.jeton })).statut, 403);
 });
