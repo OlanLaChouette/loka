@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Loka</string>
+    <string name="title_activity_main">Loka</string>
+    <string name="package_name">com.eyamtech.loka</string>
+    <string name="custom_url_scheme">com.eyamtech.loka</string>
+</resources>

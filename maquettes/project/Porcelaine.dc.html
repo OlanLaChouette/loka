@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka · Porcelaine et Cobalt</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2340E6}a:hover{color:#1A2FB0}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1760px; height: 920px; box-sizing: border-box; padding: 40px; display: flex; gap: 48px; align-items: flex-start; background: #DCE0E8; font-family: 'Geist', sans-serif; color: #14161B;">
+
+  <!-- ===== Bureau ===== -->
+  <div style="width: 1280px; height: 840px; border-radius: 18px; overflow: hidden; background: #F4F5F7; box-shadow: 0 30px 80px rgba(20,22,27,.18); display: flex; flex-direction: column;">
+    <header style="display: flex; align-items: center; gap: 22px; padding: 16px 28px; background: #FFFFFF; border-bottom: 1px solid #E3E6EC;">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="7" fill="#2340E6"/><path d="M6 12.5 13 6.5l7 6V20H6z" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span style="font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Loka</span>
+      </div>
+      <button type="button" style="display: flex; align-items: center; gap: 8px; border: 1px solid #E3E6EC; background: #F4F5F7; border-radius: 30px; padding: 6px 12px 6px 6px; font-size: 14px; font-weight: 600; color: #14161B;">
+        <span style="width: 26px; height: 26px; border-radius: 50%; background: #14161B; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">RK</span>Résidences Kaboré
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B606B" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <nav aria-label="Navigation principale" style="display: flex; gap: 4px; flex: 1;">
+        <sc-for list="{{onglets}}" as="o" hint-placeholder-count="7"><a href="#" style="{{o.style}}">{{o.label}}</a></sc-for>
+      </nav>
+      <button type="button" aria-label="Notifications" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid #E3E6EC; background: #FFFFFF; display: flex; align-items: center; justify-content: center; position: relative;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#14161B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+        <span style="position: absolute; top: 7px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: #D64545;"></span>
+      </button>
+      <span style="width: 38px; height: 38px; border-radius: 50%; background: #E6EBFF; color: #2340E6; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center;">IK</span>
+    </header>
+
+    <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 18px; flex: 1; min-height: 0;">
+      <div style="display: flex; align-items: flex-end; gap: 12px;">
+        <div style="flex: 1;">
+          <div style="font-size: 14px; color: #5B606B;">Vendredi 24 octobre</div>
+          <h1 style="margin: 2px 0 0; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 44px; letter-spacing: -0.01em; line-height: 1;">Bonjour Issa, voici vos biens.</h1>
+        </div>
+        <div style="display: flex; background: #FFFFFF; border: 1px solid #E3E6EC; border-radius: 10px; padding: 3px;">
+          <button type="button" style="border: 0; background: #14161B; color: #FFFFFF; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600;">Mois</button>
+          <button type="button" style="border: 0; background: none; color: #5B606B; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600;">Trimestre</button>
+          <button type="button" style="border: 0; background: none; color: #5B606B; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600;">Année</button>
+        </div>
+        <button type="button" style="border: 0; background: #2340E6; color: #FFFFFF; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight: 600;">+ Nouvelle réservation</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: 250px 1fr; gap: 16px; flex: 1; min-height: 0;">
+        <!-- Encaissé + barres -->
+        <section style="grid-column: span 6; background: #FFFFFF; border: 1px solid #E3E6EC; border-radius: 20px; padding: 22px; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 14px; font-weight: 600; color: #5B606B;">Encaissé en octobre</h2>
+            <span style="font-size: 12px; font-weight: 600; color: #1F7A4A; background: #E3F3EA; border-radius: 20px; padding: 3px 9px;">+12 %</span>
+          </div>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 58px; line-height: 1.05; margin-top: 4px;">6 128 000 <span style="font-family: 'Geist'; font-size: 16px; color: #5B606B;">FCFA</span></div>
+          <div style="display: flex; align-items: flex-end; gap: 8px; flex: 1; margin-top: 10px;">
+            <sc-for list="{{barres}}" as="b" hint-placeholder-count="12"><div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;"><div style="{{b.style}}"></div><span style="font-size: 11px; color: #5B606B;">{{b.m}}</span></div></sc-for>
+          </div>
+        </section>
+        <!-- Occupation -->
+        <section style="grid-column: span 3; background: #2340E6; color: #FFFFFF; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; align-items: flex-start;">
+          <h2 style="margin: 0; font-size: 14px; font-weight: 600; color: #C9D3FF;">Taux d'occupation</h2>
+          <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="69 pour cent d'occupation" style="margin: 10px auto 0;">
+            <circle cx="75" cy="75" r="60" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="14"/>
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" stroke-dasharray="260 377" transform="rotate(-90 75 75)"/>
+            <text x="75" y="86" text-anchor="middle" font-family="Instrument Serif" font-size="40" fill="#FFFFFF">69 %</text>
+          </svg>
+          <span style="font-size: 13px; color: #C9D3FF; margin: 6px auto 0;">214 nuits vendues sur 310</span>
+        </section>
+        <!-- Impayés -->
+        <section style="grid-column: span 3; background: #FFFFFF; border: 1px solid #E3E6EC; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 8px;">
+          <h2 style="margin: 0; font-size: 14px; font-weight: 600; color: #5B606B;">Reste à encaisser</h2>
+          <div style="font-family: 'Instrument Serif', serif; font-size: 46px; line-height: 1; color: #B23131;">350 000</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px;"><span>Appartement C4</span><b>150 000</b></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px;"><span>Studio K2</span><b>175 000</b></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px;"><span>Villa C2 · séjour</span><b>25 000</b></div>
+          </div>
+          <button type="button" style="margin-top: 6px; border: 1px solid #E3E6EC; background: #F4F5F7; border-radius: 10px; padding: 9px; font-size: 13px; font-weight: 600; color: #14161B;">Relancer par WhatsApp</button>
+        </section>
+
+        <!-- Sites -->
+        <section style="grid-column: span 5; background: #FFFFFF; border: 1px solid #E3E6EC; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 600;">Vos sites</h2>
+          <sc-for list="{{sites}}" as="s" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="font-weight: 600;">{{s.nom}}</span><span style="color: #5B606B;">{{s.detail}}</span></div>
+              <div style="height: 8px; background: #EEF0F4; border-radius: 4px;"><div style="{{s.barre}}"></div></div>
+            </div>
+          </sc-for>
+        </section>
+        <!-- Fil de la journée -->
+        <section style="grid-column: span 7; background: #FFFFFF; border: 1px solid #E3E6EC; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;"><h2 style="margin: 0; font-size: 16px; font-weight: 600;">En direct de vos gérants</h2><a href="#" style="font-size: 13px; font-weight: 600; text-decoration: none;">Tout l'historique</a></div>
+          <sc-for list="{{fil}}" as="f" hint-placeholder-count="4">
+            <div style="display: flex; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid #EEF0F4;">
+              <span style="font-size: 13px; color: #5B606B; width: 44px;">{{f.h}}</span>
+              <span style="width: 32px; height: 32px; border-radius: 50%; background: #E6EBFF; color: #2340E6; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">{{f.ini}}</span>
+              <span style="flex: 1; font-size: 14px;">{{f.texte}}</span>
+              <span style="font-size: 14px; font-weight: 600;">{{f.montant}}</span>
+            </div>
+          </sc-for>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== Téléphone ===== -->
+  <div style="width: 390px; height: 840px; border-radius: 52px; background: #14161B; padding: 10px; box-sizing: border-box; box-shadow: 0 30px 80px rgba(20,22,27,.3);">
+    <div style="width: 100%; height: 100%; border-radius: 43px; overflow: hidden; background: #F4F5F7; display: flex; flex-direction: column;">
+      <div style="background: #2340E6; color: #FFFFFF; padding: 52px 22px 26px; border-radius: 0 0 30px 30px;">
+        <div style="font-size: 13px; color: #C9D3FF;">Site Ouaga 2000 · Gérant</div>
+        <div style="font-family: 'Instrument Serif', serif; font-size: 34px; line-height: 1.05; margin-top: 4px;">4 villas libres ce soir</div>
+        <div style="display: flex; gap: 8px; margin-top: 16px;">
+          <button type="button" style="flex: 1; border: 0; background: #FFFFFF; color: #2340E6; border-radius: 12px; padding: 12px 0; font-size: 14px; font-weight: 700;">Réserver</button>
+          <button type="button" style="flex: 1; border: 1px solid rgba(255,255,255,.4); background: none; color: #FFFFFF; border-radius: 12px; padding: 12px 0; font-size: 14px; font-weight: 600;">Encaisser</button>
+          <button type="button" aria-label="Ajouter une dépense" style="width: 46px; border: 1px solid rgba(255,255,255,.4); background: none; color: #FFFFFF; border-radius: 12px; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></svg></button>
+        </div>
+      </div>
+      <div style="padding: 20px 20px 8px; font-size: 15px; font-weight: 600;">Villas</div>
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 0 16px;">
+        <sc-for list="{{villas}}" as="v" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E3E6EC; border-radius: 16px; padding: 12px 14px;">
+            <span style="font-family: 'Instrument Serif', serif; font-size: 26px; width: 44px;">{{v.nom}}</span>
+            <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 600;">{{v.titre}}</span><span style="font-size: 12px; color: #5B606B;">{{v.detail}}</span></span>
+            <span style="{{v.puce}}">{{v.etat}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <nav aria-label="Navigation gérant" style="margin-top: auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 12px 10px 26px; background: #FFFFFF; border-top: 1px solid #E3E6EC;">
+        <a href="#" style="text-align: center; font-size: 11px; font-weight: 700; color: #2340E6; text-decoration: none;">Aujourd'hui</a>
+        <a href="#" style="text-align: center; font-size: 11px; font-weight: 600; color: #5B606B; text-decoration: none;">Planning</a>
+        <a href="#" style="text-align: center; font-size: 11px; font-weight: 600; color: #5B606B; text-decoration: none;">Caisse</a>
+        <a href="#" style="text-align: center; font-size: 11px; font-weight: 600; color: #5B606B; text-decoration: none;">Dépenses</a>
+      </nav>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1760,"height":920}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const onglets = ['Aperçu', 'Biens', 'Réservations', 'Baux', 'Argent', 'Gérants', 'Rapports'].map((label, i) => ({
+      label, style: 'padding:8px 12px;border-radius:8px;font-size:14px;text-decoration:none;' + (i === 0 ? 'background:#14161B;color:#FFFFFF;font-weight:600;' : 'color:#5B606B;font-weight:500;')
+    }));
+    const valeurs = [3.1, 3.6, 3.3, 4.0, 4.4, 4.1, 4.8, 5.0, 4.6, 5.2, 5.5, 6.1];
+    const mois = ['N','D','J','F','M','A','M','J','J','A','S','O'];
+    const barres = valeurs.map((v, i) => ({ m: mois[i], style: 'width:100%;border-radius:6px;height:' + Math.round(v / 6.1 * 100) + 'px;background:' + (i === 11 ? '#2340E6' : '#DCE2FA') + ';' }));
+    const sites = [
+      { nom: 'Ouaga 2000', detail: '10 villas · 74 %', barre: 'width:74%;height:8px;border-radius:4px;background:#2340E6;' },
+      { nom: 'Kossodo', detail: '6 villas · 61 %', barre: 'width:61%;height:8px;border-radius:4px;background:#2340E6;' },
+      { nom: 'Immeuble Zogona', detail: '12 appartements · 12/12 loyers', barre: 'width:100%;height:8px;border-radius:4px;background:#14161B;' },
+    ];
+    const fil = [
+      { h: '10:42', ini: 'AS', texte: 'Ali a encaissé la Villa B2 · Orange Money', montant: '54 000' },
+      { h: '10:15', ini: 'AS', texte: 'Ali a noté une dépense · Recharge gaz (photo)', montant: '− 7 500' },
+      { h: '09:30', ini: 'MO', texte: 'Mariam a enregistré le loyer d’octobre · Zogona 3', montant: '120 000' },
+      { h: '08:05', ini: 'MO', texte: 'Mariam a fait l’état des lieux · Villa A1', montant: '' },
+    ];
+    const puce = 'font-size:11px;font-weight:700;padding:5px 9px;border-radius:10px;';
+    const villas = [
+      { nom: 'B2', titre: 'Haut standing · 3 ch.', detail: '30 000 / nuit', etat: 'Occupée', puce: puce + 'background:#EEF0F4;color:#3D424C;' },
+      { nom: 'C2', titre: 'Standing · 2 ch.', detail: '25 000 / nuit', etat: 'Libre', puce: puce + 'background:#E6EBFF;color:#2340E6;' },
+      { nom: 'C1', titre: 'Piscine · 4 ch.', detail: '45 000 / nuit', etat: 'Libre', puce: puce + 'background:#E6EBFF;color:#2340E6;' },
+      { nom: 'A3', titre: 'Standing · 2 ch.', detail: '25 000 / nuit', etat: 'Travaux', puce: puce + 'background:#FFF1E0;color:#8A4B00;' },
+    ];
+    return { onglets, barres, sites, fil, villas };
+  }
+}
+</script>
+</body>
+</html>

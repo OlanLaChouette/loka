@@ -1,0 +1,47 @@
+# Déploiement de Loka sur Render (même hébergeur qu'eYamTech).
+# La base PostgreSQL est créée à part, dédiée à Loka : renseigner DATABASE_URL (compte propriétaire de la base).
+# Après le premier déploiement, lancer une fois dans le Shell du service API : npm run db:creer
+services:
+  - type: web
+    name: loka-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /api/sante
+    disk:
+      # Logos et photos des justificatifs : doivent survivre aux redéploiements.
+      name: loka-fichiers
+      mountPath: /var/data/loka
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_APP_USER
+        value: loka_app
+      - key: DB_APP_PASSWORD
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: UPLOADS_DIR
+        value: /var/data/loka
+      - key: FRONTEND_URL
+        sync: false
+
+  - type: web
+    name: loka-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        sync: false

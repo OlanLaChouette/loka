@@ -1,0 +1,8 @@
+gemini_API_KEY.txt
+node_modules/
+video/out/frames/
+.env
+dist/
+uploads/
+video/out/
+.pgdata/

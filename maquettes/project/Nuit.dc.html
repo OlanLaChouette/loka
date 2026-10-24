@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka · Mise en page B, style violet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#5B4BE0}a:hover{color:#4535C4}
+button{font-family:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 1760px; height: 920px; box-sizing: border-box; padding: 40px; display: flex; gap: 48px; align-items: flex-start; background: {{t.fond}}; font-family: 'Inter', sans-serif; color: {{t.texte}};">
+
+  <!-- ===== Bureau : administration du bailleur ===== -->
+  <div style="width: 1280px; height: 840px; border-radius: 18px; overflow: hidden; background: {{t.app}}; border: 1px solid {{t.bord}}; box-shadow: {{t.ombre}}; display: flex; flex-direction: column;">
+    <header style="display: flex; align-items: center; gap: 20px; padding: 14px 28px; background: {{t.surface}}; border-bottom: 1px solid {{t.bord}};">
+      <div style="display: flex; align-items: center; gap: 9px;">
+        <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="8" fill="#6D5DF5"/><path d="M8 9v10h10" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="11" r="2.4" fill="#FFFFFF"/></svg>
+        <span style="font-family: 'Sora'; font-weight: 700; font-size: 19px; letter-spacing: -0.02em;">Loka</span>
+      </div>
+      <button type="button" style="display: flex; align-items: center; gap: 8px; border: 1px solid {{t.bord}}; background: {{t.champ}}; border-radius: 30px; padding: 5px 12px 5px 5px; font-size: 14px; font-weight: 600; color: {{t.texte}};">
+        <span style="width: 28px; height: 28px; border-radius: 50%; background: #16161D; color: #FFFFFF; font-family: 'Sora'; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center;">RK</span>Résidences Kaboré
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{t.muet}}" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <nav aria-label="Navigation principale" style="display: flex; gap: 4px; flex: 1;">
+        <sc-for list="{{onglets}}" as="o" hint-placeholder-count="7"><a href="#" style="{{o.style}}">{{o.label}}</a></sc-for>
+      </nav>
+      <button type="button" onClick="{{basculer}}" aria-label="{{t.libelleBascule}}" title="{{t.libelleBascule}}" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid {{t.bord}}; background: {{t.surface}}; color: {{t.texte}}; display: flex; align-items: center; justify-content: center;">
+        <sc-if value="{{sombre}}" hint-placeholder-val="{{false}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></sc-if>
+        <sc-if value="{{clair}}" hint-placeholder-val="{{true}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></sc-if>
+      </button>
+      <button type="button" aria-label="Notifications" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid {{t.bord}}; background: {{t.surface}}; color: {{t.texte}}; display: flex; align-items: center; justify-content: center; position: relative;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+        <span style="position: absolute; top: 7px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: {{t.negatif}};"></span>
+      </button>
+      <span style="width: 38px; height: 38px; border-radius: 50%; background: {{t.violetDoux}}; color: {{t.violetTexte}}; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center;">IK</span>
+    </header>
+
+    <main style="padding: 24px 28px; display: flex; flex-direction: column; gap: 18px; flex: 1; min-height: 0;">
+      <div style="display: flex; align-items: flex-end; gap: 12px;">
+        <div style="flex: 1;">
+          <div style="font-size: 14px; color: {{t.muet}};">Vendredi 24 octobre</div>
+          <h1 style="margin: 2px 0 0; font-family: 'Sora'; font-weight: 700; font-size: 34px; letter-spacing: -0.03em; line-height: 1.1;">Bonjour Issa, voici vos biens.</h1>
+        </div>
+        <div style="display: flex; background: {{t.surface}}; border: 1px solid {{t.bord}}; border-radius: 10px; padding: 3px;">
+          <button type="button" style="border: 0; background: {{t.inverse}}; color: {{t.inverseTexte}}; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600;">Mois</button>
+          <button type="button" style="border: 0; background: none; color: {{t.muet}}; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600;">Trimestre</button>
+          <button type="button" style="border: 0; background: none; color: {{t.muet}}; border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600;">Année</button>
+        </div>
+        <button type="button" style="border: 0; background: #6D5DF5; color: #FFFFFF; border-radius: 10px; padding: 11px 16px; font-size: 14px; font-weight: 700;">+ Nouvelle réservation</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: 250px 1fr; gap: 16px; flex: 1; min-height: 0;">
+        <section style="grid-column: span 6; background: {{t.surface}}; border: 1px solid {{t.bord}}; border-radius: 20px; padding: 22px; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 14px; font-weight: 600; color: {{t.muet}};">Encaissé en octobre</h2>
+            <span style="font-size: 12px; font-weight: 700; color: {{t.violetTexte}}; background: {{t.violetDoux}}; border-radius: 20px; padding: 3px 9px;">+12 %</span>
+          </div>
+          <div style="font-family: 'Sora'; font-weight: 700; font-size: 46px; letter-spacing: -0.03em; line-height: 1.1; margin-top: 6px;">6 128 000 <span style="font-family: 'Inter'; font-weight: 500; font-size: 16px; color: {{t.muet}}; letter-spacing: 0;">FCFA</span></div>
+          <div style="display: flex; align-items: flex-end; gap: 8px; flex: 1; margin-top: 10px;">
+            <sc-for list="{{barres}}" as="b" hint-placeholder-count="12"><div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;"><div style="{{b.style}}"></div><span style="font-size: 11px; color: {{t.muet}};">{{b.m}}</span></div></sc-for>
+          </div>
+        </section>
+        <section style="grid-column: span 3; background: #6D5DF5; color: #FFFFFF; border-radius: 20px; padding: 22px; display: flex; flex-direction: column;">
+          <h2 style="margin: 0; font-size: 14px; font-weight: 600; color: #E4E0FF;">Taux d'occupation</h2>
+          <svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="69 pour cent d'occupation" style="margin: 10px auto 0;">
+            <circle cx="75" cy="75" r="60" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="14"/>
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" stroke-dasharray="260 377" transform="rotate(-90 75 75)"/>
+            <text x="75" y="85" text-anchor="middle" font-family="Sora" font-weight="700" font-size="32" fill="#FFFFFF">69 %</text>
+          </svg>
+          <span style="font-size: 13px; color: #E4E0FF; margin: 6px auto 0;">214 nuits vendues sur 310</span>
+        </section>
+        <section style="grid-column: span 3; background: {{t.surface}}; border: 1px solid {{t.bord}}; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 8px;">
+          <h2 style="margin: 0; font-size: 14px; font-weight: 600; color: {{t.muet}};">Reste à encaisser</h2>
+          <div style="font-family: 'Sora'; font-weight: 700; font-size: 36px; letter-spacing: -0.03em; line-height: 1.1; color: {{t.negatif}};">350 000</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px;"><span>Appartement C4</span><b>150 000</b></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px;"><span>Studio K2</span><b>175 000</b></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px;"><span>Villa C2 · séjour</span><b>25 000</b></div>
+          </div>
+          <button type="button" style="margin-top: 6px; border: 1px solid {{t.bord}}; background: {{t.champ}}; border-radius: 10px; padding: 9px; font-size: 13px; font-weight: 600; color: {{t.texte}};">Relancer par WhatsApp</button>
+        </section>
+
+        <section style="grid-column: span 5; background: {{t.surface}}; border: 1px solid {{t.bord}}; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 14px;">
+          <h2 style="margin: 0; font-family: 'Sora'; font-size: 16px; font-weight: 600;">Vos sites</h2>
+          <sc-for list="{{sites}}" as="s" hint-placeholder-count="3">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="font-weight: 600;">{{s.nom}}</span><span style="color: {{t.muet}};">{{s.detail}}</span></div>
+              <div style="height: 8px; background: {{t.rail}}; border-radius: 4px;"><div style="{{s.barre}}"></div></div>
+            </div>
+          </sc-for>
+        </section>
+        <section style="grid-column: span 7; background: {{t.surface}}; border: 1px solid {{t.bord}}; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;"><h2 style="margin: 0; font-family: 'Sora'; font-size: 16px; font-weight: 600;">En direct de vos gérants</h2><a href="#" style="font-size: 13px; font-weight: 600; text-decoration: none; color: {{t.violetTexte}};">Tout l'historique</a></div>
+          <sc-for list="{{fil}}" as="f" hint-placeholder-count="4">
+            <div style="display: flex; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid {{t.bord}};">
+              <span style="font-size: 13px; color: {{t.muet}}; width: 44px;">{{f.h}}</span>
+              <span style="width: 32px; height: 32px; border-radius: 50%; background: {{t.violetDoux}}; color: {{t.violetTexte}}; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">{{f.ini}}</span>
+              <span style="flex: 1; font-size: 14px;">{{f.texte}}</span>
+              <span style="font-family: 'Sora'; font-size: 14px; font-weight: 600;">{{f.montant}}</span>
+            </div>
+          </sc-for>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== Téléphone : gérant ===== -->
+  <div style="width: 390px; height: 840px; border-radius: 52px; background: #16161D; padding: 10px; box-sizing: border-box; box-shadow: {{t.ombre}};">
+    <div style="width: 100%; height: 100%; border-radius: 43px; overflow: hidden; background: {{t.app}}; display: flex; flex-direction: column;">
+      <div style="background: #6D5DF5; color: #FFFFFF; padding: 52px 22px 26px; border-radius: 0 0 30px 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 13px; color: #E4E0FF;">Site Ouaga 2000 · Gérant</span>
+          <button type="button" onClick="{{basculer}}" aria-label="{{t.libelleBascule}}" style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,.4); background: none; color: #FFFFFF; display: flex; align-items: center; justify-content: center;">
+            <sc-if value="{{sombre}}" hint-placeholder-val="{{false}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></sc-if>
+            <sc-if value="{{clair}}" hint-placeholder-val="{{true}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></sc-if>
+          </button>
+        </div>
+        <div style="font-family: 'Sora'; font-weight: 700; font-size: 28px; line-height: 1.1; letter-spacing: -0.02em; margin-top: 6px;">4 villas libres ce soir</div>
+        <div style="display: flex; gap: 8px; margin-top: 16px;">
+          <button type="button" style="flex: 1; border: 0; background: #FFFFFF; color: #4F3FD6; border-radius: 12px; padding: 12px 0; font-size: 14px; font-weight: 700;">Réserver</button>
+          <button type="button" style="flex: 1; border: 1px solid rgba(255,255,255,.45); background: none; color: #FFFFFF; border-radius: 12px; padding: 12px 0; font-size: 14px; font-weight: 600;">Encaisser</button>
+          <button type="button" aria-label="Ajouter une dépense" style="width: 46px; border: 1px solid rgba(255,255,255,.45); background: none; color: #FFFFFF; border-radius: 12px; display: flex; align-items: center; justify-content: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></svg></button>
+        </div>
+      </div>
+      <div style="padding: 20px 20px 8px; font-family: 'Sora'; font-size: 15px; font-weight: 600;">Villas</div>
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 0 16px;">
+        <sc-for list="{{villas}}" as="v" hint-placeholder-count="4">
+          <div style="display: flex; align-items: center; gap: 12px; background: {{t.surface}}; border: 1px solid {{t.bord}}; border-radius: 16px; padding: 12px 14px;">
+            <span style="font-family: 'Sora'; font-weight: 700; font-size: 20px; width: 44px;">{{v.nom}}</span>
+            <span style="flex: 1; display: flex; flex-direction: column;"><span style="font-size: 14px; font-weight: 600;">{{v.titre}}</span><span style="font-size: 12px; color: {{t.muet}};">{{v.detail}}</span></span>
+            <span style="{{v.puce}}">{{v.etat}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <nav aria-label="Navigation gérant" style="margin-top: auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 12px 10px 26px; background: {{t.surface}}; border-top: 1px solid {{t.bord}};">
+        <a href="#" style="text-align: center; font-size: 11px; font-weight: 700; color: {{t.violetTexte}}; text-decoration: none;">Aujourd'hui</a>
+        <a href="#" style="text-align: center; font-size: 11px; font-weight: 600; color: {{t.muet}}; text-decoration: none;">Planning</a>
+        <a href="#" style="text-align: center; font-size: 11px; font-weight: 600; color: {{t.muet}}; text-decoration: none;">Caisse</a>
+        <a href="#" style="text-align: center; font-size: 11px; font-weight: 600; color: {{t.muet}}; text-decoration: none;">Dépenses</a>
+      </nav>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"modeSombre":{"editor":"boolean","default":false},"$preview":{"width":1760,"height":920}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const sombre = (this.state && this.state.sombre !== undefined) ? this.state.sombre : !!this.props.modeSombre;
+    const t = sombre ? {
+      fond: '#050507', app: '#0C0C10', surface: '#15151B', champ: '#1B1B23', bord: '#26262F', texte: '#EDEDF2', muet: '#9A9AAE',
+      violetDoux: '#2A2540', violetTexte: '#B3A9FF', rail: '#22222B', inverse: '#EDEDF2', inverseTexte: '#0C0C10', barre: '#2E2A47',
+      ombre: '0 30px 90px rgba(0,0,0,.55)', negatif: '#FF8F8F', libelleBascule: 'Passer en mode clair'
+    } : {
+      fond: '#E4E3EC', app: '#F6F6F9', surface: '#FFFFFF', champ: '#F3F3F7', bord: '#E4E4EC', texte: '#16161D', muet: '#62627A',
+      violetDoux: '#EEEBFF', violetTexte: '#4F3FD6', rail: '#EEEEF4', inverse: '#16161D', inverseTexte: '#FFFFFF', barre: '#E2DEFD',
+      ombre: '0 30px 80px rgba(22,22,29,.12)', negatif: '#C23A3A', libelleBascule: 'Passer en mode sombre'
+    };
+    const basculer = () => this.setState({ sombre: !sombre });
+    const onglets = ['Aperçu', 'Biens', 'Réservations', 'Baux', 'Argent', 'Gérants', 'Rapports'].map((label, i) => ({
+      label, style: 'padding:8px 12px;border-radius:8px;font-size:14px;text-decoration:none;' + (i === 0 ? 'background:' + t.violetDoux + ';color:' + t.violetTexte + ';font-weight:600;' : 'color:' + t.muet + ';font-weight:500;')
+    }));
+    const valeurs = [3.1, 3.6, 3.3, 4.0, 4.4, 4.1, 4.8, 5.0, 4.6, 5.2, 5.5, 6.1];
+    const mois = ['N','D','J','F','M','A','M','J','J','A','S','O'];
+    const barres = valeurs.map((v, i) => ({ m: mois[i], style: 'width:100%;border-radius:6px;height:' + Math.round(v / 6.1 * 100) + 'px;background:' + (i === 11 ? '#6D5DF5' : t.barre) + ';' }));
+    const sites = [
+      { nom: 'Ouaga 2000', detail: '10 villas · 74 %', barre: 'width:74%;height:8px;border-radius:4px;background:#6D5DF5;' },
+      { nom: 'Kossodo', detail: '6 villas · 61 %', barre: 'width:61%;height:8px;border-radius:4px;background:#6D5DF5;' },
+      { nom: 'Immeuble Zogona', detail: '12 appartements · 12/12 loyers', barre: 'width:100%;height:8px;border-radius:4px;background:' + t.inverse + ';' },
+    ];
+    const fil = [
+      { h: '10:42', ini: 'AS', texte: 'Ali a encaissé la Villa B2 · Orange Money', montant: '54 000' },
+      { h: '10:15', ini: 'AS', texte: 'Ali a noté une dépense · Recharge gaz (photo)', montant: '− 7 500' },
+      { h: '09:30', ini: 'MO', texte: 'Mariam a enregistré le loyer d’octobre · Zogona 3', montant: '120 000' },
+      { h: '08:05', ini: 'MO', texte: 'Mariam a fait l’état des lieux · Villa A1', montant: '' },
+    ];
+    const puce = 'font-size:11px;font-weight:700;padding:5px 9px;border-radius:10px;';
+    const villas = [
+      { nom: 'B2', titre: 'Haut standing · 3 ch.', detail: '30 000 / nuit', etat: 'Occupée', puce: puce + 'background:' + t.rail + ';color:' + t.muet + ';' },
+      { nom: 'C2', titre: 'Standing · 2 ch.', detail: '25 000 / nuit', etat: 'Libre', puce: puce + 'background:' + t.violetDoux + ';color:' + t.violetTexte + ';' },
+      { nom: 'C1', titre: 'Piscine · 4 ch.', detail: '45 000 / nuit', etat: 'Libre', puce: puce + 'background:' + t.violetDoux + ';color:' + t.violetTexte + ';' },
+      { nom: 'A3', titre: 'Standing · 2 ch.', detail: '25 000 / nuit', etat: 'Travaux', puce: puce + (sombre ? 'background:#3A2A14;color:#F5C27A;' : 'background:#FFF1E0;color:#8A4B00;') },
+    ];
+    return { t, sombre, clair: !sombre, basculer, onglets, barres, sites, fil, villas };
+  }
+}
+</script>
+</body>
+</html>

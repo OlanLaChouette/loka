@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka · Sable et Terracotta</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#A33E23}a:hover{color:#7E2E19}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 1760px; height: 920px; box-sizing: border-box; padding: 40px; display: flex; gap: 48px; align-items: flex-start; background: #D9CDBD; font-family: 'DM Sans', sans-serif; color: #2B1D17;">
+
+  <!-- ===== Bureau ===== -->
+  <div style="width: 1280px; height: 840px; border-radius: 18px; overflow: hidden; display: flex; background: #EFE7DC; box-shadow: 0 30px 80px rgba(43,29,23,.25);">
+    <!-- Rail d'icônes -->
+    <nav aria-label="Navigation principale" style="width: 76px; flex: 0 0 76px; background: #2B1D17; display: flex; flex-direction: column; align-items: center; padding: 18px 0; gap: 8px;">
+      <div style="width: 42px; height: 42px; border-radius: 12px; background: #B8472A; display: flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+        <span style="font-family: 'Bricolage Grotesque'; font-weight: 800; font-size: 22px; color: #FBF7F1;">L</span>
+      </div>
+      <sc-for list="{{rail}}" as="r" hint-placeholder-count="7">
+        <a href="#" aria-label="{{r.label}}" style="{{r.style}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.d}}"/></svg></a>
+      </sc-for>
+      <span style="margin-top: auto; width: 38px; height: 38px; border-radius: 50%; background: #E9C9B2; color: #2B1D17; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;">IK</span>
+    </nav>
+
+    <!-- Colonne des sites -->
+    <aside style="width: 270px; flex: 0 0 270px; border-right: 1px solid #DED2C2; padding: 22px 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <div style="font-size: 12px; font-weight: 700; color: #7A6455; letter-spacing: .08em; text-transform: uppercase;">Bailleur</div>
+        <div style="font-family: 'Bricolage Grotesque'; font-weight: 800; font-size: 22px; margin-top: 4px;">Résidences Kaboré</div>
+      </div>
+      <div style="font-size: 12px; font-weight: 700; color: #7A6455; letter-spacing: .08em; text-transform: uppercase; margin-top: 6px;">Sites</div>
+      <sc-for list="{{sites}}" as="s" hint-placeholder-count="3">
+        <a href="#" style="{{s.style}}">
+          <span style="display: flex; justify-content: space-between; font-weight: 700; font-size: 15px;"><span>{{s.nom}}</span><span style="font-weight: 600; font-size: 13px;">{{s.taux}}</span></span>
+          <span style="font-size: 13px; opacity: .8;">{{s.detail}}</span>
+        </a>
+      </sc-for>
+      <button type="button" style="border: 1.5px dashed #C9B8A3; background: none; border-radius: 14px; padding: 12px; font-size: 14px; font-weight: 600; color: #7A6455;">+ Ajouter un site</button>
+      <div style="margin-top: auto; background: #FBF7F1; border-radius: 14px; padding: 14px; font-size: 13px; color: #5E4A3E;">
+        <b style="color: #2B1D17;">3 gérants</b> actifs aujourd'hui<br>Ali · Mariam · Boureima
+      </div>
+    </aside>
+
+    <!-- Contenu -->
+    <main style="flex: 1; min-width: 0; padding: 24px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; align-items: flex-end; gap: 12px;">
+        <div style="flex: 1;">
+          <div style="font-size: 14px; color: #7A6455;">Site · 10 villas meublées · location à la nuit</div>
+          <h1 style="margin: 2px 0 0; font-family: 'Bricolage Grotesque'; font-weight: 800; font-size: 40px; letter-spacing: -0.03em; line-height: 1;">Ouaga 2000</h1>
+        </div>
+        <button type="button" style="border: 1px solid #C9B8A3; background: #FBF7F1; color: #2B1D17; border-radius: 12px; padding: 11px 14px; font-size: 14px; font-weight: 600;">Rapport du mois</button>
+        <button type="button" style="border: 0; background: #B8472A; color: #FBF7F1; border-radius: 12px; padding: 12px 16px; font-size: 14px; font-weight: 700;">+ Réservation</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;">
+        <sc-for list="{{kpis}}" as="k" hint-placeholder-count="4">
+          <div style="background: #FBF7F1; border-radius: 16px; padding: 16px 18px;">
+            <div style="font-size: 13px; color: #7A6455; font-weight: 600;">{{k.lab}}</div>
+            <div style="{{k.style}}">{{k.val}}</div>
+            <div style="font-size: 12px; color: #7A6455;">{{k.sous}}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <h2 style="margin: 0; font-family: 'Bricolage Grotesque'; font-weight: 700; font-size: 20px;">Les villas</h2>
+        <div style="display: flex; gap: 6px;">
+          <span style="font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 20px; background: #2B1D17; color: #FBF7F1;">Toutes · 10</span>
+          <span style="font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 20px; background: #FBF7F1; color: #5E4A3E;">Libres · 4</span>
+          <span style="font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 20px; background: #FBF7F1; color: #5E4A3E;">Occupées · 6</span>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; flex: 1; min-height: 0;">
+        <sc-for list="{{villas}}" as="v" hint-placeholder-count="8">
+          <article style="background: #FBF7F1; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;">
+            <div style="{{v.photo}}"><span style="{{v.puce}}">{{v.etat}}</span></div>
+            <div style="padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
+              <span style="display: flex; justify-content: space-between;"><b style="font-size: 15px;">{{v.nom}}</b><span style="font-size: 13px; font-weight: 700; color: #A33E23;">{{v.prix}}</span></span>
+              <span style="font-size: 12px; color: #7A6455;">{{v.detail}}</span>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== Téléphone ===== -->
+  <div style="width: 390px; height: 840px; border-radius: 52px; background: #2B1D17; padding: 10px; box-sizing: border-box; box-shadow: 0 30px 80px rgba(43,29,23,.35);">
+    <div style="width: 100%; height: 100%; border-radius: 43px; overflow: hidden; background: #EFE7DC; display: flex; flex-direction: column;">
+      <div style="padding: 52px 22px 16px;">
+        <div style="font-size: 13px; color: #7A6455;">Ven. 24 oct. · Ouaga 2000</div>
+        <div style="font-family: 'Bricolage Grotesque'; font-weight: 800; font-size: 30px; letter-spacing: -0.03em;">Nouvelle réservation</div>
+      </div>
+      <div style="margin: 0 16px; background: #FBF7F1; border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <div style="width: 64px; height: 64px; border-radius: 14px; background: linear-gradient(160deg, #D8A47F, #9E5B3A);"></div>
+          <div style="flex: 1;"><div style="font-weight: 700; font-size: 16px;">Villa B2</div><div style="font-size: 13px; color: #7A6455;">Haut standing · 3 chambres</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+          <label style="background: #EFE7DC; border-radius: 12px; padding: 10px 12px; font-size: 12px; color: #7A6455;">Arrivée<input type="text" value="Ven. 24 oct." style="display: block; border: 0; background: none; font: 700 15px 'DM Sans'; color: #2B1D17; padding: 0; width: 100%;"></label>
+          <label style="background: #EFE7DC; border-radius: 12px; padding: 10px 12px; font-size: 12px; color: #7A6455;">Départ<input type="text" value="Dim. 26 oct." style="display: block; border: 0; background: none; font: 700 15px 'DM Sans'; color: #2B1D17; padding: 0; width: 100%;"></label>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px;"><span>2 nuits × 30 000</span><b>60 000</b></div>
+        <div style="display: flex; justify-content: space-between; font-size: 14px;"><span>Réduction · client fidèle</span><b style="color: #A33E23;">− 6 000</b></div>
+        <div style="height: 1px; background: #DED2C2;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-weight: 700;">À encaisser</span><span style="font-family: 'Bricolage Grotesque'; font-weight: 800; font-size: 28px;">54 000 F</span></div>
+      </div>
+      <div style="padding: 16px 22px 8px; font-size: 14px; font-weight: 700;">Moyen de paiement</div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 0 16px;">
+        <button type="button" style="border: 1.5px solid #DED2C2; background: #FBF7F1; border-radius: 14px; padding: 14px 0; font-size: 13px; font-weight: 600; color: #2B1D17;">Espèces</button>
+        <button type="button" style="border: 2px solid #B8472A; background: #F6E3D9; border-radius: 14px; padding: 14px 0; font-size: 13px; font-weight: 700; color: #7E2E19;">Mobile Money</button>
+        <button type="button" style="border: 1.5px solid #DED2C2; background: #FBF7F1; border-radius: 14px; padding: 14px 0; font-size: 13px; font-weight: 600; color: #2B1D17;">Virement</button>
+      </div>
+      <div style="margin-top: auto; padding: 16px 16px 30px;">
+        <button type="button" style="width: 100%; border: 0; background: #2B1D17; color: #FBF7F1; border-radius: 18px; padding: 18px 0; font-size: 16px; font-weight: 700;">Encaisser et envoyer le reçu</button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1760,"height":920}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const btn = 'width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;';
+    const rail = [
+      ['Aperçu', 'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z'],
+      ['Biens', 'M3 10.5 12 3l9 7.5V21H3zM9 21v-6h6v6', true],
+      ['Réservations', 'M4 5h16v16H4zM4 10h16M8 3v4M16 3v4'],
+      ['Locataires et baux', 'M16 19v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z'],
+      ['Argent', 'M3 7h15a3 3 0 0 1 3 3v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM3 7l12-4v4M16 13.5h2'],
+      ['Rapports', 'M4 20V10M10 20V4M16 20v-7M22 20H2'],
+      ['Paramètres', 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M14 4v4M8 10v4M16 16v4'],
+    ].map(([label, d, actif]) => ({ label, d, style: btn + (actif ? 'background:#B8472A;color:#FBF7F1;' : 'color:#C9B3A0;') }));
+    const carte = 'display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:14px;text-decoration:none;';
+    const sites = [
+      { nom: 'Ouaga 2000', taux: '74 %', detail: '10 villas · à la nuit', style: carte + 'background:#2B1D17;color:#FBF7F1;' },
+      { nom: 'Kossodo', taux: '61 %', detail: '6 villas · à la nuit', style: carte + 'background:#FBF7F1;color:#2B1D17;' },
+      { nom: 'Immeuble Zogona', taux: '12/12', detail: '12 appartements · au mois', style: carte + 'background:#FBF7F1;color:#2B1D17;' },
+    ];
+    const gros = "font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;letter-spacing:-0.03em;margin:4px 0 2px;";
+    const kpis = [
+      { lab: 'Encaissé', val: '3 912 000', sous: 'FCFA en octobre', style: gros + 'color:#A33E23;' },
+      { lab: 'Occupation', val: '74 %', sous: '229 nuits sur 310', style: gros },
+      { lab: 'Réductions', val: '− 186 000', sous: '4,5 % du prix normal', style: gros },
+      { lab: 'Dépenses', val: '214 500', sous: '2 à valider', style: gros },
+    ];
+    const teintes = [['#D8A47F','#9E5B3A'],['#C9B79C','#7C6A52'],['#E3B796','#B0653F'],['#BFA58A','#6E5642'],['#D9B08C','#8F5A3C'],['#CDBBA4','#7D6650'],['#E0AE8C','#A55E3C'],['#C6AE93','#715A45']];
+    const puce = 'position:absolute;top:10px;left:10px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:10px;';
+    const libre = puce + 'background:#FBF7F1;color:#2B1D17;', occ = puce + 'background:#2B1D17;color:#FBF7F1;';
+    const villas = [
+      ['Villa A1','25 000','2 ch. · Standing','Occupée'],['Villa A2','25 000','2 ch. · Standing','Libre'],['Villa A3','25 000','2 ch. · Standing','Travaux'],['Villa B1','25 000','2 ch. · Standing','Occupée'],
+      ['Villa B2','30 000','3 ch. · Haut standing','Occupée'],['Villa C1','45 000','4 ch. · Piscine','Libre'],['Villa C2','25 000','2 ch. · Standing','Libre'],['Villa C3','35 000','3 ch. · Jardin','Occupée'],
+    ].map(([nom, prix, detail, etat], i) => ({ nom, prix: prix + ' / nuit', detail, etat,
+      photo: 'position:relative;height:100px;background:linear-gradient(160deg,' + teintes[i][0] + ',' + teintes[i][1] + ');',
+      puce: etat === 'Libre' ? libre : etat === 'Travaux' ? puce + 'background:#F6E3D9;color:#7E2E19;' : occ }));
+    return { rail, sites, kpis, villas };
+  }
+}
+</script>
+</body>
+</html>

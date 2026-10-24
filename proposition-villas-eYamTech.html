@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Proposition – Gestion de villas meublées – eYamTech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --vert: #1D6A45;
+    --vert-fonce: #0D2B1A;
+    --vert-clair: #E8F5EE;
+    --lime: #7EC845;
+    --fond: #F5F2EC;
+    --bordure: #E0DDD6;
+    --texte: #1a1a18;
+    --muted: #6B6B68;
+    --orange: #854F0B;
+    --orange-clair: #FAEEDA;
+  }
+  @page {
+    size: A4;
+    margin: 22mm 18mm 20mm 18mm;
+    @top-left { content: element(none); }
+    @bottom-left {
+      content: "eYamTech · +226 62 82 67 02 · contact@eyamtech.com";
+      font-family: 'Space Grotesk', sans-serif; font-size: 8pt; color: #6B6B68;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " / " counter(pages);
+      font-family: 'Space Grotesk', sans-serif; font-size: 8pt; color: #6B6B68;
+    }
+    @top-right {
+      content: "Proposition · Gestion de villas meublées";
+      font-family: 'Space Grotesk', sans-serif; font-size: 8pt; color: #6B6B68;
+    }
+  }
+  @page couverture {
+    margin: 0;
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+    @top-right { content: none; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    font-family: 'Space Grotesk', -apple-system, 'Segoe UI', sans-serif;
+    font-size: 10pt; line-height: 1.5; color: var(--texte); background: #fff;
+  }
+
+  /* ---------- Logo ---------- */
+  .logo { font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .logo .ya { color: var(--lime); }
+  .badge-e {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; border-radius: 11px; background: var(--vert-fonce);
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; color: var(--lime);
+  }
+
+  /* ---------- Couverture ---------- */
+  .couverture {
+    page: couverture; width: 210mm; height: 297mm; background: var(--vert-fonce); color: #fff;
+    position: relative; overflow: hidden; padding: 24mm 20mm; display: flex; flex-direction: column;
+    break-after: page;
+  }
+  .couverture .marque { display: flex; align-items: center; gap: 12px; }
+  .couverture .marque .logo { font-size: 30px; color: #fff; }
+  .couverture .cercle1, .couverture .cercle2 { position: absolute; border-radius: 50%; }
+  .couverture .cercle1 { width: 160mm; height: 160mm; right: -60mm; top: 60mm; background: var(--vert); opacity: .55; }
+  .couverture .cercle2 { width: 90mm; height: 90mm; right: 10mm; top: 120mm; border: 2px solid var(--lime); opacity: .7; }
+  .couverture .contenu { margin-top: auto; position: relative; z-index: 2; }
+  .couverture .surtitre {
+    display: inline-block; background: var(--lime); color: var(--vert-fonce); font-weight: 700;
+    font-size: 10pt; letter-spacing: .08em; text-transform: uppercase; padding: 6px 12px; border-radius: 6px;
+  }
+  .couverture h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 40pt; line-height: 1.05;
+    margin: 18px 0 16px; letter-spacing: -0.02em; max-width: 150mm;
+  }
+  .couverture h1 em { font-style: normal; color: var(--lime); }
+  .couverture .sous { font-size: 13pt; color: #cfe3d6; max-width: 135mm; }
+  .couverture .pied {
+    position: relative; z-index: 2; margin-top: 26mm; padding-top: 8mm; border-top: 1px solid rgba(255,255,255,.18);
+    display: flex; justify-content: space-between; font-size: 9.5pt; color: #cfe3d6;
+  }
+  .couverture .pied strong { color: #fff; display: block; font-size: 10.5pt; margin-bottom: 2px; }
+  .couverture .signature { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--lime); font-size: 12pt; margin-top: 10mm; position: relative; z-index: 2; }
+
+  /* ---------- Contenu ---------- */
+  .page-intro { break-after: avoid; }
+  .resume {
+    background: var(--vert-clair); border-left: 5px solid var(--vert); border-radius: 8px;
+    padding: 14px 18px; font-size: 11.5pt; font-weight: 500; color: var(--vert-fonce); margin-bottom: 16px;
+  }
+  section { margin-bottom: 18px; }
+  .sec-nouvelle { break-before: page; }
+  h2 {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15.5pt; color: var(--vert-fonce);
+    letter-spacing: -0.01em; margin: 6px 0 10px; display: flex; align-items: center; gap: 10px;
+    break-after: avoid;
+  }
+  h2 .num {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px;
+    background: var(--vert-fonce); color: var(--lime); border-radius: 8px; font-size: 14pt; padding: 0 6px;
+
+  }
+  h3 {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 12pt; color: var(--vert);
+    margin: 16px 0 6px; break-after: avoid;
+  }
+  p { margin: 0 0 8px; }
+  ul, ol { margin: 0 0 10px 20px; }
+  li { margin: 0 0 4px; }
+  li::marker { color: var(--vert); font-weight: 700; }
+  strong { font-weight: 700; }
+
+  table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 6px 0 12px; font-size: 9.5pt; break-inside: auto; }
+  thead { display: table-header-group; }
+  tr { break-inside: avoid; }
+  th {
+    background: var(--vert-fonce); color: #fff; text-align: left; font-weight: 600; padding: 7px 10px;
+  }
+  th:first-child { border-top-left-radius: 8px; }
+  th:last-child { border-top-right-radius: 8px; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--bordure); vertical-align: top; }
+  tbody tr:nth-child(even) td { background: #FAF8F4; }
+  td:first-child { font-weight: 600; color: var(--vert-fonce); }
+  td.montant { font-weight: 700; color: var(--vert-fonce); white-space: nowrap; }
+
+  .problemes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 4px; }
+  .probleme { background: var(--fond); border-radius: 8px; padding: 10px 12px; font-size: 9.8pt; break-inside: avoid; }
+  .probleme b { display: block; color: var(--vert-fonce); margin-bottom: 2px; }
+
+  .benefices { break-inside: avoid; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
+  .benefice { border: 1px solid var(--bordure); border-top: 4px solid var(--lime); border-radius: 8px; padding: 10px 12px; font-size: 9.6pt; break-inside: avoid; }
+  .benefice .n { font-family: 'Syne', sans-serif; font-weight: 800; color: var(--vert); font-size: 15pt; line-height: 1; }
+  .benefice b { display: block; color: var(--vert-fonce); margin: 4px 0 2px; }
+
+  .encadre-vert {
+    background: var(--vert-fonce); color: #fff; border-radius: 12px; padding: 16px 20px; margin: 12px 0; break-inside: avoid;
+  }
+  .encadre-vert h3 { color: var(--lime); margin-top: 0; }
+  .encadre-vert ul { margin-bottom: 6px; }
+  .encadre-vert li::marker { color: var(--lime); }
+  .encadre-vert p:last-child { margin: 0; color: #cfe3d6; }
+
+  .formule-calc {
+    background: var(--fond); border-radius: 8px; padding: 10px 14px; font-weight: 600; color: var(--vert-fonce); margin: 6px 0 8px;
+  }
+  .note { font-size: 9.3pt; color: var(--muted); }
+
+  .important {
+    background: var(--orange-clair); border-left: 5px solid var(--orange); border-radius: 8px; padding: 12px 16px; margin: 10px 0 14px; color: #4a2c06; break-inside: avoid;
+  }
+  .important b { color: var(--orange); }
+
+  .formules { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0; }
+  .formule { border: 1.5px solid var(--bordure); border-radius: 12px; overflow: hidden; break-inside: avoid; display: flex; flex-direction: column; }
+  .formule .tete { padding: 12px 16px; background: var(--vert-clair); }
+  .formule.b .tete { background: var(--fond); }
+  .formule .lettre { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 10pt; color: var(--vert); letter-spacing: .06em; text-transform: uppercase; }
+  .formule .titre { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15pt; color: var(--vert-fonce); line-height: 1.15; }
+  .formule .accroche { font-size: 9.3pt; color: var(--muted); margin-top: 4px; }
+  .formule .corps { padding: 10px 16px 14px; font-size: 9.5pt; flex: 1; }
+  .formule .prix-ligne { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px dashed var(--bordure); }
+  .formule .prix-ligne span:last-child { font-weight: 700; color: var(--vert-fonce); text-align: right; }
+  .formule .gros { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13pt; }
+  .formule .plus, .formule .savoir { margin-top: 8px; }
+  .formule .plus b { color: var(--vert); }
+  .formule .savoir b { color: var(--orange); }
+  .formule .exemple { background: var(--vert-clair); border-radius: 6px; padding: 8px 10px; margin-top: 8px; font-size: 9pt; }
+
+  .compris { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; margin: 6px 0 4px; padding: 0; list-style: none; }
+  .compris li { padding-left: 22px; position: relative; font-size: 9.8pt; margin: 0; }
+  .compris li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--vert); font-weight: 800; }
+
+  .options { list-style: none; margin: 6px 0; padding: 0; }
+  .options li { display: flex; justify-content: space-between; gap: 16px; padding: 7px 0; border-bottom: 1px solid var(--bordure); margin: 0; font-size: 9.8pt; }
+  .options li span:last-child { color: var(--vert); font-weight: 600; white-space: nowrap; }
+
+  .etapes { counter-reset: e; list-style: none; margin: 8px 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .etapes li { counter-increment: e; background: var(--fond); border-radius: 8px; padding: 30px 10px 10px; position: relative; font-size: 9.3pt; margin: 0; break-inside: avoid; }
+  .etapes li::before { content: counter(e); position: absolute; top: 8px; left: 10px; width: 18px; height: 18px; border-radius: 50%; background: var(--lime); color: var(--vert-fonce); font-weight: 800; font-size: 9pt; display: flex; align-items: center; justify-content: center; }
+
+  .fin {
+    margin-top: 18px; background: var(--vert-fonce); color: #fff; border-radius: 12px; padding: 18px 22px;
+    display: flex; justify-content: space-between; align-items: center; break-inside: avoid;
+  }
+  .fin .logo { font-size: 24px; color: #fff; }
+  .fin .sig { font-family: 'Syne', sans-serif; color: var(--lime); font-weight: 700; margin-top: 6px; }
+  .fin .contacts { text-align: right; font-size: 10pt; color: #cfe3d6; }
+  .fin .contacts strong { color: #fff; }
+
+  .planning { margin: 6px 0 8px; break-inside: avoid; }
+  .garde { break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- =================== COUVERTURE =================== -->
+<div class="couverture">
+  <div class="cercle1"></div>
+  <div class="cercle2"></div>
+  <div class="marque">
+    <span class="badge-e">e</span>
+    <span class="logo">e<span class="ya">Ya</span>mTech</span>
+  </div>
+
+  <div class="contenu">
+    <span class="surtitre">Proposition de solution</span>
+    <h1>Gérez toutes vos <em>villas meublées</em> depuis votre téléphone</h1>
+    <p class="sous">Une application simple pour suivre réservations, encaissements, réductions, charges et dépenses sur tous vos sites, et savoir à tout moment ce que rapporte chaque villa.</p>
+  </div>
+
+  <div class="pied">
+    <div><strong>Destinataire</strong>Promoteurs et bailleurs de villas meublées</div>
+    <div><strong>Date</strong>Octobre 2026</div>
+    <div><strong>Contact</strong>+226 62 82 67 02 · contact@eyamtech.com</div>
+  </div>
+</div>
+
+<!-- =================== INTRO + 1 =================== -->
+<div class="resume">
+  Nous vous proposons une application simple, sur ordinateur et sur téléphone, pour gérer vos villas meublées sur tous vos sites : réservations, argent encaissé, réductions accordées, charges et dépenses. Vous savez à tout moment ce que rapporte chaque villa.
+</div>
+
+<section>
+  <h2><span class="num">1</span>Votre situation aujourd'hui</h2>
+  <p>Vous louez à la journée des villas meublées et équipées (fauteuils, gaz, Wi-Fi, eau, électricité), en moyenne <strong>30 000 FCFA la nuit</strong>. Vous avez plusieurs sites et d'autres vont s'ouvrir. Le gaz et le Wi-Fi sont à votre charge ; le client paie seulement son électricité avec le compteur à carte (prépayé).</p>
+  <p>L'activité marche bien, mais plus elle grandit, plus elle devient difficile à suivre :</p>
+  <div class="problemes">
+    <div class="probleme"><b>Chaque villa a son prix</b>Il est fixé au cas par cas, pas seulement selon le standing ou le nombre de pièces.</div>
+    <div class="probleme"><b>Les réductions sont fréquentes</b>On ne sait pas toujours combien a vraiment été encaissé, qui a accordé la réduction et pourquoi.</div>
+    <div class="probleme"><b>Les charges sont éparpillées</b>Gaz, Wi-Fi, gardiennage, entretien… sont payés sans vue d'ensemble par villa ou par site.</div>
+    <div class="probleme"><b>Les dépenses des gérants</b>Réparations, recharges de gaz, ménage : elles remontent sur papier ou par WhatsApp.</div>
+  </div>
+  <p style="margin-top:8px"><strong>Résultat :</strong> on ne sait pas exactement ce que rapporte chaque villa, chaque site ou chaque gérant.</p>
+</section>
+
+<section>
+  <h2><span class="num">2</span>Ce que l'application va vous apporter</h2>
+  <p>Depuis votre téléphone, vous voyez combien rapporte chaque villa, une fois les réductions, les charges et les dépenses retirées.</p>
+  <div class="benefices">
+    <div class="benefice"><span class="n">01</span><b>Tout au même endroit</b>Tous vos sites et toutes vos villas ; un nouveau site s'ajoute en quelques minutes.</div>
+    <div class="benefice"><span class="n">02</span><b>Chaque séjour suivi</b>Prix normal, réduction accordée, prix payé, reste à payer.</div>
+    <div class="benefice"><span class="n">03</span><b>Vos charges sous contrôle</b>Vous ajoutez, modifiez ou retirez une charge vous-même, quand vous voulez.</div>
+    <div class="benefice"><span class="n">04</span><b>Des gérants équipés</b>Depuis leur téléphone, ils réservent, encaissent, donnent un reçu et notent les dépenses avec photo.</div>
+    <div class="benefice"><span class="n">05</span><b>Des bilans tout prêts</b>Villas occupées, argent encaissé, bénéfice par villa, par site et par mois.</div>
+    <div class="benefice"><span class="n">06</span><b>Moins de pertes</b>Moins de réductions injustifiées, de dépenses non contrôlées et de séjours impayés.</div>
+  </div>
+</section>
+
+<!-- =================== 3 =================== -->
+<section class="sec-nouvelle">
+  <h2><span class="num">3</span>Ce que fait l'application</h2>
+  <p>L'application regroupe huit parties, toutes reliées à la fiche de chaque villa.</p>
+  <table>
+    <thead><tr><th style="width:22%">Partie</th><th>Ce qu'on peut y faire</th><th style="width:18%">Qui s'en sert</th></tr></thead>
+    <tbody>
+      <tr><td>Sites et villas</td><td>Ajouter autant de sites et de villas que vous voulez. Pour chaque villa : standing, nombre de pièces, équipements, photos, liste du mobilier, état (libre, occupée, en travaux).</td><td>Promoteur</td></tr>
+      <tr><td>Prix et réductions</td><td>Fixer le prix de chaque villa à la nuit (et si besoin à la semaine, au mois ou en haute saison). Accorder une réduction en montant ou en pourcentage, avec la raison.</td><td>Promoteur, gérant</td></tr>
+      <tr><td>Réservations et séjours</td><td>Calendrier de chaque villa (impossible de réserver deux fois la même nuit), avance versée, arrivée et départ, fiche du client avec sa pièce d'identité, caution, état des lieux.</td><td>Gérant</td></tr>
+      <tr><td>Encaissements</td><td>Paiement en espèces, par Mobile Money ou par virement. Reçu automatique. Suivi de ce qui reste à payer.</td><td>Gérant, comptable</td></tr>
+      <tr><td>Charges fixes</td><td>Liste libre : gaz, Wi-Fi, gardiennage, entretien… Vous ajoutez, modifiez ou retirez une charge. Elle peut concerner une villa, un site ou tous les sites.</td><td>Promoteur</td></tr>
+      <tr><td>Dépenses</td><td>Le gérant note la dépense sur son téléphone avec la photo du reçu. Le promoteur l'accepte ou la refuse.</td><td>Gérant, promoteur</td></tr>
+      <tr><td>Électricité (compteur à carte)</td><td>Numéro du compteur de chaque villa, relevé à l'arrivée et au départ du client.</td><td>Gérant</td></tr>
+      <tr><td>Bilans</td><td>Villas occupées, prix moyen réellement payé par nuit, argent encaissé, réductions, charges, dépenses et bénéfice, par villa, par site et par mois. Impression ou envoi en PDF et Excel.</td><td>Promoteur, comptable</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Des alertes arrivent par SMS ou WhatsApp : arrivées et départs du jour, ménage à prévoir, séjour pas encore payé, dépense à accepter, charge à régler bientôt.</p>
+
+  <div class="encadre-vert">
+    <h3>Le point fort : le gérant équipé sur le terrain</h3>
+    <p>Vos gérants se déplacent pour rencontrer les clients. Avec leur téléphone, ils concluent la location sur place, sans repasser au bureau :</p>
+    <ul>
+      <li>voir tout de suite les villas libres et leurs prix, sur tous leurs sites ;</li>
+      <li>faire la réservation et accorder une réduction dans la limite que vous avez fixée ;</li>
+      <li>encaisser en espèces ou par Mobile Money, et envoyer le reçu au client par WhatsApp ou SMS ;</li>
+      <li>prendre en photo la pièce d'identité du client et faire l'état des lieux en photos ;</li>
+      <li>noter une dépense avec la photo du reçu ;</li>
+      <li>continuer à travailler même sans réseau : tout est envoyé dès que la connexion revient.</li>
+    </ul>
+    <p>Vous voyez chaque opération aussitôt sur votre téléphone.</p>
+  </div>
+</section>
+
+<!-- =================== 4 =================== -->
+<section>
+  <h2><span class="num">4</span>Qui utilise l'application</h2>
+  <p>Chacun a son propre code d'accès et ne voit que ce qui le concerne. Un gérant ne voit que ses sites.</p>
+  <table>
+    <thead><tr><th style="width:16%">Personne</th><th style="width:20%">Ce qu'elle voit</th><th>Ce qu'elle peut faire</th><th style="width:25%">Ce qu'elle ne peut pas faire</th></tr></thead>
+    <tbody>
+      <tr><td>Promoteur</td><td>Tous les sites</td><td>Tout : créer sites, villas, prix et charges ; accepter les dépenses et les grosses réductions ; voir tous les bénéfices</td><td>—</td></tr>
+      <tr><td>Gérant</td><td>Ses sites seulement</td><td>Réserver, encaisser, accorder une réduction jusqu'à la limite fixée, noter les dépenses</td><td>Changer les prix ou les charges ; effacer un paiement</td></tr>
+      <tr><td>Comptable</td><td>Tous les sites, sans pouvoir modifier</td><td>Consulter, imprimer, exporter, vérifier la caisse</td><td>Modifier les informations</td></tr>
+      <tr><td>Client (en option)</td><td>Son séjour</td><td>Voir ses reçus et ce qui reste à payer ; signaler une panne</td><td>Tout le reste</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Tout ce qui est sensible (réduction, suppression, changement de prix) est enregistré : qui l'a fait, quand, et ce qui a changé.</p>
+</section>
+
+<!-- =================== 5 =================== -->
+<section>
+  <h2><span class="num">5</span>Les règles de l'application</h2>
+  <p>Vous fixez vous-même le prix de chaque villa. Pour chaque séjour, l'application garde trois chiffres : <strong>le prix normal, la réduction et le prix payé</strong>.</p>
+
+  <h3>Les prix</h3>
+  <ul>
+    <li>Le standing et le nombre de pièces servent à décrire la villa, pas à calculer son prix.</li>
+    <li>Le prix de base est la nuit. Une villa peut aussi avoir un prix à la semaine, au mois ou en haute saison.</li>
+    <li>Quand vous changez un prix, l'ancien reste en mémoire. Les réservations déjà confirmées gardent leur prix.</li>
+  </ul>
+
+  <h3>Les réductions</h3>
+  <ul>
+    <li>Une réduction se donne en montant ou en pourcentage, toujours avec sa raison (client fidèle, long séjour, négociation…).</li>
+    <li>Vous fixez pour chaque gérant une limite de réduction. Au-delà, il doit avoir votre accord dans l'application.</li>
+    <li>Chaque mois, vous voyez le total des réductions par gérant, par site et par raison.</li>
+  </ul>
+
+  <h3>Les charges et les dépenses</h3>
+  <ul>
+    <li>La liste des charges fixes est libre : vous ajoutez, modifiez ou retirez une charge (gaz, Wi-Fi, gardiennage, abonnement télé…) sans faire appel à nous. Une charge retirée reste visible dans les mois passés.</li>
+    <li>Une charge peut concerner une villa, un site (elle est alors partagée entre ses villas) ou tous les sites.</li>
+    <li>Les dépenses notées par les gérants ne comptent qu'une fois acceptées par vous.</li>
+    <li>L'électricité est payée par le client avec le compteur à carte : elle ne compte pas dans vos frais, sauf quand la villa est vide.</li>
+  </ul>
+
+  <h3>Le bénéfice d'une villa</h3>
+  <div class="formule-calc">Bénéfice = prix normal des nuits vendues − réductions − charges fixes − dépenses acceptées</div>
+  <table class="garde" style="max-width:120mm">
+    <thead><tr><th>Exemple sur un mois</th><th style="text-align:right">FCFA</th></tr></thead>
+    <tbody>
+      <tr><td>20 nuits vendues à 30 000</td><td class="montant" style="text-align:right">600 000</td></tr>
+      <tr><td>Réductions</td><td class="montant" style="text-align:right">− 60 000</td></tr>
+      <tr><td>Gaz et Wi-Fi</td><td class="montant" style="text-align:right">− 45 000</td></tr>
+      <tr><td>Ménage et petite réparation</td><td class="montant" style="text-align:right">− 25 000</td></tr>
+      <tr><td style="background:var(--vert-clair)">Bénéfice</td><td class="montant" style="text-align:right;background:var(--vert-clair);color:var(--vert)">470 000</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- =================== 6 =================== -->
+<section>
+  <h2><span class="num">6</span>Questions pratiques</h2>
+  <table>
+    <thead><tr><th style="width:34%">Question</th><th>Réponse</th></tr></thead>
+    <tbody>
+      <tr><td>Sur quel appareil ?</td><td>Ordinateur pour le promoteur et le comptable ; téléphone Android (et iPhone) pour les gérants.</td></tr>
+      <tr><td>Et sans connexion Internet ?</td><td>Le gérant continue à travailler ; tout est envoyé dès que le réseau revient.</td></tr>
+      <tr><td>Combien de sites ?</td><td>Pas de limite ; un nouveau site s'ajoute avec un simple formulaire.</td></tr>
+      <tr><td>Les informations sont-elles protégées ?</td><td>Chacun a son code d'accès personnel et ne voit que ce qui le concerne ; tout ce qui est fait est enregistré.</td></tr>
+      <tr><td>Et si un téléphone est perdu ou cassé ?</td><td>Rien n'est perdu : les informations sont gardées sur un serveur sécurisé, avec une copie de sécurité chaque jour.</td></tr>
+      <tr><td>Le paiement par téléphone ?</td><td>Orange Money, Moov Money, Wave ou MTN MoMo selon le pays ; le compte marchand est à demander à l'opérateur dès le début.</td></tr>
+      <tr><td>Quels documents ?</td><td>Reçus, contrats et bilans en PDF ou Excel.</td></tr>
+      <tr><td>Langue et monnaie ?</td><td>Français, FCFA.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- =================== 7 =================== -->
+<section>
+  <h2><span class="num">7</span>Ce qui est livré et en combien de temps</h2>
+  <p>L'application complète, y compris celle des gérants sur téléphone, est <strong>prête en 6 semaines</strong>. Les options ajoutent environ 2 semaines.</p>
+
+  <div class="planning">
+    <svg viewBox="0 0 760 300" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Space Grotesk, sans-serif">
+      <rect x="0" y="0" width="760" height="300" rx="14" fill="#F5F2EC"/>
+      <!-- phases -->
+      <line x1="228" x2="604" y1="40" y2="40" stroke="#1D6A45" stroke-width="3" stroke-linecap="round"/>
+      <line x1="612" x2="732" y1="40" y2="40" stroke="#6B6B68" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="416" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#0D2B1A">Phase 1 · Application complète · 6 semaines</text>
+      <text x="672" y="30" text-anchor="middle" font-size="12" fill="#6B6B68">Phase 2 · options</text>
+      <!-- semaines -->
+      <g font-size="11.5" fill="#6B6B68" text-anchor="middle">
+        <text x="256" y="66">S1</text><text x="320" y="66">S2</text><text x="384" y="66">S3</text><text x="448" y="66">S4</text>
+        <text x="512" y="66">S5</text><text x="576" y="66">S6</text><text x="640" y="66">S7</text><text x="704" y="66">S8</text>
+      </g>
+      <g stroke="#E0DDD6">
+        <line x1="224" x2="224" y1="76" y2="250"/><line x1="288" x2="288" y1="76" y2="250"/><line x1="352" x2="352" y1="76" y2="250"/>
+        <line x1="416" x2="416" y1="76" y2="250"/><line x1="480" x2="480" y1="76" y2="250"/><line x1="544" x2="544" y1="76" y2="250"/>
+        <line x1="608" x2="608" y1="76" y2="250"/><line x1="672" x2="672" y1="76" y2="250"/><line x1="736" x2="736" y1="76" y2="250"/>
+      </g>
+      <!-- lignes -->
+      <g font-size="13" fill="#1a1a18">
+        <text x="24" y="104">Application web</text>
+        <text x="24" y="138">Application mobile gérants</text>
+        <text x="24" y="172">Essai sur un site pilote</text>
+        <text x="24" y="206" font-weight="700" fill="#0D2B1A">Formation et lancement</text>
+        <text x="24" y="240" fill="#6B6B68">Options</text>
+      </g>
+      <rect x="228" y="90" width="120" height="18" rx="9" fill="#1D6A45"/>
+      <rect x="356" y="124" width="120" height="18" rx="9" fill="#1D6A45"/>
+      <rect x="484" y="158" width="56" height="18" rx="9" fill="#1D6A45"/>
+      <rect x="548" y="192" width="56" height="18" rx="9" fill="#7EC845"/>
+      <rect x="612" y="226" width="120" height="18" rx="9" fill="none" stroke="#6B6B68" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <!-- lancement -->
+      <line x1="608" x2="608" y1="76" y2="262" stroke="#7EC845" stroke-width="2" stroke-dasharray="4 4"/>
+      <path d="M608 254 l8 8 l-8 8 l-8 -8 z" fill="#0D2B1A"/>
+      <text x="596" y="285" text-anchor="end" font-size="12" font-weight="700" fill="#0D2B1A">Lancement : fin de la semaine 6</text>
+    </svg>
+  </div>
+
+  <p>Avant le lancement, l'application est essayée pendant une semaine sur un site pilote, avec un vrai gérant. Pour le paiement par téléphone, l'ouverture du compte marchand dépend de l'opérateur : il faut la demander dès le départ pour tenir ce délai.</p>
+
+  <h3>Ce que vous recevez</h3>
+  <ul class="compris">
+    <li>L'application sur ordinateur (promoteur, comptable) et sur téléphone (gérants)</li>
+    <li>La mise en place de vos sites, villas, prix, charges et codes d'accès</li>
+    <li>Un guide simple et la formation des gérants sur place</li>
+    <li>Le suivi et l'assistance après le lancement, selon la formule choisie</li>
+  </ul>
+</section>
+
+<!-- =================== 8 =================== -->
+<section class="sec-nouvelle">
+  <h2><span class="num">8</span>Nos offres financières</h2>
+  <p>Deux formules au choix pour la même application : <strong>la louer chaque mois</strong> (formule A) ou <strong>l'acheter une fois pour toutes</strong> (formule B).</p>
+
+  <div class="important">
+    <b>Important.</b> Les montants ci-dessous sont des <b>offres globales</b>, données à titre indicatif. Ils restent <b>discutables selon la réalité de chaque bailleur</b> : nombre de villas et de sites, budget, besoins particuliers, calendrier. Tous les montants sont en FCFA, hors taxes.
+  </div>
+
+  <h3>Ce qui est compris dans les deux formules</h3>
+  <ul class="compris">
+    <li>L'application sur ordinateur et sur téléphone, avec tout ce qui est décrit à la partie 3</li>
+    <li>Le paiement par téléphone (Mobile Money), les alertes SMS et WhatsApp, les bilans</li>
+    <li>La mise en place de vos sites, villas, prix, charges et codes d'accès</li>
+    <li>L'essai sur un site pilote et la formation des gérants</li>
+  </ul>
+
+  <div class="formules">
+    <div class="formule a">
+      <div class="tete">
+        <div class="lettre">Formule A</div>
+        <div class="titre">Abonnement</div>
+        <div class="accroche">Vous louez l'application</div>
+      </div>
+      <div class="corps">
+        <p>Une somme de départ, puis un petit montant chaque mois selon le nombre de villas. Tout est compris : serveur, copies de sécurité, améliorations, assistance par WhatsApp et téléphone aux heures de bureau.</p>
+        <div class="prix-ligne"><span>Au départ (une seule fois)</span><span class="gros">1 800 000</span></div>
+        <div class="prix-ligne"><span>Chaque mois</span><span>3 000 par villa enregistrée<br>(minimum 30 000)</span></div>
+        <div class="prix-ligne"><span>Année payée d'avance</span><span>10 mois au lieu de 12</span></div>
+        <p class="note" style="margin-top:6px">Une villa compte dès qu'elle est enregistrée, qu'elle soit louée, libre ou en travaux. Seule une villa retirée définitivement ne compte plus : elle ne peut alors plus recevoir de réservation. Chaque mois, on retient le plus grand nombre de villas enregistrées pendant le mois.</p>
+        <div class="exemple"><strong>Exemple, 20 villas :</strong> 60 000 par mois, ou 600 000 par an payé d'avance. C'est l'équivalent de 20 nuits, sur environ 4 400 nuits vendues dans l'année (à 60 % d'occupation).</div>
+        <div class="plus"><b>Les plus :</b> petite somme au départ ; aucun souci technique ; l'application s'améliore sans frais en plus.</div>
+        <div class="savoir"><b>À savoir :</b> vous payez tant que vous l'utilisez ; le montant mensuel augmente avec le nombre de villas.</div>
+      </div>
+    </div>
+
+    <div class="formule b">
+      <div class="tete">
+        <div class="lettre">Formule B</div>
+        <div class="titre">Achat</div>
+        <div class="accroche">L'application est à vous</div>
+      </div>
+      <div class="corps">
+        <p>Une grosse somme une seule fois. Ensuite, vous ne payez que le serveur et, si vous le voulez, le suivi.</p>
+        <div class="prix-ligne"><span>Au départ (une seule fois)</span><span class="gros">3 500 000</span></div>
+        <div class="prix-ligne"><span>Les 3 premiers mois</span><span>Garantie : corrections et assistance gratuites</span></div>
+        <div class="prix-ligne"><span>Serveur (payé à l'hébergeur)</span><span>Environ 20 000 / mois</span></div>
+        <div class="prix-ligne"><span>Suivi et assistance, dès le 4<sup>e</sup> mois (facultatif)</span><span>50 000 / mois</span></div>
+        <p class="note" style="margin-top:6px">Sans contrat de suivi, chaque intervention est facturée à part (prix à discuter).</p>
+        <div class="plus"><b>Les plus :</b> pas de prix par villa, le coût ne monte pas quand vous ouvrez de nouveaux sites ; vous êtes propriétaire.</div>
+        <div class="savoir"><b>À savoir :</b> grosse somme au départ ; le serveur et le suivi restent à prévoir.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="garde">
+    <h3>Comparaison sur 3 ans</h3>
+    <table>
+      <thead><tr><th>Nombre de villas</th><th style="text-align:right">Formule A · Abonnement</th><th style="text-align:right">Formule B · Achat</th></tr></thead>
+      <tbody>
+        <tr><td>20 villas</td><td class="montant" style="text-align:right;color:var(--vert)">3 600 000</td><td class="montant" style="text-align:right">5 870 000</td></tr>
+        <tr><td>50 villas</td><td class="montant" style="text-align:right">6 300 000</td><td class="montant" style="text-align:right;color:var(--vert)">5 870 000</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Calcul fait avec la formule A payée à l'année, et la formule B avec suivi à partir du 4<sup>e</sup> mois et serveur à 20 000 par mois. <strong style="color:var(--vert-fonce)">Jusqu'à environ 45 villas, l'abonnement coûte moins cher ; au-delà, l'achat devient plus intéressant.</strong></p>
+  </div>
+
+  <div class="garde">
+    <h3>Options et services en plus</h3>
+    <ul class="options">
+      <li><span>Espace client : le client voit ses reçus, ce qui reste à payer, et signale une panne</span><span>Prix à discuter</span></li>
+      <li><span>Comparaison détaillée entre vos sites</span><span>Prix à discuter</span></li>
+      <li><span>Mise en place d'un nouveau site par nos soins (gratuite si vous le faites vous-même)</span><span>Prix à discuter</span></li>
+      <li><span>Formation d'un nouveau gérant</span><span>Prix à discuter</span></li>
+      <li><span>Ajout d'une fonction sur mesure</span><span>Prix à discuter</span></li>
+      <li><span>Frais d'envoi des SMS et frais du paiement par téléphone</span><span>Prix de l'opérateur</span></li>
+    </ul>
+  </div>
+
+  <div class="garde">
+    <h3>Comment payer</h3>
+    <ul>
+      <li>Pour l'application : <strong>40 %</strong> à la signature, <strong>30 %</strong> après l'essai sur le site pilote, <strong>30 %</strong> au lancement.</li>
+      <li>Formule A : l'abonnement commence au lancement. Formule B : les 3 mois de garantie commencent au lancement.</li>
+      <li>Ces offres sont valables 3 mois.</li>
+    </ul>
+  </div>
+
+  <div class="garde">
+    <h3>Ce que vous y gagnez</h3>
+    <ul class="compris">
+      <li>Vous savez enfin ce que rapporte réellement chaque villa et chaque site.</li>
+      <li>Vous contrôlez les réductions et les dépenses de vos gérants.</li>
+      <li>Moins de séjours impayés grâce aux rappels et au suivi.</li>
+      <li>Vous ouvrez de nouveaux sites sans compliquer votre gestion.</li>
+    </ul>
+  </div>
+
+  <div class="garde">
+    <h3>Prochaines étapes</h3>
+    <ol class="etapes">
+      <li>Une rencontre pour faire le point : nombre de sites et de villas, liste des charges, limites de réduction, budget</li>
+      <li>Une démonstration de l'application sur un de vos sites</li>
+      <li>Le choix de la formule, l'ajustement de l'offre et la signature</li>
+      <li>Le démarrage du projet</li>
+    </ol>
+  </div>
+
+  <div class="fin">
+    <div>
+      <div class="logo">e<span style="color:#7EC845">Ya</span>mTech</div>
+      <div class="sig">Votre activité, chiffres à l'appui.</div>
+    </div>
+    <div class="contacts">
+      <strong>Parlons de votre projet</strong><br>
+      WhatsApp et téléphone : +226 62 82 67 02<br>
+      contact@eyamtech.com
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
