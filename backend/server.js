@@ -15,7 +15,7 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
 const app = express();
 app.set('trust proxy', 1); // derrière l'hébergeur (adresse IP réelle pour la limite de tentatives)
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-app.use(cors({ origin: (process.env.FRONTEND_URL || '').split(',').concat(['capacitor://localhost', 'http://localhost']), credentials: true }));
+app.use(cors({ origin: (process.env.FRONTEND_URL || '').split(',').concat(['https://localhost', 'capacitor://localhost', 'http://localhost']), credentials: true }));
 app.use(express.json({ limit: '1mb' }));
 if (process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
 

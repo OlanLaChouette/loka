@@ -6,3 +6,5 @@ dist/
 uploads/
 video/out/
 .pgdata/
+frontend/.env.production
+*.apk
