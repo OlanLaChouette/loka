@@ -2,19 +2,20 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>Proposition – Gestion de villas meublées – eYamTech</title>
+<title>Loka – Proposition de solution</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@700&family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --vert: #1D6A45;
-    --vert-fonce: #0D2B1A;
-    --vert-clair: #E8F5EE;
-    --lime: #7EC845;
-    --fond: #F5F2EC;
-    --bordure: #E0DDD6;
-    --texte: #1a1a18;
-    --muted: #6B6B68;
+    --vert: #5443D8;          /* violet Loka (texte, accents) */
+    --vert-fonce: #16161D;    /* encre Loka (blocs sombres, en-têtes de tableaux) */
+    --vert-clair: #EEEBFF;    /* violet doux */
+    --lime: #B3A9FF;          /* violet clair sur fond sombre */
+    --fond: #F3F3F7;
+    --bordure: #E4E4EC;
+    --texte: #16161D;
+    --muted: #62627A;
+    --violet: #6D5DF5;
     --orange: #854F0B;
     --orange-clair: #FAEEDA;
   }
@@ -23,16 +24,16 @@
     margin: 22mm 18mm 20mm 18mm;
     @top-left { content: element(none); }
     @bottom-left {
-      content: "eYamTech · +226 62 82 67 02 · contact@eyamtech.com";
-      font-family: 'Space Grotesk', sans-serif; font-size: 8pt; color: #6B6B68;
+      content: "Loka · par eYamTech · +226 62 82 67 02 · contact@eyamtech.com";
+      font-family: 'Inter', sans-serif; font-size: 8pt; color: #6B6B68;
     }
     @bottom-right {
       content: "Page " counter(page) " / " counter(pages);
-      font-family: 'Space Grotesk', sans-serif; font-size: 8pt; color: #6B6B68;
+      font-family: 'Inter', sans-serif; font-size: 8pt; color: #6B6B68;
     }
     @top-right {
       content: "Loka · Proposition de solution";
-      font-family: 'Space Grotesk', sans-serif; font-size: 8pt; color: #6B6B68;
+      font-family: 'Inter', sans-serif; font-size: 8pt; color: #6B6B68;
     }
   }
   @page couverture {
@@ -44,48 +45,48 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body {
-    font-family: 'Space Grotesk', -apple-system, 'Segoe UI', sans-serif;
+    font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
     font-size: 10pt; line-height: 1.5; color: var(--texte); background: #fff;
   }
 
   /* ---------- Logo ---------- */
-  .logo { font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .logo { font-family: 'Sora', sans-serif; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
   .logo .ya { color: var(--lime); }
   .badge-e {
     display: inline-flex; align-items: center; justify-content: center;
     width: 44px; height: 44px; border-radius: 11px; background: var(--vert-fonce);
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; color: var(--lime);
+    font-family: 'Sora', sans-serif; font-weight: 800; font-size: 28px; color: var(--lime);
   }
 
   /* ---------- Couverture ---------- */
   .couverture {
-    page: couverture; width: 210mm; height: 297mm; background: var(--vert-fonce); color: #fff;
+    page: couverture; width: 210mm; height: 297mm; background: linear-gradient(150deg, #6D5DF5 0%, #4B3BC9 100%); color: #fff;
     position: relative; overflow: hidden; padding: 24mm 20mm; display: flex; flex-direction: column;
     break-after: page;
   }
   .couverture .marque { display: flex; align-items: center; gap: 12px; }
   .couverture .marque .logo { font-size: 30px; color: #fff; }
   .couverture .cercle1, .couverture .cercle2 { position: absolute; border-radius: 50%; }
-  .couverture .cercle1 { width: 160mm; height: 160mm; right: -60mm; top: 60mm; background: var(--vert); opacity: .55; }
-  .couverture .cercle2 { width: 90mm; height: 90mm; right: 10mm; top: 120mm; border: 2px solid var(--lime); opacity: .7; }
+  .couverture .cercle1 { width: 160mm; height: 160mm; right: -60mm; top: 60mm; background: #fff; opacity: .07; }
+  .couverture .cercle2 { width: 90mm; height: 90mm; right: 10mm; top: 120mm; border: 2px solid #fff; opacity: .35; }
   .couverture .contenu { margin-top: auto; position: relative; z-index: 2; }
   .couverture .surtitre {
-    display: inline-block; background: var(--lime); color: var(--vert-fonce); font-weight: 700;
+    display: inline-block; background: #fff; color: #4B3BC9; font-weight: 700;
     font-size: 10pt; letter-spacing: .08em; text-transform: uppercase; padding: 6px 12px; border-radius: 6px;
   }
   .couverture h1 {
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 40pt; line-height: 1.05;
+    font-family: 'Sora', sans-serif; font-weight: 800; font-size: 40pt; line-height: 1.05;
     margin: 18px 0 16px; letter-spacing: -0.02em; max-width: 150mm;
   }
-  .couverture h1 em { font-style: normal; color: var(--lime); }
-  .couverture .sous { font-size: 13pt; color: #cfe3d6; max-width: 135mm; }
+  .couverture h1 em { font-style: normal; color: #D9D3FF; }
+  .couverture .sous { font-size: 13pt; color: #E4E0FF; max-width: 135mm; }
   .couverture .pied {
     position: relative; z-index: 2; margin-top: 26mm; padding-top: 8mm; border-top: 1px solid rgba(255,255,255,.18);
-    display: flex; justify-content: space-between; font-size: 9.5pt; color: #cfe3d6;
+    display: flex; justify-content: space-between; font-size: 9.5pt; color: #E4E0FF;
   }
   .couverture .pied strong { color: #fff; display: block; font-size: 10.5pt; margin-bottom: 2px; }
-  .loka-marque { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; font-family: 'Sora', 'Syne', sans-serif; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; }
-  .couverture .signature { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--lime); font-size: 12pt; margin-top: 10mm; position: relative; z-index: 2; }
+  .loka-marque { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; font-family: 'Sora', 'Sora', sans-serif; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; }
+  .couverture .signature { font-family: 'Sora', sans-serif; font-weight: 700; color: var(--lime); font-size: 12pt; margin-top: 10mm; position: relative; z-index: 2; }
 
   /* ---------- Contenu ---------- */
   .page-intro { break-after: avoid; }
@@ -96,7 +97,7 @@
   section { margin-bottom: 18px; }
   .sec-nouvelle { break-before: page; }
   h2 {
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15.5pt; color: var(--vert-fonce);
+    font-family: 'Sora', sans-serif; font-weight: 800; font-size: 15.5pt; color: var(--vert-fonce);
     letter-spacing: -0.01em; margin: 6px 0 10px; display: flex; align-items: center; gap: 10px;
     break-after: avoid;
   }
@@ -106,7 +107,7 @@
 
   }
   h3 {
-    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 12pt; color: var(--vert);
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 12pt; color: var(--vert);
     margin: 16px 0 6px; break-after: avoid;
   }
   p { margin: 0 0 8px; }
@@ -124,7 +125,7 @@
   th:first-child { border-top-left-radius: 8px; }
   th:last-child { border-top-right-radius: 8px; }
   td { padding: 7px 10px; border-bottom: 1px solid var(--bordure); vertical-align: top; }
-  tbody tr:nth-child(even) td { background: #FAF8F4; }
+  tbody tr:nth-child(even) td { background: #F8F8FB; }
   td:first-child { font-weight: 600; color: var(--vert-fonce); }
   td.montant { font-weight: 700; color: var(--vert-fonce); white-space: nowrap; }
 
@@ -134,16 +135,16 @@
 
   .benefices { break-inside: avoid; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
   .benefice { border: 1px solid var(--bordure); border-top: 4px solid var(--lime); border-radius: 8px; padding: 10px 12px; font-size: 9.6pt; break-inside: avoid; }
-  .benefice .n { font-family: 'Syne', sans-serif; font-weight: 800; color: var(--vert); font-size: 15pt; line-height: 1; }
+  .benefice .n { font-family: 'Sora', sans-serif; font-weight: 800; color: var(--vert); font-size: 15pt; line-height: 1; }
   .benefice b { display: block; color: var(--vert-fonce); margin: 4px 0 2px; }
 
   .encadre-vert {
-    background: var(--vert-fonce); color: #fff; border-radius: 12px; padding: 16px 20px; margin: 12px 0; break-inside: avoid;
+    background: var(--violet); color: #fff; border-radius: 12px; padding: 16px 20px; margin: 12px 0; break-inside: avoid;
   }
-  .encadre-vert h3 { color: var(--lime); margin-top: 0; }
+  .encadre-vert h3 { color: #fff; margin-top: 0; }
   .encadre-vert ul { margin-bottom: 6px; }
-  .encadre-vert li::marker { color: var(--lime); }
-  .encadre-vert p:last-child { margin: 0; color: #cfe3d6; }
+  .encadre-vert li::marker { color: #fff; }
+  .encadre-vert p:last-child { margin: 0; color: #E4E0FF; }
 
   .formule-calc {
     background: var(--fond); border-radius: 8px; padding: 10px 14px; font-weight: 600; color: var(--vert-fonce); margin: 6px 0 8px;
@@ -159,13 +160,13 @@
   .formule { border: 1.5px solid var(--bordure); border-radius: 12px; overflow: hidden; break-inside: avoid; display: flex; flex-direction: column; }
   .formule .tete { padding: 12px 16px; background: var(--vert-clair); }
   .formule.b .tete { background: var(--fond); }
-  .formule .lettre { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 10pt; color: var(--vert); letter-spacing: .06em; text-transform: uppercase; }
-  .formule .titre { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15pt; color: var(--vert-fonce); line-height: 1.15; }
+  .formule .lettre { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 10pt; color: var(--vert); letter-spacing: .06em; text-transform: uppercase; }
+  .formule .titre { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 15pt; color: var(--vert-fonce); line-height: 1.15; }
   .formule .accroche { font-size: 9.3pt; color: var(--muted); margin-top: 4px; }
   .formule .corps { padding: 10px 16px 14px; font-size: 9.5pt; flex: 1; }
   .formule .prix-ligne { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px dashed var(--bordure); }
   .formule .prix-ligne span:last-child { font-weight: 700; color: var(--vert-fonce); text-align: right; }
-  .formule .gros { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13pt; }
+  .formule .gros { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 13pt; }
   .formule .plus, .formule .savoir { margin-top: 8px; }
   .formule .plus b { color: var(--vert); }
   .formule .savoir b { color: var(--orange); }
@@ -184,12 +185,12 @@
   .etapes li::before { content: counter(e); position: absolute; top: 8px; left: 10px; width: 18px; height: 18px; border-radius: 50%; background: var(--lime); color: var(--vert-fonce); font-weight: 800; font-size: 9pt; display: flex; align-items: center; justify-content: center; }
 
   .fin {
-    margin-top: 18px; background: var(--vert-fonce); color: #fff; border-radius: 12px; padding: 18px 22px;
+    margin-top: 18px; background: var(--violet); color: #fff; border-radius: 12px; padding: 18px 22px;
     display: flex; justify-content: space-between; align-items: center; break-inside: avoid;
   }
   .fin .logo { font-size: 24px; color: #fff; }
-  .fin .sig { font-family: 'Syne', sans-serif; color: var(--lime); font-weight: 700; margin-top: 6px; }
-  .fin .contacts { text-align: right; font-size: 10pt; color: #cfe3d6; }
+  .fin .sig { font-family: 'Sora', sans-serif; color: var(--lime); font-weight: 700; margin-top: 6px; }
+  .fin .contacts { text-align: right; font-size: 10pt; color: #E4E0FF; }
   .fin .contacts strong { color: #fff; }
 
   .planning { margin: 6px 0 8px; break-inside: avoid; }
@@ -202,13 +203,9 @@
 <div class="couverture">
   <div class="cercle1"></div>
   <div class="cercle2"></div>
-  <div class="marque">
-    <span class="badge-e">e</span>
-    <span class="logo">e<span class="ya">Ya</span>mTech</span>
-  </div>
+  <div class="marque"><svg width="46" height="46" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg><span class="logo">Loka</span></div>
 
   <div class="contenu">
-    <div class="loka-marque"><svg width="54" height="54" viewBox="0 0 48 48" aria-hidden="true"><rect x="1" y="1" width="46" height="46" rx="11" fill="#6D5DF5" stroke="#6D5DF5" stroke-width="2"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#fff"/><circle cx="27.6" cy="29.5" r="1.7" fill="#6D5DF5"/></svg><span>Loka</span></div>
     <span class="surtitre">Proposition de solution</span>
     <h1>Gérez toutes vos <em>villas meublées</em> depuis votre téléphone</h1>
     <p class="sous">Loka, une application simple pour suivre réservations, encaissements, réductions, charges et dépenses sur tous vos sites, et savoir à tout moment ce que rapporte chaque villa.</p>
@@ -216,8 +213,8 @@
 
   <div class="pied">
     <div><strong>Destinataire</strong>Promoteurs et bailleurs de villas meublées</div>
-    <div><strong>Date</strong>Octobre 2026</div>
-    <div><strong>Contact</strong>+226 62 82 67 02 · contact@eyamtech.com</div>
+    <div style="white-space:nowrap"><strong>Date</strong>Octobre 2026</div>
+    <div><strong>Une application</strong>éditée par eYamTech · +226 62 82 67 02 · contact@eyamtech.com</div>
   </div>
 </div>
 
@@ -492,7 +489,7 @@
 
   <div class="fin">
     <div>
-      <div class="logo" style="display:flex;align-items:center;gap:10px"><svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true"><rect x="1" y="1" width="46" height="46" rx="11" fill="#6D5DF5" stroke="#6D5DF5" stroke-width="2"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#fff"/><circle cx="27.6" cy="29.5" r="1.7" fill="#6D5DF5"/></svg><span style="font-family:'Sora','Syne',sans-serif">Loka</span><span style="font-size:14px;color:#cfe3d6;font-weight:500">par e<span style="color:#7EC845">Ya</span>mTech</span></div>
+      <div class="logo" style="display:flex;align-items:center;gap:10px"><svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg><span style="font-family:'Sora','Sora',sans-serif">Loka</span><span style="font-size:13px;color:#E4E0FF;font-weight:500">par eYamTech</span></div>
       <div class="sig">Vos biens, vos loyers, vos chiffres.</div>
     </div>
     <div class="contacts">
