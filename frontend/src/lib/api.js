@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const BASE = import.meta.env.VITE_API_URL || '';
-export const api = axios.create({ baseURL: BASE + '/api' });
+// Le serveur gratuit met jusqu'à une minute à se réveiller : au-delà de 90 s, on abandonne avec un message clair.
+export const api = axios.create({ baseURL: BASE + '/api', timeout: 90000 });
 
 const lire = (cle) => { try { return localStorage.getItem(cle); } catch { return null; } };
 const ecrire = (cle, val) => { try { val == null ? localStorage.removeItem(cle) : localStorage.setItem(cle, val); } catch { /* stockage indisponible */ } };
@@ -30,7 +31,8 @@ api.interceptors.response.use((r) => r, (erreur) => {
 });
 
 export const messageErreur = (e) => {
-  if (e?.isAxiosError && !e.response) return 'Pas de connexion internet. Les réservations demandent le réseau, pour ne jamais vendre deux fois la même nuit.';
+  if (e?.code === 'ECONNABORTED') return 'Le serveur ne répond pas. Réessayez dans un instant ; s’il était en veille, il se réveille.';
+  if (e?.isAxiosError && !e.response) return 'Pas de connexion internet ou serveur injoignable. Les réservations demandent le réseau, pour ne jamais vendre deux fois la même nuit.';
   return e?.response?.data?.message || e?.message || 'Une erreur est survenue';
 };
 export const urlFichier = (chemin) => (chemin ? BASE + chemin : null);

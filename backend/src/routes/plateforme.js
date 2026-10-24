@@ -8,6 +8,8 @@ const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
 const { abonnementMensuel } = require('../services/calculs');
 
+const JOURS_ESSAI = 14;
+
 router.use(authentifier, adminPlateforme);
 
 router.get('/bailleurs', route(async (req, res) => {
@@ -28,7 +30,7 @@ router.post('/bailleurs', route(async (req, res) => {
   if (!bailleur.nom) throw new Erreur(400, 'Nom du bailleur requis');
   if (!proprietaire.nom || !proprietaire.telephone || !proprietaire.mot_de_passe) throw new Erreur(400, 'Nom, téléphone et mot de passe du propriétaire requis');
   const resultat = await transaction(async (t) => {
-    const essaiFin = new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10);
+    const essaiFin = new Date(Date.now() + JOURS_ESSAI * 86400000).toISOString().slice(0, 10);
     const b = await Bailleur.create({ ...bailleur, statut: 'essai', essai_fin: essaiFin }, { transaction: t });
     let u = await Utilisateur.findOne({ where: { telephone: proprietaire.telephone }, transaction: t });
     if (!u) u = await Utilisateur.create({

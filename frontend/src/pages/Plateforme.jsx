@@ -22,7 +22,7 @@ function NouveauBailleur({ onFermer }) {
         <Champ label="E-mail"><input value={p.email} onChange={e => setP({ ...p, email: e.target.value })} /></Champ>
         <Champ label="Mot de passe provisoire" plein><input value={p.mot_de_passe} onChange={e => setP({ ...p, mot_de_passe: e.target.value })} placeholder="8 caractères minimum" /></Champ>
       </div>
-      <p className="petit muet" style={{ margin: 0 }}>L’espace démarre en essai de 30 jours.</p>
+      <p className="petit muet" style={{ margin: 0 }}>L’espace démarre en essai de 14 jours.</p>
     </Modale>
   );
 }
