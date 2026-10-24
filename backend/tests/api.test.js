@@ -191,3 +191,38 @@ test('logo et justificatif stockés dans la base, protégés par espace', async 
   const pdf = await fetch(`${base}/api/paiements/${p.id}/recu.pdf`, { headers: { Authorization: 'Bearer ' + issa.jeton, 'X-Espace': esp } });
   assert.equal(pdf.status, 200);
 });
+
+test('mise en route d\u2019un espace vide : site, lot de biens, gérant, mot de passe', async () => {
+  const admin = await connecter('70000000');
+  const cree = await appel('POST', '/api/plateforme/bailleurs', { jeton: admin.jeton, corps: { bailleur: { nom: 'Résidence Test' }, proprietaire: { nom: 'Test Proprio', telephone: '70999999', mot_de_passe: 'provisoire1' } } });
+  assert.equal(cree.statut, 201);
+  assert.equal(cree.corps.essai_fin, new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10));
+  const proprio = (await appel('POST', '/api/auth/connexion', { corps: { identifiant: '70999999', mot_de_passe: 'provisoire1' } })).corps;
+  const esp = proprio.espaces[0].id;
+  const o = { jeton: proprio.jeton, espace: esp };
+  let etat = (await appel('GET', '/api/mise-en-route', o)).corps;
+  assert.equal(etat.pret, false);
+  const site = (await appel('POST', '/api/sites', { ...o, corps: { nom: 'Site A' } })).corps;
+  const lot = await appel('POST', '/api/biens/lot', { ...o, corps: { site_id: site.id, prefixe: 'V', debut: 1, fin: 5, prix: 25000 } });
+  assert.deepEqual(lot.corps, { crees: 5, ignores: 0 });
+  assert.equal((await appel('POST', '/api/biens/lot', { ...o, corps: { site_id: site.id, prefixe: 'V', debut: 4, fin: 6, prix: 25000 } })).corps.crees, 1);
+  etat = (await appel('GET', '/api/mise-en-route', o)).corps;
+  assert.equal(etat.pret, true);
+  assert.equal(etat.compte.biens, 6);
+  // Un site qui contient des biens ne se supprime pas ; un bien sans historique, si.
+  assert.equal((await appel('DELETE', '/api/sites/' + site.id, o)).statut, 409);
+  const v6 = (await appel('GET', '/api/biens', o)).corps.find(b => b.reference === 'V6');
+  assert.equal((await appel('DELETE', '/api/biens/' + v6.id, o)).statut, 200);
+  // Gérant ajouté puis mot de passe réinitialisé par le propriétaire.
+  const m = (await appel('POST', '/api/membres', { ...o, corps: { nom: 'Gérant Test', telephone: '70888888', mot_de_passe: 'motdepasse1', role: 'gerant' } })).corps;
+  assert.equal((await appel('POST', `/api/membres/${m.id}/mot-de-passe`, { ...o, corps: { mot_de_passe: 'nouveau-mdp' } })).statut, 200);
+  assert.ok((await appel('POST', '/api/auth/connexion', { corps: { identifiant: '70888888', mot_de_passe: 'nouveau-mdp' } })).corps.jeton);
+  // Mariam travaille pour deux bailleurs : seul elle-même peut changer son mot de passe.
+  const issa = await connecter('70111111');
+  const membres = (await appel('GET', '/api/membres', { jeton: issa.jeton, espace: issa.espaces[0].id })).corps;
+  const mariam = membres.find(x => x.Utilisateur.telephone === '70333333');
+  assert.equal((await appel('POST', `/api/membres/${mariam.id}/mot-de-passe`, { jeton: issa.jeton, espace: issa.espaces[0].id, corps: { mot_de_passe: 'piratage1' } })).statut, 409);
+  // L'administration Loka redonne un mot de passe au propriétaire.
+  assert.equal((await appel('POST', `/api/plateforme/bailleurs/${esp}/mot-de-passe`, { jeton: admin.jeton, corps: { mot_de_passe: 'retrouve-1' } })).statut, 200);
+  assert.ok((await appel('POST', '/api/auth/connexion', { corps: { identifiant: '70999999', mot_de_passe: 'retrouve-1' } })).corps.jeton);
+});

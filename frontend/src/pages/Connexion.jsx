@@ -27,14 +27,15 @@ export default function Connexion() {
       <div className="cote">
         <div className="marque" style={{ color: '#fff' }}><img src="/logo.svg" width="32" height="32" alt="" style={{ filter: 'brightness(0) invert(1)' }} />Loka</div>
         <div>
-          <h1 style={{ fontSize: 44, lineHeight: 1.05, fontWeight: 700 }}>Vos biens, vos loyers, vos chiffres.</h1>
+          <h1 style={{ fontSize: 36, lineHeight: 1.1, fontWeight: 700 }}>Vos biens, vos loyers, vos chiffres.</h1>
           <p style={{ fontSize: 17, opacity: .85, maxWidth: 440, marginTop: 14 }}>Réservations, encaissements, charges et dépenses de tous vos sites, au même endroit.</p>
         </div>
         <div style={{ opacity: .75, fontSize: 14 }}>par eYamTech</div>
       </div>
       <form onSubmit={soumettre} noValidate>
+        <div className="marque marque-connexion"><img src="/logo.svg" width="30" height="30" alt="" />Loka</div>
         <div>
-          <h1 style={{ fontSize: 28 }}>Connexion</h1>
+          <h1 style={{ fontSize: 24 }}>Connexion</h1>
           <p className="muet" style={{ marginTop: 6 }}>Avec votre numéro de téléphone ou votre e-mail.</p>
         </div>
         <Erreur message={erreur} />

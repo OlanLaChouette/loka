@@ -73,7 +73,7 @@ export function NouvelleReservation({ onFermer, bienInitial }) {
       <div className="carte" style={{ background: 'var(--champ)', padding: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>{nuits} nuit{nuits > 1 ? 's' : ''} × {fcfa(bien?.prix_nuit || 0)}</span><b>{fcfa(prixNormal)}</b></div>
         {reduction > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}><span>Réduction</span><b style={{ color: 'var(--negatif)' }}>− {fcfa(reduction)}</b></div>}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, alignItems: 'baseline' }}><span style={{ fontWeight: 600 }}>À encaisser</span><span className="chiffre" style={{ fontSize: 26 }}>{fcfa(Math.max(0, prixNormal - reduction))}</span></div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, alignItems: 'baseline' }}><span style={{ fontWeight: 600 }}>À encaisser</span><span className="chiffre chiffre-m">{fcfa(Math.max(0, prixNormal - reduction))}</span></div>
       </div>
     </Modale>
   );
@@ -96,7 +96,7 @@ function RecuEncaisse({ recu, client, onFermer }) {
       <button className="bouton principal" onClick={envoyer}>Envoyer par WhatsApp</button>
     </>}>
       <div style={{ textAlign: 'center', padding: '10px 0' }}>
-        <div className="chiffre" style={{ fontSize: 34 }}>{fcfa(recu.montant)}</div>
+        <div className="chiffre chiffre-l">{fcfa(recu.montant)}</div>
         <div className="muet" style={{ marginTop: 6 }}>Reçu {recu.numero_recu} · {MOYENS[recu.moyen]}{client?.nom ? ' · ' + client.nom : ''}</div>
       </div>
       {etat && <div className="info" role="status">{etat}</div>}

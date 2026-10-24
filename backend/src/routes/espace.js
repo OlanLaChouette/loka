@@ -1,7 +1,7 @@
 // Ce qui structure l'espace d'un bailleur : son entreprise, ses membres, ses sites, ses biens, ses charges fixes.
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
-const { sequelize, Bailleur, Utilisateur, Membre, Site, Bien, ChargeFixe, Fichier } = require('../models');
+const { sequelize, Bailleur, Utilisateur, Membre, Site, Bien, ChargeFixe, Fichier, Reservation, Bail, Depense } = require('../models');
 const { recevoirLogo, enregistrer } = require('../utils/fichiers');
 const { authentifier, espace, autoriser, ecriture, portee, verifierSite } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
@@ -49,6 +49,21 @@ router.post('/membres', proprietaire, route(async (req, res) => {
   await noter(req, 'membre_ajoute', 'membre', membre.id, { role });
   res.status(201).json(membre);
 }));
+// Le propriétaire redonne un mot de passe provisoire à un gérant ou un comptable qui l'a oublié.
+router.post('/membres/:id/mot-de-passe', proprietaire, route(async (req, res) => {
+  const m = await Membre.findOne({ where: { id: req.params.id, bailleur_id: req.espace.id } });
+  if (!m) throw new Erreur(404, 'Membre introuvable');
+  if (m.role === 'proprietaire') throw new Erreur(400, 'Changez votre propre mot de passe depuis le menu');
+  const { mot_de_passe } = req.body || {};
+  if (!mot_de_passe || mot_de_passe.length < 8) throw new Erreur(400, 'Mot de passe de 8 caractères minimum');
+  // Une personne qui travaille aussi pour d'autres bailleurs garde la main sur son compte.
+  const [{ n }] = await sequelize.query('SELECT loka_nb_espaces(:u) AS n', { replacements: { u: m.utilisateur_id }, type: 'SELECT' });
+  if (n > 1) throw new Erreur(409, 'Cette personne travaille aussi pour un autre bailleur : elle doit changer son mot de passe elle-même');
+  await Utilisateur.update({ mot_de_passe_hash: await bcrypt.hash(mot_de_passe, 10) }, { where: { id: m.utilisateur_id } });
+  await noter(req, 'mot_de_passe_reinitialise', 'membre', m.id);
+  res.json({ ok: true });
+}));
+
 router.patch('/membres/:id', proprietaire, route(async (req, res) => {
   const m = await Membre.findOne({ where: { id: req.params.id, bailleur_id: req.espace.id } });
   if (!m) throw new Erreur(404, 'Membre introuvable');
@@ -73,6 +88,14 @@ router.patch('/sites/:id', proprietaire, route(async (req, res) => {
   res.json(await s.update(garder(req.body, ['nom', 'ville', 'adresse'])));
 }));
 
+router.delete('/sites/:id', proprietaire, route(async (req, res) => {
+  const s = await Site.findOne({ where: { id: req.params.id, bailleur_id: req.espace.id } });
+  if (!s) throw new Erreur(404, 'Site introuvable');
+  if (await Bien.count({ where: { site_id: s.id } })) throw new Erreur(409, 'Ce site contient des biens : supprimez-les ou retirez-les d\u2019abord');
+  await s.destroy();
+  res.json({ ok: true });
+}));
+
 // ---------- Biens ----------
 const CHAMPS_BIEN = ['site_id', 'reference', 'type', 'mode', 'standing', 'pieces', 'prix_nuit', 'prix_mois', 'etat', 'compteur_electrique', 'description'];
 router.get('/biens', route(async (req, res) => {
@@ -87,6 +110,56 @@ router.post('/biens', proprietaire, route(async (req, res) => {
   await noter(req, 'bien_ajoute', 'bien', bien.id, { reference: bien.reference });
   res.status(201).json(bien);
 }));
+// Ajout de plusieurs biens d'un coup : par exemple A1 à A10, même type et même prix.
+router.post('/biens/lot', proprietaire, route(async (req, res) => {
+  const { site_id, prefixe = '', debut = 1, fin, type = 'villa', mode = 'nuit', prix, standing, pieces } = req.body || {};
+  const site = await Site.findOne({ where: { id: site_id || null, bailleur_id: req.espace.id } });
+  if (!site) throw new Erreur(400, 'Site inconnu');
+  const a = Number(debut), b = Number(fin);
+  if (!Number.isInteger(a) || !Number.isInteger(b) || b < a || b - a > 99) throw new Erreur(400, 'Numéros invalides (100 biens maximum à la fois)');
+  const existants = new Set((await Bien.findAll({ where: { site_id: site.id }, attributes: ['reference'] })).map(x => x.reference));
+  const lignes = [];
+  for (let n = a; n <= b; n++) {
+    const reference = `${prefixe}${n}`;
+    if (!existants.has(reference)) lignes.push({ bailleur_id: req.espace.id, site_id: site.id, reference, type, mode, standing: standing || null, pieces: pieces || null, prix_nuit: mode === 'nuit' ? Number(prix) || 0 : null, prix_mois: mode === 'mois' ? Number(prix) || 0 : null });
+  }
+  if (!lignes.length) throw new Erreur(409, 'Ces références existent déjà sur ce site');
+  const crees = await Bien.bulkCreate(lignes, { validate: true });
+  await noter(req, 'bien_ajoute', 'bien', null, { nombre: crees.length, de: lignes[0].reference, a: lignes[lignes.length - 1].reference });
+  res.status(201).json({ crees: crees.length, ignores: b - a + 1 - crees.length });
+}));
+
+// Supprimer un bien n'est possible que s'il n'a encore rien enregistré ; sinon on le retire de la location.
+router.delete('/biens/:id', proprietaire, route(async (req, res) => {
+  const bien = await Bien.findOne({ where: { id: req.params.id, bailleur_id: req.espace.id } });
+  if (!bien) throw new Erreur(404, 'Bien introuvable');
+  const utilise = await Reservation.count({ where: { bien_id: bien.id } }) + await Bail.count({ where: { bien_id: bien.id } }) + await Depense.count({ where: { bien_id: bien.id } });
+  if (utilise) throw new Erreur(409, 'Ce bien a déjà un historique : passez son état à « Retiré de la location »');
+  await bien.destroy();
+  await noter(req, 'bien_supprime', 'bien', bien.id, { reference: bien.reference });
+  res.json({ ok: true });
+}));
+
+// État de la mise en route d'un espace : ce qui reste à faire avant de travailler.
+router.get('/mise-en-route', route(async (req, res) => {
+  const b = req.espace;
+  const [sites, biens, gerants, charges] = await Promise.all([
+    Site.count({ where: { bailleur_id: b.id } }),
+    Bien.count({ where: { bailleur_id: b.id } }),
+    Membre.count({ where: { bailleur_id: b.id, role: 'gerant', actif: true } }),
+    ChargeFixe.count({ where: { bailleur_id: b.id, actif: true } }),
+  ]);
+  const etapes = [
+    { cle: 'entreprise', fait: !!(b.adresse || b.telephone || b.rccm) },
+    { cle: 'logo', fait: !!b.logo_id },
+    { cle: 'site', fait: sites > 0 },
+    { cle: 'biens', fait: biens > 0 },
+    { cle: 'gerant', fait: gerants > 0 },
+    { cle: 'charges', fait: charges > 0 },
+  ];
+  res.json({ etapes, compte: { sites, biens, gerants, charges }, pret: sites > 0 && biens > 0 });
+}));
+
 router.patch('/biens/:id', ecriture, route(async (req, res) => {
   const bien = await Bien.findOne({ where: portee(req, { id: req.params.id }) });
   if (!bien) throw new Erreur(404, 'Bien introuvable');

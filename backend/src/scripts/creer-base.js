@@ -45,6 +45,12 @@ async function preparer({ demo = false, silencieux = false } = {}) {
   await q(`CREATE OR REPLACE FUNCTION loka_utilisateur() RETURNS uuid LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('app.utilisateur_id', true), '')::uuid $$`);
   await q(`CREATE OR REPLACE FUNCTION loka_plateforme() RETURNS boolean LANGUAGE sql STABLE AS $$ SELECT coalesce(current_setting('app.plateforme', true), '') = 'on' $$`);
 
+  // Nombre d'espaces auxquels appartient une personne, tous bailleurs confondus. Ne révèle qu'un nombre :
+  // sert à empêcher un bailleur de changer le mot de passe d'une personne qui travaille aussi ailleurs.
+  await q(`CREATE OR REPLACE FUNCTION loka_nb_espaces(u uuid) RETURNS integer LANGUAGE sql STABLE SECURITY DEFINER
+    SET app.plateforme = 'on' SET search_path = public AS $$ SELECT count(DISTINCT bailleur_id)::int FROM membres WHERE utilisateur_id = u $$`);
+  if (app) await q(`GRANT EXECUTE ON FUNCTION loka_nb_espaces(uuid) TO ${ident(app)}`);
+
   for (const t of TABLES_BAILLEUR) {
     await q(`ALTER TABLE ${t} ENABLE ROW LEVEL SECURITY`);
     await q(`ALTER TABLE ${t} FORCE ROW LEVEL SECURITY`);

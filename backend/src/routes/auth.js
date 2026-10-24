@@ -8,7 +8,7 @@ const { authentifier } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
 
-const limiteur = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, message: { message: 'Trop de tentatives, réessayez dans 15 minutes' } });
+const limiteur = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, skip: () => process.env.NODE_ENV === 'test', message: { message: 'Trop de tentatives, réessayez dans 15 minutes' } });
 
 async function espacesDe(utilisateurId) {
   const membres = await Membre.findAll({ where: { utilisateur_id: utilisateurId, actif: true }, include: [Bailleur] });

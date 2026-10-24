@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { urlFichier } from '../lib/api';
 import { initiales } from '../lib/format';
@@ -35,6 +35,33 @@ export function Avatar({ nom, logo, taille = 32 }) {
     <span className="avatar" style={{ width: taille, height: taille, borderRadius: logo ? 8 : '50%' }}>
       {logo ? <img src={urlFichier(logo)} alt="" /> : initiales(nom)}
     </span>
+  );
+}
+
+// Saisie d'un nouveau mot de passe (deux fois), avec envoi au serveur par `envoyer(motDePasse)`.
+export function NouveauMotDePasse({ titre, texte, avecActuel, envoyer, onFermer }) {
+  const [actuel, setActuel] = useState('');
+  const [mdp, setMdp] = useState('');
+  const [confirme, setConfirme] = useState('');
+  const [etat, setEtat] = useState({ envoi: false, erreur: '', fait: false });
+  const valide = mdp.length >= 8 && mdp === confirme && (!avecActuel || actuel);
+  async function valider() {
+    setEtat({ envoi: true, erreur: '', fait: false });
+    try { await envoyer(mdp, actuel); setEtat({ envoi: false, erreur: '', fait: true }); }
+    catch (e) { setEtat({ envoi: false, erreur: e?.response?.data?.message || 'Échec de l’enregistrement', fait: false }); }
+  }
+  if (etat.fait) return <Modale titre={titre} onFermer={onFermer} actions={<button className="bouton principal" onClick={onFermer}>Terminé</button>}><div className="info">Mot de passe enregistré.</div></Modale>;
+  return (
+    <Modale titre={titre} onFermer={onFermer} actions={<><button className="bouton" onClick={onFermer}>Annuler</button><button className="bouton principal" disabled={!valide || etat.envoi} onClick={valider}>Enregistrer</button></>}>
+      {texte && <p className="petit muet" style={{ margin: 0 }}>{texte}</p>}
+      <Erreur message={etat.erreur} />
+      <div className="grille-form">
+        {avecActuel && <Champ label="Mot de passe actuel" plein><input type="password" value={actuel} onChange={e => setActuel(e.target.value)} autoComplete="current-password" /></Champ>}
+        <Champ label="Nouveau mot de passe"><input type="password" value={mdp} onChange={e => setMdp(e.target.value)} autoComplete="new-password" /></Champ>
+        <Champ label="Confirmer"><input type="password" value={confirme} onChange={e => setConfirme(e.target.value)} autoComplete="new-password" /></Champ>
+      </div>
+      <p className="petit muet" style={{ margin: 0 }}>{mdp && mdp.length < 8 ? '8 caractères minimum.' : confirme && mdp !== confirme ? 'Les deux saisies sont différentes.' : '8 caractères minimum.'}</p>
+    </Modale>
   );
 }
 

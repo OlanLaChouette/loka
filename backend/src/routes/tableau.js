@@ -13,7 +13,7 @@ const LIBELLES = {
   reservation_annulee: 'a annulé une réservation', paiement_encaisse: 'a encaissé un paiement', depense_saisie: 'a noté une dépense',
   depense_acceptee: 'a accepté une dépense', depense_refusee: 'a refusé une dépense', bail_cree: 'a créé un bail', bail_termine: 'a terminé un bail',
   prix_modifie: 'a modifié un prix', etat_modifie: 'a changé l’état d’un bien', bien_ajoute: 'a ajouté un bien', charge_ajoutee: 'a ajouté une charge fixe',
-  charge_modifiee: 'a modifié une charge fixe', charge_retiree: 'a retiré une charge fixe', membre_ajoute: 'a ajouté un membre', membre_modifie: 'a modifié un membre', profil_modifie: 'a modifié l’entreprise',
+  charge_modifiee: 'a modifié une charge fixe', bien_supprime: 'a supprimé un bien', mot_de_passe_reinitialise: 'a réinitialisé un mot de passe', charge_retiree: 'a retiré une charge fixe', membre_ajoute: 'a ajouté un membre', membre_modifie: 'a modifié un membre', profil_modifie: 'a modifié l’entreprise',
 };
 
 router.get('/tableau-de-bord', authentifier, espace, route(async (req, res) => {

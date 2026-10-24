@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, messageErreur } from '../lib/api';
 import { dateCourte, fcfa } from '../lib/format';
-import { Chargement, Champ, Erreur, Modale, Puce } from '../composants/Ui';
+import { Chargement, Champ, Erreur, Modale, NouveauMotDePasse, Puce } from '../composants/Ui';
 
 function NouveauBailleur({ onFermer }) {
   const client = useQueryClient();
@@ -30,6 +30,7 @@ function NouveauBailleur({ onFermer }) {
 export default function Plateforme() {
   const client = useQueryClient();
   const [nouveau, setNouveau] = useState(false);
+  const [motDePasse, setMotDePasse] = useState(null);
   const { data, isLoading } = useQuery({ queryKey: ['plateforme'], queryFn: () => api.get('/plateforme/bailleurs').then(r => r.data) });
   const statut = useMutation({ mutationFn: ({ id, statut }) => api.patch(`/plateforme/bailleurs/${id}/statut`, { statut }), onSuccess: () => client.invalidateQueries() });
   if (isLoading) return <Chargement />;
@@ -41,9 +42,9 @@ export default function Plateforme() {
         <button className="bouton principal" onClick={() => setNouveau(true)}>+ Nouveau bailleur</button>
       </div>
       <div className="blocs">
-        <section className="carte b4"><div className="etiquette">Bailleurs</div><div className="chiffre" style={{ fontSize: 34, marginTop: 6 }}>{data.length}</div></section>
-        <section className="carte b4"><div className="etiquette">Biens enregistrés</div><div className="chiffre" style={{ fontSize: 34, marginTop: 6 }}>{data.reduce((s, b) => s + b.biens_enregistres, 0)}</div></section>
-        <section className="carte b4"><div className="etiquette">Abonnements actifs / mois</div><div className="chiffre" style={{ fontSize: 34, marginTop: 6 }}>{fcfa(totalMensuel)}</div></section>
+        <section className="carte b4"><div className="etiquette">Bailleurs</div><div className="chiffre chiffre-l" style={{ marginTop: 6 }}>{data.length}</div></section>
+        <section className="carte b4"><div className="etiquette">Biens enregistrés</div><div className="chiffre chiffre-l" style={{ marginTop: 6 }}>{data.reduce((s, b) => s + b.biens_enregistres, 0)}</div></section>
+        <section className="carte b4"><div className="etiquette">Abonnements actifs / mois</div><div className="chiffre chiffre-l" style={{ marginTop: 6 }}>{fcfa(totalMensuel)}</div></section>
       </div>
       <section className="carte">
         <Erreur message={statut.error && messageErreur(statut.error)} />
@@ -51,10 +52,11 @@ export default function Plateforme() {
           <thead><tr><th>Bailleur</th><th>Sites</th><th>Biens enregistrés</th><th className="nombre">Abonnement</th><th>Statut</th><th aria-label="Actions" /></tr></thead>
           <tbody>{data.map(b => (
             <tr key={b.id}>
-              <td><b>{b.nom}</b><div className="petit muet">{b.ville}{b.statut === 'essai' && b.essai_fin ? ` · essai jusqu’au ${dateCourte(b.essai_fin)}` : ''}</div></td>
+              <td><b>{b.nom}</b><div className="petit muet">{b.proprietaire ? `${b.proprietaire.nom} · ${b.proprietaire.telephone}` : ''}{b.ville ? ' · ' + b.ville : ''}{b.statut === 'essai' && b.essai_fin ? ` · essai jusqu’au ${dateCourte(b.essai_fin)}` : ''}</div></td>
               <td>{b.sites}</td><td>{b.biens_enregistres}</td><td className="nombre">{fcfa(b.abonnement_mensuel)}</td>
               <td><Puce statut={b.statut} /></td>
               <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                <button className="bouton discret" onClick={() => setMotDePasse(b)}>Mot de passe</button>
                 {b.statut !== 'actif' && <button className="bouton discret" onClick={() => statut.mutate({ id: b.id, statut: 'actif' })}>Activer</button>}
                 {b.statut !== 'suspendu' && <button className="bouton discret danger" onClick={() => window.confirm(`Suspendre ${b.nom} ? Ses équipes ne pourront plus que consulter.`) && statut.mutate({ id: b.id, statut: 'suspendu' })}>Suspendre</button>}
               </td>
@@ -62,6 +64,9 @@ export default function Plateforme() {
           ))}</tbody>
         </table></div>
       </section>
+      {motDePasse && <NouveauMotDePasse titre={`Mot de passe du propriétaire · ${motDePasse.nom}`} onFermer={() => setMotDePasse(null)}
+        texte="Mot de passe provisoire à transmettre au propriétaire ; il pourra le changer depuis son menu."
+        envoyer={(mdp) => api.post(`/plateforme/bailleurs/${motDePasse.id}/mot-de-passe`, { mot_de_passe: mdp })} />}
       {nouveau && <NouveauBailleur onFermer={() => setNouveau(false)} />}
     </main>
   );

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, messageErreur } from '../lib/api';
 import { ROLES } from '../lib/format';
-import { Avatar, Chargement, Champ, Erreur, Modale, Puce } from '../composants/Ui';
+import { Avatar, Chargement, Champ, Erreur, Modale, NouveauMotDePasse, Puce } from '../composants/Ui';
 import { useSites } from '../composants/Formulaires';
 
 function FormulaireMembre({ membre, sites, onFermer }) {
@@ -51,6 +52,9 @@ export default function Membres() {
   const { data: membres, isLoading } = useQuery({ queryKey: ['membres'], queryFn: () => api.get('/membres').then(r => r.data) });
   const { data: sites = [] } = useSites();
   const [edition, setEdition] = useState(null);
+  const [motDePasse, setMotDePasse] = useState(null);
+  const [params, setParams] = useSearchParams();
+  useEffect(() => { if (params.get('action') === 'nouveau') { setEdition('nouveau'); setParams({}, { replace: true }); } }, [params, setParams]);
   const actif = useMutation({ mutationFn: (m) => api.patch('/membres/' + m.id, { actif: !m.actif }), onSuccess: () => client.invalidateQueries() });
   if (isLoading) return <Chargement />;
   const nomsSites = (ids) => (ids?.length ? ids.map(id => sites.find(s => s.id === id)?.nom).filter(Boolean).join(', ') : 'Tous les sites');
@@ -70,12 +74,16 @@ export default function Membres() {
               {!m.actif && <Puce ton="negatif">Désactivé</Puce>}
               {m.role !== 'proprietaire' && <>
                 <button className="bouton discret" onClick={() => setEdition(m)}>Modifier</button>
+                <button className="bouton discret" onClick={() => setMotDePasse(m)}>Mot de passe</button>
                 <button className="bouton discret" onClick={() => actif.mutate(m)}>{m.actif ? 'Désactiver' : 'Réactiver'}</button>
               </>}
             </div>
           ))}
         </div>
       </section>
+      {motDePasse && <NouveauMotDePasse titre={`Nouveau mot de passe · ${motDePasse.Utilisateur.nom}`} onFermer={() => setMotDePasse(null)}
+        texte="Choisissez un mot de passe provisoire et transmettez-le à la personne. Elle pourra le changer depuis son menu."
+        envoyer={(mdp) => api.post(`/membres/${motDePasse.id}/mot-de-passe`, { mot_de_passe: mdp })} />}
       {edition && <FormulaireMembre membre={edition === 'nouveau' ? null : edition} sites={sites} onFermer={() => setEdition(null)} />}
     </main>
   );

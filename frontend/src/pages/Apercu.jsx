@@ -6,6 +6,7 @@ import { useSession } from '../lib/session';
 import { dateLongue, fcfa, heure, initiales, montant, nomMois, aujourdhui } from '../lib/format';
 import { Chargement, Erreur } from '../composants/Ui';
 import { NouvelleReservation, useBiens } from '../composants/Formulaires';
+import MiseEnRoute, { useMiseEnRoute } from '../composants/MiseEnRoute';
 import { MessageCircle } from 'lucide-react';
 import { messages, ouvrirWhatsApp } from '../lib/partage';
 
@@ -22,6 +23,7 @@ export default function Apercu() {
   const [resa, setResa] = useState(false);
   const { data: t, isLoading, error } = useQuery({ queryKey: ['tableau', mois], queryFn: () => api.get('/tableau-de-bord', { params: { mois } }).then(r => r.data) });
   const { data: biens = [] } = useBiens();
+  const { data: miseEnRoute } = useMiseEnRoute();
   if (isLoading) return <Chargement />;
   if (error) return <div className="page"><Erreur message="Impossible de charger le tableau de bord." /></div>;
 
@@ -43,16 +45,18 @@ export default function Apercu() {
           <button type="button" className="actif" style={{ textTransform: 'capitalize', minWidth: 130 }}>{nomMois(mois)}</button>
           <button type="button" onClick={() => setMois(decalerMois(mois, 1))} aria-label="Mois suivant" disabled={mois >= aujourdhui().slice(0, 7)}>›</button>
         </div>
-        {role !== 'comptable' && <button className="bouton principal" onClick={() => setResa(true)}>+ Nouvelle réservation</button>}
+        {role !== 'comptable' && miseEnRoute?.pret !== false && <button className="bouton principal" onClick={() => setResa(true)}>+ Nouvelle réservation</button>}
       </div>
 
+      <MiseEnRoute />
+      {miseEnRoute && !miseEnRoute.pret ? null : <>
       <div className="blocs">
         <section className="carte b6" style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <h2 className="etiquette">Encaissé en {nomMois(mois).split(' ')[0]}</h2>
             {variation !== null && <span className={'puce ' + (variation >= 0 ? 'violet' : 'negatif')}>{variation >= 0 ? '+' : ''}{variation} %</span>}
           </div>
-          <div className="chiffre" style={{ fontSize: 44, marginTop: 6 }}>{montant(t.encaisse)} <span className="muet" style={{ fontFamily: 'var(--police)', fontSize: 16, fontWeight: 500, letterSpacing: 0 }}>FCFA</span></div>
+          <div className="chiffre chiffre-xl" style={{ marginTop: 6 }}>{montant(t.encaisse)} <span className="muet" style={{ fontFamily: 'var(--police)', fontSize: 16, fontWeight: 500, letterSpacing: 0 }}>FCFA</span></div>
           <div className="barres" style={{ marginTop: 14 }} role="img" aria-label="Encaissements des 12 derniers mois">
             {t.evolution.map((e, i) => (
               <div key={e.mois} title={`${nomMois(e.mois)} : ${fcfa(e.total)}`}>
@@ -75,7 +79,7 @@ export default function Apercu() {
 
         <section className="carte b3" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <h2 className="etiquette">Reste à encaisser</h2>
-          <div className="chiffre" style={{ fontSize: 34, color: t.reste_a_encaisser ? 'var(--negatif)' : 'var(--texte)' }}>{montant(t.reste_a_encaisser)}</div>
+          <div className="chiffre chiffre-l" style={{ color: t.reste_a_encaisser ? 'var(--negatif)' : 'var(--texte)' }}>{montant(t.reste_a_encaisser)}</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 'auto' }}>
             {t.impayes.slice(0, 3).map(i => (
               <div key={i.type + i.id} className="petit" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
@@ -135,6 +139,7 @@ export default function Apercu() {
           </div>
         </section>
       </div>
+      </>}
       {resa && <NouvelleReservation onFermer={() => setResa(false)} />}
     </main>
   );

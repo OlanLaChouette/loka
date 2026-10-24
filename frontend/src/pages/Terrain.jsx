@@ -16,6 +16,11 @@ export default function Terrain() {
   const { data: sites = [] } = useSites();
   const { data: resas = [] } = useQuery({ queryKey: ['reservations', 'terrain'], queryFn: () => api.get('/reservations', { params: { du: ajouterJours(auj, -60), au: ajouterJours(auj, 2) } }).then(r => r.data) });
   if (isLoading) return <Chargement />;
+  if (!biens.length) return (
+    <main className="page" style={{ maxWidth: 720 }}>
+      <div className="carte"><Vide>Aucun bien n’est encore enregistré sur vos sites.<br />Le propriétaire doit d’abord ajouter ses biens dans Loka ; ils apparaîtront ici aussitôt.</Vide></div>
+    </main>
+  );
 
   const actives = resas.filter(r => r.statut !== 'annulee');
   const occupe = (b) => actives.find(r => r.bien_id === b.id && r.arrivee <= auj && r.depart > auj);
@@ -29,7 +34,7 @@ export default function Terrain() {
     <main className="page" style={{ maxWidth: 720 }}>
       <div className="terrain-haut">
         <div className="petit" style={{ color: '#E4E0FF' }}>{dateLongue(new Date())} · {sites.map(s => s.nom).join(', ')}</div>
-        <h1 style={{ fontSize: 28, marginTop: 6 }}>{libres.length} bien{libres.length > 1 ? 's' : ''} libre{libres.length > 1 ? 's' : ''} ce soir</h1>
+        <h1 style={{ fontSize: 22, marginTop: 4 }}>{libres.length} bien{libres.length > 1 ? 's' : ''} libre{libres.length > 1 ? 's' : ''} ce soir</h1>
         <div className="petit" style={{ color: '#E4E0FF', marginTop: 4 }}>Bonjour {utilisateur.nom.split(' ')[0]}</div>
         {!lecture && (
           <div className="terrain-actions">
