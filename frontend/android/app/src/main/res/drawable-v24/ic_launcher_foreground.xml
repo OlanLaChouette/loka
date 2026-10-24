@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Icône Loka : équerre et point blancs sur fond violet (fond défini dans values/ic_launcher_background.xml). -->
+<!-- Icône Loka : la porte en arche, blanche sur fond violet (fond : values/ic_launcher_background.xml). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
     <path
-        android:pathData="M42.4,44.4 L42.4,63.7 L61.7,63.7"
-        android:strokeColor="#FFFFFF"
-        android:strokeWidth="5"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:fillColor="#00000000" />
-    <path
-        android:pathData="M61.7,48.2 m-4.6,0 a4.6,4.6 0 1,0 9.2,0 a4.6,4.6 0 1,0 -9.2,0"
+        android:pathData="M42.75,72 L42.75,51.75 A11.25,11.25 0 0,1 65.25,51.75 L65.25,72 Z"
         android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M59.4,62.25 m-2.55,0 a2.55,2.55 0 1,0 5.1,0 a2.55,2.55 0 1,0 -5.1,0"
+        android:fillColor="#6D5DF5" />
 </vector>

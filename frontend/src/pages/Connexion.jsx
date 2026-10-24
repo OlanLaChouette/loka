@@ -25,7 +25,7 @@ export default function Connexion() {
   return (
     <div className="ecran-connexion">
       <div className="cote">
-        <div className="marque" style={{ color: '#fff' }}><img src="/logo.svg" width="32" height="32" alt="" style={{ filter: 'brightness(0) invert(1)' }} />Loka</div>
+        <div className="marque" style={{ color: '#fff' }}><img src="/logo-blanc.svg" width="32" height="32" alt="" />Loka</div>
         <div>
           <h1 style={{ fontSize: 36, lineHeight: 1.1, fontWeight: 700 }}>Vos biens, vos loyers, vos chiffres.</h1>
           <p style={{ fontSize: 17, opacity: .85, maxWidth: 440, marginTop: 14 }}>Réservations, encaissements, charges et dépenses de tous vos sites, au même endroit.</p>
