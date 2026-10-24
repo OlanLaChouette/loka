@@ -1,16 +1,13 @@
 // Le quotidien : clients, réservations, baux, encaissements, dépenses.
 const router = require('express').Router();
-const path = require('path');
-const fs = require('fs');
-const multer = require('multer');
 const { Op } = require('sequelize');
-const { sequelize, Bien, Site, Client, Reservation, Bail, Paiement, Depense, Utilisateur } = require('../models');
+const { sequelize, Bien, Site, Client, Reservation, Bail, Paiement, Depense, Utilisateur, Fichier } = require('../models');
 const { authentifier, espace, autoriser, ecriture, portee, verifierSite } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
 const { noter } = require('../utils/journal');
 const { nuitsEntre, prixSejour, besoinValidation, numeroRecu, versTexte } = require('../services/calculs');
-const { DOSSIER } = require('./espace');
+const { recevoirJustificatif, enregistrer } = require('../utils/fichiers');
 
 router.use(authentifier, espace);
 const aujourdhui = () => versTexte(new Date());
@@ -157,21 +154,13 @@ router.post('/paiements', ecriture, route(async (req, res) => {
 }));
 
 // ---------- Dépenses (saisies par les gérants, acceptées par le propriétaire) ----------
-const justificatifs = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => { const d = path.join(DOSSIER, req.espace.id, 'justificatifs'); fs.mkdirSync(d, { recursive: true }); cb(null, d); },
-    filename: (req, file, cb) => cb(null, Date.now() + '-' + Math.round(Math.random() * 1e6) + path.extname(file.originalname).toLowerCase()),
-  }),
-  limits: { fileSize: 6 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => cb(null, ['image/png', 'image/jpeg', 'image/webp', 'application/pdf'].includes(file.mimetype)),
-});
 
 router.get('/depenses', route(async (req, res) => {
   const extra = req.query.statut ? { statut: req.query.statut } : {};
   const liste = await Depense.findAll({ where: portee(req, extra), include: [Bien, Site, { model: Utilisateur, as: 'auteur', attributes: ['id', 'nom'] }], order: [['date_depense', 'DESC'], ['cree_le', 'DESC']], limit: 200 });
-  res.json(liste.map(d => ({ ...d.toJSON(), justificatif: d.justificatif_chemin ? `/api/fichiers/justificatif/${d.id}` : null })));
+  res.json(liste.map(d => ({ ...d.toJSON(), justificatif: d.justificatif_id ? `/api/fichiers/justificatif/${d.id}` : null })));
 }));
-router.post('/depenses', ecriture, lier(justificatifs.single('justificatif')), route(async (req, res) => {
+router.post('/depenses', ecriture, lier(recevoirJustificatif), route(async (req, res) => {
   const { site_id, bien_id, categorie, montant, date_depense, note, cle_client } = req.body || {};
   if (cle_client) {
     const deja = await Depense.findOne({ where: { bailleur_id: req.espace.id, cle_client } });
@@ -184,7 +173,7 @@ router.post('/depenses', ecriture, lier(justificatifs.single('justificatif')), r
   if (!(await Site.findOne({ where: { id: site, bailleur_id: req.espace.id } }))) throw new Erreur(404, 'Site introuvable');
   const d = await Depense.create({
     bailleur_id: req.espace.id, site_id: site, bien_id: bien_id || null, categorie, montant: Number(montant), date_depense: date_depense || aujourdhui(), note,
-    justificatif_chemin: req.file ? path.relative(DOSSIER, req.file.path) : null,
+    justificatif_id: await enregistrer(req.file, req.espace.id),
     // Le propriétaire n'a pas à valider ses propres dépenses.
     statut: req.role === 'proprietaire' ? 'acceptee' : 'en_attente', saisie_par: req.utilisateur.id,
     traitee_par: req.role === 'proprietaire' ? req.utilisateur.id : null,
@@ -204,6 +193,12 @@ router.post('/depenses/:id/:decision(accepter|refuser)', autoriser('proprietaire
 
 // ---------- Documents PDF ----------
 const documents = require('../services/documents');
+// pdfkit lit le PNG et le JPEG seulement.
+async function logoPdf(bailleur) {
+  if (!bailleur.logo_id) return null;
+  const f = await Fichier.findByPk(bailleur.logo_id);
+  return f && ['image/png', 'image/jpeg'].includes(f.type) ? f.donnees : null;
+}
 
 router.get('/paiements/:id/recu.pdf', route(async (req, res) => {
   const p = await Paiement.findOne({ where: portee(req, { id: req.params.id }) });
@@ -217,7 +212,7 @@ router.get('/paiements/:id/recu.pdf', route(async (req, res) => {
   const encaissePar = p.encaisse_par ? (await Utilisateur.findByPk(p.encaisse_par))?.nom : null;
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `inline; filename="recu-${p.numero_recu}.pdf"`);
-  documents.recu(res, { paiement: p, bailleur: req.espace, reservation, bail, bien: cible.Bien, client: cible.Client, encaissePar, dejaPaye });
+  documents.recu(res, { logo: await logoPdf(req.espace), paiement: p, bailleur: req.espace, reservation, bail, bien: cible.Bien, client: cible.Client, encaissePar, dejaPaye });
 }));
 
 router.get('/baux/:id/contrat.pdf', route(async (req, res) => {
@@ -225,7 +220,7 @@ router.get('/baux/:id/contrat.pdf', route(async (req, res) => {
   if (!b) throw new Erreur(404, 'Bail introuvable');
   res.setHeader('Content-Type', 'application/pdf');
   res.setHeader('Content-Disposition', `inline; filename="contrat-${b.Bien.reference}.pdf"`);
-  documents.contrat(res, { bail: b, bailleur: req.espace, bien: b.Bien, site: b.Bien.Site, client: b.Client, representant: req.role === 'proprietaire' ? req.utilisateur.nom : null });
+  documents.contrat(res, { logo: await logoPdf(req.espace), bail: b, bailleur: req.espace, bien: b.Bien, site: b.Bien.Site, client: b.Client, representant: req.role === 'proprietaire' ? req.utilisateur.nom : null });
 }));
 
 module.exports = router;

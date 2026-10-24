@@ -159,3 +159,35 @@ test('un encaissement renvoyé après une coupure n’est enregistré qu’une f
   assert.equal(b.statut, 200);
   assert.equal(a.corps.id, b.corps.id);
 });
+
+test('logo et justificatif stockés dans la base, protégés par espace', async () => {
+  const issa = await connecter('70111111');
+  const ali = await connecter('70222222');
+  const paul = await connecter('70555555');
+  const esp = issa.espaces[0].id;
+  // Plus petite image PNG valide (1 × 1 pixel).
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+  const envoi = async (chemin, champ, qui, autres = {}) => {
+    const f = new FormData();
+    f.append(champ, new Blob([png], { type: 'image/png' }), 'image.png');
+    for (const [k, v] of Object.entries(autres)) f.append(k, v);
+    return fetch(base + chemin, { method: 'POST', headers: { Authorization: 'Bearer ' + qui.jeton, 'X-Espace': esp }, body: f });
+  };
+  const logo = await envoi('/api/profil/logo', 'logo', issa);
+  assert.equal(logo.status, 200);
+  const l = await fetch(base + (await logo.json()).logo);
+  assert.equal(l.headers.get('content-type'), 'image/png');
+  assert.equal(Buffer.from(await l.arrayBuffer()).length, png.length);
+
+  const b2 = (await appel('GET', '/api/biens', { jeton: ali.jeton, espace: esp })).corps.find(b => b.reference === 'B2');
+  const dep = await envoi('/api/depenses', 'justificatif', ali, { bien_id: b2.id, categorie: 'Ménage', montant: '2500' });
+  assert.equal(dep.status, 201);
+  const id = (await dep.json()).id;
+  const lire = (qui, espace) => fetch(`${base}/api/fichiers/justificatif/${id}`, { headers: { Authorization: 'Bearer ' + qui.jeton, 'X-Espace': espace } });
+  assert.equal((await lire(issa, esp)).status, 200);
+  assert.equal((await lire(paul, paul.espaces[0].id)).status, 404);
+  // Le reçu PDF intègre le logo sans erreur.
+  const p = (await appel('GET', '/api/paiements', { jeton: issa.jeton, espace: esp })).corps[0];
+  const pdf = await fetch(`${base}/api/paiements/${p.id}/recu.pdf`, { headers: { Authorization: 'Bearer ' + issa.jeton, 'X-Espace': esp } });
+  assert.equal(pdf.status, 200);
+});

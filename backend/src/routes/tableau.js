@@ -1,14 +1,12 @@
 // Chiffres du tableau de bord d'un espace, pour un mois donné (AAAA-MM).
 const router = require('express').Router();
-const path = require('path');
-const fs = require('fs');
 const { Op, fn, col, literal } = require('sequelize');
-const { Bien, Site, Reservation, Bail, Paiement, Depense, ChargeFixe, Journal, Utilisateur, Bailleur, Client } = require('../models');
+const { Bien, Site, Reservation, Bail, Paiement, Depense, ChargeFixe, Journal, Utilisateur, Bailleur, Client, Fichier } = require('../models');
 const { authentifier, espace, portee } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
 const { nuitsDansMois, joursDuMois, chargeMensuelle, versTexte } = require('../services/calculs');
-const { DOSSIER } = require('./espace');
+const { envoyer } = require('../utils/fichiers');
 
 const LIBELLES = {
   reservation_creee: 'a enregistré une réservation', reduction_a_valider: 'demande une réduction hors limite', reduction_validee: 'a validé une réduction',
@@ -109,16 +107,16 @@ router.get('/fichiers/logo/:bailleurId', route(async (req, res) => {
   // Le logo est public (il figure sur les reçus) : lecture du seul chemin, en mode plateforme.
   if (!/^[0-9a-f-]{36}$/i.test(req.params.bailleurId)) throw new Erreur(404, 'Pas de logo');
   await definir('app.plateforme', 'on');
-  const b = await Bailleur.findByPk(req.params.bailleurId, { attributes: ['logo_chemin'] });
-  if (!b?.logo_chemin) throw new Erreur(404, 'Pas de logo');
-  res.sendFile(path.join(DOSSIER, b.logo_chemin));
+  const b = await Bailleur.findByPk(req.params.bailleurId, { attributes: ['logo_id'] });
+  const f = b?.logo_id && await Fichier.findByPk(b.logo_id);
+  if (!f) throw new Erreur(404, 'Pas de logo');
+  envoyer(res, f);
 }));
 router.get('/fichiers/justificatif/:id', authentifier, espace, route(async (req, res) => {
   const d = await Depense.findOne({ where: portee(req, { id: req.params.id }) });
-  if (!d?.justificatif_chemin) throw new Erreur(404, 'Pas de justificatif');
-  const fichier = path.join(DOSSIER, d.justificatif_chemin);
-  if (!fichier.startsWith(DOSSIER) || !fs.existsSync(fichier)) throw new Erreur(404, 'Fichier introuvable');
-  res.sendFile(fichier);
+  const f = d?.justificatif_id && await Fichier.findOne({ where: { id: d.justificatif_id, bailleur_id: req.espace.id } });
+  if (!f) throw new Erreur(404, 'Pas de justificatif');
+  envoyer(res, f);
 }));
 
 module.exports = router;

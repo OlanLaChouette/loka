@@ -13,7 +13,7 @@ const limiteur = rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, message: { mes
 async function espacesDe(utilisateurId) {
   const membres = await Membre.findAll({ where: { utilisateur_id: utilisateurId, actif: true }, include: [Bailleur] });
   return membres.map(m => ({
-    id: m.Bailleur.id, nom: m.Bailleur.nom, logo: m.Bailleur.logo_chemin ? `/api/fichiers/logo/${m.Bailleur.id}` : null,
+    id: m.Bailleur.id, nom: m.Bailleur.nom, logo: m.Bailleur.logo_id ? `/api/fichiers/logo/${m.Bailleur.id}` : null,
     statut: m.Bailleur.statut, role: m.role,
   }));
 }

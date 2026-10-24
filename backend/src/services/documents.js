@@ -1,10 +1,7 @@
 // Documents PDF au nom du bailleur : reçu de paiement (A5) et contrat de bail (A4).
-const path = require('path');
-const fs = require('fs');
 const PDFDocument = require('pdfkit');
 const { enLettres } = require('./lettres');
 
-const DOSSIER = process.env.UPLOADS_DIR || path.join(__dirname, '..', '..', 'uploads');
 const ENCRE = '#16161D', GRIS = '#62627A', TRAIT = '#E4E4EC', ACCENT = '#6D5DF5';
 const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 const MOYENS = { especes: 'Espèces', mobile_money: 'Mobile Money', virement: 'Virement', autre: 'Autre' };
@@ -13,16 +10,8 @@ const montant = (n) => String(Math.round(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/
 const dateLongue = (s) => { const d = new Date(s + 'T00:00:00Z'); return `${d.getUTCDate() === 1 ? "1er" : d.getUTCDate()} ${MOIS[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
 const moisLong = (p) => `${MOIS[+p.slice(5, 7) - 1]} ${p.slice(0, 4)}`;
 
-function logo(bailleur) {
-  if (!bailleur.logo_chemin) return null;
-  const f = path.join(DOSSIER, bailleur.logo_chemin);
-  // pdfkit lit le PNG et le JPEG seulement.
-  return fs.existsSync(f) && /\.(png|jpe?g)$/i.test(f) ? f : null;
-}
-
-function entete(doc, bailleur, titre, sousTitre) {
+function entete(doc, bailleur, titre, sousTitre, image) {
   const m = doc.page.margins.left, largeur = doc.page.width - m * 2, haut = doc.y;
-  const image = logo(bailleur);
   if (image) { try { doc.image(image, m, haut, { fit: [70, 50] }); } catch { /* image illisible : on l'ignore */ } }
   const x = image ? m + 82 : m;
   doc.fillColor(ENCRE).font('Helvetica-Bold').fontSize(13).text(bailleur.nom, x, haut, { width: largeur - (x - m) });
@@ -55,10 +44,10 @@ function pied(doc, texte) {
 }
 
 // ---------- Reçu ----------
-function recu(sortie, { paiement, bailleur, reservation, bail, bien, client, encaissePar, dejaPaye }) {
+function recu(sortie, { logo, paiement, bailleur, reservation, bail, bien, client, encaissePar, dejaPaye }) {
   const doc = new PDFDocument({ size: 'A5', margins: { top: 36, bottom: 32, left: 36, right: 36 }, info: { Title: `Reçu ${paiement.numero_recu}`, Author: bailleur.nom } });
   doc.pipe(sortie);
-  entete(doc, bailleur, `Reçu n° ${paiement.numero_recu}`, `Le ${dateLongue(paiement.date_paiement)}`);
+  entete(doc, bailleur, `Reçu n° ${paiement.numero_recu}`, `Le ${dateLongue(paiement.date_paiement)}`, logo);
   const m = doc.page.margins.left, largeur = doc.page.width - m * 2;
 
   doc.font('Helvetica').fontSize(10.5).fillColor(ENCRE)
@@ -104,10 +93,10 @@ function recu(sortie, { paiement, bailleur, reservation, bail, bien, client, enc
 }
 
 // ---------- Contrat de bail ----------
-function contrat(sortie, { bail, bailleur, bien, site, client, representant }) {
+function contrat(sortie, { logo, bail, bailleur, bien, site, client, representant }) {
   const doc = new PDFDocument({ size: 'A4', margins: { top: 48, bottom: 48, left: 56, right: 56 }, info: { Title: `Contrat de bail · ${bien.reference}`, Author: bailleur.nom } });
   doc.pipe(sortie);
-  entete(doc, bailleur, 'Contrat de bail à usage d’habitation', `${site?.nom || ''} · ${bien.reference}`);
+  entete(doc, bailleur, 'Contrat de bail à usage d’habitation', `${site?.nom || ''} · ${bien.reference}`, logo);
   const m = doc.page.margins.left, largeur = doc.page.width - m * 2;
   const article = (titre, texte) => {
     doc.moveDown(0.6).font('Helvetica-Bold').fontSize(11).fillColor(ENCRE).text(titre, m, doc.y, { width: largeur });

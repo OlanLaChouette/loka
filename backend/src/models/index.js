@@ -32,7 +32,7 @@ const Bailleur = sequelize.define('Bailleur', {
   pays: { type: DataTypes.STRING(80), defaultValue: 'Burkina Faso' },
   telephone: DataTypes.STRING(30),
   email: DataTypes.STRING(160),
-  logo_chemin: DataTypes.STRING(255),
+  logo_id: DataTypes.UUID,
   statut: { type: DataTypes.ENUM('essai', 'actif', 'suspendu'), defaultValue: 'essai' },
   essai_fin: DataTypes.DATEONLY,
   limite_reduction_defaut: { type: DataTypes.INTEGER, defaultValue: 10, validate: { min: 0, max: 100 } },
@@ -148,13 +148,22 @@ const Depense = sequelize.define('Depense', {
   montant: { type: DataTypes.INTEGER, allowNull: false, validate: { min: 1 } },
   date_depense: { type: DataTypes.DATEONLY, allowNull: false },
   note: DataTypes.TEXT,
-  justificatif_chemin: DataTypes.STRING(255),
+  justificatif_id: DataTypes.UUID,
   statut: { type: DataTypes.ENUM('en_attente', 'acceptee', 'refusee'), defaultValue: 'en_attente' },
   motif_refus: DataTypes.STRING(255),
   saisie_par: DataTypes.UUID,
   traitee_par: DataTypes.UUID,
   cle_client: DataTypes.STRING(64),
 }, { tableName: 'depenses', indexes: [{ unique: true, fields: ['bailleur_id', 'cle_client'] }] });
+
+// Fichiers (logos, photos de justificatifs) stockés dans la base.
+const Fichier = sequelize.define('Fichier', {
+  id, ...lieAuBailleur,
+  type: { type: DataTypes.STRING(60), allowNull: false },
+  nom: DataTypes.STRING(120),
+  taille: { type: DataTypes.INTEGER, allowNull: false },
+  donnees: { type: DataTypes.BLOB, allowNull: false },
+}, { tableName: 'fichiers', updatedAt: false });
 
 // Journal des actions sensibles : qui, quand, quoi.
 const Journal = sequelize.define('Journal', {
@@ -187,4 +196,4 @@ Depense.belongsTo(Site, { foreignKey: 'site_id' });
 Depense.belongsTo(Utilisateur, { foreignKey: 'saisie_par', as: 'auteur' });
 Journal.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
 
-module.exports = { sequelize, Utilisateur, Bailleur, Membre, Site, Bien, Client, Reservation, Bail, Paiement, ChargeFixe, Depense, Journal };
+module.exports = { sequelize, Utilisateur, Bailleur, Membre, Site, Bien, Client, Reservation, Bail, Paiement, ChargeFixe, Depense, Journal, Fichier };

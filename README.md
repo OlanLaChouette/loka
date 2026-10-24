@@ -45,8 +45,12 @@ L'application appelle l'API indiquée par `VITE_API_URL` (`frontend/.env`, voir 
 Sans réseau, l'application garde les encaissements et les dépenses (photos comprises) sur le téléphone et les envoie
 au retour de la connexion, sans doublon. Les réservations demandent le réseau, pour ne jamais vendre deux fois la même nuit.
 
-## Mise en ligne (Render)
+## Mise en ligne (gratuite)
 
-`render.yaml` décrit l'API et le site. Créer d'abord une base PostgreSQL **dédiée à Loka**, renseigner `DATABASE_URL`,
-puis lancer une fois `npm run db:creer` dans le Shell du service API.
-Les logos et justificatifs sont stockés sur un disque persistant (`UPLOADS_DIR`).
+- API et site : Render, offre gratuite (`render.yaml`). L'API se met en veille après 15 minutes sans visite ;
+  la première ouverture prend alors environ une minute.
+- Base : Neon, offre gratuite (0,5 Go). Les logos et photos y sont rangés, compressés sur le téléphone avant l'envoi.
+
+Étapes : créer le projet Neon, connecter le dépôt dans Render (New → Blueprint), renseigner `DATABASE_URL`,
+`FRONTEND_URL`, `VITE_API_URL` et `ADMIN_NOM` / `ADMIN_TELEPHONE` / `ADMIN_MOT_DE_PASSE`.
+Au démarrage, l'API prépare la base et crée le compte d'administration (la console n'existe pas en offre gratuite).

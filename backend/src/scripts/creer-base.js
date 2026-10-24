@@ -8,7 +8,7 @@ process.env.DB_MODE = 'proprietaire';
 require('dotenv').config();
 const { Client } = require('pg');
 
-const TABLES_BAILLEUR = ['membres', 'sites', 'biens', 'clients', 'reservations', 'baux', 'paiements', 'charges_fixes', 'depenses', 'journal'];
+const TABLES_BAILLEUR = ['membres', 'sites', 'biens', 'clients', 'reservations', 'baux', 'paiements', 'charges_fixes', 'depenses', 'journal', 'fichiers'];
 const ident = (s) => '"' + String(s).replace(/"/g, '""') + '"';
 const litteral = (s) => "'" + String(s).replace(/'/g, "''") + "'";
 
@@ -30,8 +30,11 @@ async function preparer({ demo = false, silencieux = false } = {}) {
 
   if (app) {
     const existe = await sequelize.query('SELECT 1 FROM pg_roles WHERE rolname = :r', { replacements: { r: app }, type: 'SELECT' });
-    if (!existe.length) { await q(`CREATE ROLE ${ident(app)} LOGIN PASSWORD ${litteral(process.env.DB_APP_PASSWORD)} NOSUPERUSER NOBYPASSRLS`); log('Compte applicatif créé :', app); }
-    else await q(`ALTER ROLE ${ident(app)} PASSWORD ${litteral(process.env.DB_APP_PASSWORD)} NOSUPERUSER NOBYPASSRLS`);
+    // Chez les hébergeurs (Neon…), le compte principal n'est pas super-administrateur : options minimales.
+    if (!existe.length) { await q(`CREATE ROLE ${ident(app)} LOGIN PASSWORD ${litteral(process.env.DB_APP_PASSWORD)}`); log('Compte applicatif créé :', app); }
+    else await q(`ALTER ROLE ${ident(app)} WITH LOGIN PASSWORD ${litteral(process.env.DB_APP_PASSWORD)}`);
+    const [droits] = await sequelize.query('SELECT rolsuper, rolbypassrls FROM pg_roles WHERE rolname = :r', { replacements: { r: app }, type: 'SELECT' });
+    if (droits.rolsuper || droits.rolbypassrls) throw new Error(`Le compte ${app} contourne la séparation (super-administrateur) : utilisez un autre nom.`);
   }
 
   if (demo) { const { semer } = require('./seed'); await semer({ silencieux, garderConnexion: true }); }
@@ -59,6 +62,16 @@ async function preparer({ demo = false, silencieux = false } = {}) {
     await q(`GRANT USAGE ON SCHEMA public TO ${ident(app)}`);
     await q(`GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ${ident(app)}`);
     await q(`GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO ${ident(app)}`);
+  }
+  // Compte d'administration Loka défini dans l'environnement de l'hébergeur (aucune console nécessaire).
+  if (process.env.ADMIN_TELEPHONE && process.env.ADMIN_MOT_DE_PASSE) {
+    const bcrypt = require('bcryptjs');
+    const { Utilisateur } = require('../models');
+    const u = await Utilisateur.findOne({ where: { telephone: process.env.ADMIN_TELEPHONE } });
+    if (!u) {
+      await Utilisateur.create({ nom: process.env.ADMIN_NOM || 'Administration Loka', telephone: process.env.ADMIN_TELEPHONE, mot_de_passe_hash: await bcrypt.hash(process.env.ADMIN_MOT_DE_PASSE, 10), est_admin_plateforme: true });
+      log('Compte d’administration créé :', process.env.ADMIN_TELEPHONE);
+    }
   }
   log('Base prête, séparation des bailleurs active dans PostgreSQL.');
   return sequelize;

@@ -1,23 +1,20 @@
-# Déploiement de Loka sur Render (même hébergeur qu'eYamTech).
-# La base PostgreSQL est créée à part, dédiée à Loka : renseigner DATABASE_URL (compte propriétaire de la base).
-# Après le premier déploiement, lancer une fois dans le Shell du service API : npm run db:creer
+# Déploiement gratuit de Loka : Render (offre gratuite) pour l'API et le site, Neon (gratuit) pour PostgreSQL.
+# Les logos et photos sont rangés dans la base : aucun disque payant n'est nécessaire.
+# Au démarrage, l'API prépare la base (tables, compte limité, séparation des bailleurs)
+# et crée le compte d'administration Loka défini par ADMIN_NOM / ADMIN_TELEPHONE / ADMIN_MOT_DE_PASSE.
 services:
   - type: web
     name: loka-api
     runtime: node
+    plan: free
     rootDir: backend
     buildCommand: npm ci --omit=dev
-    startCommand: node server.js
+    startCommand: node src/scripts/creer-base.js && node server.js
     healthCheckPath: /api/sante
-    disk:
-      # Logos et photos des justificatifs : doivent survivre aux redéploiements.
-      name: loka-fichiers
-      mountPath: /var/data/loka
-      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DATABASE_URL
+      - key: DATABASE_URL          # adresse Neon (compte propriétaire)
         sync: false
       - key: DB_APP_USER
         value: loka_app
@@ -27,9 +24,13 @@ services:
         generateValue: true
       - key: JWT_EXPIRES_IN
         value: 7d
-      - key: UPLOADS_DIR
-        value: /var/data/loka
-      - key: FRONTEND_URL
+      - key: FRONTEND_URL          # adresse du site loka-web
+        sync: false
+      - key: ADMIN_NOM
+        sync: false
+      - key: ADMIN_TELEPHONE
+        sync: false
+      - key: ADMIN_MOT_DE_PASSE    # à choisir soi-même, 10 caractères minimum
         sync: false
 
   - type: web
@@ -43,5 +44,5 @@ services:
         source: /*
         destination: /index.html
     envVars:
-      - key: VITE_API_URL
+      - key: VITE_API_URL          # adresse du service loka-api
         sync: false

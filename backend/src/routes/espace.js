@@ -1,24 +1,13 @@
 // Ce qui structure l'espace d'un bailleur : son entreprise, ses membres, ses sites, ses biens, ses charges fixes.
 const router = require('express').Router();
-const path = require('path');
-const fs = require('fs');
-const multer = require('multer');
 const bcrypt = require('bcryptjs');
-const { sequelize, Bailleur, Utilisateur, Membre, Site, Bien, ChargeFixe } = require('../models');
+const { sequelize, Bailleur, Utilisateur, Membre, Site, Bien, ChargeFixe, Fichier } = require('../models');
+const { recevoirLogo, enregistrer } = require('../utils/fichiers');
 const { authentifier, espace, autoriser, ecriture, portee, verifierSite } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
 const { noter } = require('../utils/journal');
 
-const DOSSIER = process.env.UPLOADS_DIR || path.join(__dirname, '..', '..', 'uploads');
-const televersement = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => { const d = path.join(DOSSIER, req.espace.id); fs.mkdirSync(d, { recursive: true }); cb(null, d); },
-    filename: (req, file, cb) => cb(null, 'logo-' + Date.now() + path.extname(file.originalname).toLowerCase()),
-  }),
-  limits: { fileSize: 2 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => cb(null, ['image/png', 'image/jpeg', 'image/webp'].includes(file.mimetype)),
-});
 
 router.use(authentifier, espace);
 const proprietaire = autoriser('proprietaire');
@@ -27,18 +16,18 @@ const garder = (obj, champs) => Object.fromEntries(champs.filter(c => obj[c] !==
 // ---------- Entreprise du bailleur ----------
 const CHAMPS_ENTREPRISE = ['nom', 'forme_juridique', 'rccm', 'ifu', 'adresse', 'ville', 'pays', 'telephone', 'email', 'limite_reduction_defaut'];
 router.get('/profil', route(async (req, res) => {
-  res.json({ ...req.espace.toJSON(), logo: req.espace.logo_chemin ? `/api/fichiers/logo/${req.espace.id}` : null, mon_role: req.role });
+  res.json({ ...req.espace.toJSON(), logo: req.espace.logo_id ? `/api/fichiers/logo/${req.espace.id}` : null, mon_role: req.role });
 }));
 router.patch('/profil', proprietaire, route(async (req, res) => {
   await req.espace.update(garder(req.body, CHAMPS_ENTREPRISE));
   await noter(req, 'profil_modifie', 'bailleur', req.espace.id);
   res.json(req.espace);
 }));
-router.post('/profil/logo', proprietaire, lier(televersement.single('logo')), route(async (req, res) => {
-  if (!req.file) throw new Erreur(400, 'Image PNG, JPEG ou WebP de 2 Mo maximum');
-  const ancien = req.espace.logo_chemin;
-  await req.espace.update({ logo_chemin: path.join(req.espace.id, req.file.filename) });
-  if (ancien) fs.rm(path.join(DOSSIER, ancien), () => {});
+router.post('/profil/logo', proprietaire, lier(recevoirLogo), route(async (req, res) => {
+  if (!req.file) throw new Erreur(400, 'Image PNG, JPEG ou WebP de 1 Mo maximum');
+  const ancien = req.espace.logo_id;
+  await req.espace.update({ logo_id: await enregistrer(req.file, req.espace.id) });
+  if (ancien) await Fichier.destroy({ where: { id: ancien, bailleur_id: req.espace.id } });
   res.json({ logo: `/api/fichiers/logo/${req.espace.id}` });
 }));
 
@@ -135,4 +124,4 @@ router.delete('/charges/:id', proprietaire, route(async (req, res) => {
   res.json(c);
 }));
 
-module.exports = { router, DOSSIER, verifierSite };
+module.exports = { router, verifierSite };

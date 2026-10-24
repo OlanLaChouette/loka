@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, messageErreur, urlFichier } from '../lib/api';
 import { useSession } from '../lib/session';
 import { Chargement, Champ, Erreur, Puce } from '../composants/Ui';
+import { compresserImage } from '../lib/image';
 
 const CHAMPS = [
   ['nom', 'Nom de l’entreprise', true], ['forme_juridique', 'Forme juridique'], ['rccm', 'RCCM'], ['ifu', 'IFU'],
@@ -38,11 +39,11 @@ export default function Parametres() {
         </div>
         <div style={{ flex: 1, minWidth: 220 }}>
           <h2>Logo</h2>
-          <p className="petit muet">PNG, JPEG ou WebP, 2 Mo maximum. Il apparaît dans l’application, sur les reçus et les contrats.</p>
+          <p className="petit muet">PNG, JPEG ou WebP. L’image est réduite automatiquement. Il apparaît dans l’application, sur les reçus et les contrats.</p>
           <Erreur message={logo.error && messageErreur(logo.error)} />
           <label className="bouton" style={{ cursor: 'pointer' }}>
             {logo.isPending ? 'Envoi…' : data.logo ? 'Changer le logo' : 'Ajouter un logo'}
-            <input type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={e => e.target.files[0] && logo.mutate(e.target.files[0])} />
+            <input type="file" accept="image/png,image/jpeg,image/webp" hidden onChange={async e => e.target.files[0] && logo.mutate(await compresserImage(e.target.files[0], { cote: 600, type: 'image/png' }))} />
           </label>
         </div>
       </section>
