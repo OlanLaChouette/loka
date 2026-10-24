@@ -81,10 +81,11 @@
   .couverture h1 em { font-style: normal; color: #D9D3FF; }
   .couverture .sous { font-size: 13pt; color: #E4E0FF; max-width: 135mm; }
   .couverture .pied {
-    position: relative; z-index: 2; margin-top: 26mm; padding-top: 8mm; border-top: 1px solid rgba(255,255,255,.18);
-    display: flex; justify-content: space-between; font-size: 9.5pt; color: #E4E0FF;
+    position: relative; z-index: 2; margin-top: 26mm; padding-top: 7mm; border-top: 1px solid rgba(255,255,255,.25);
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10mm; font-size: 10pt; line-height: 1.55; color: #fff;
   }
-  .couverture .pied strong { color: #fff; display: block; font-size: 10.5pt; margin-bottom: 2px; }
+  .couverture .pied .etiquette-pied { display: block; font-size: 8pt; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #D9D3FF; margin-bottom: 4px; }
+  .couverture .pied span.ligne { display: block; white-space: nowrap; }
   .loka-marque { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; font-family: 'Sora', 'Sora', sans-serif; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; }
   .couverture .signature { font-family: 'Sora', sans-serif; font-weight: 700; color: var(--lime); font-size: 12pt; margin-top: 10mm; position: relative; z-index: 2; }
 
@@ -212,9 +213,9 @@
   </div>
 
   <div class="pied">
-    <div><strong>Destinataire</strong>Promoteurs et bailleurs de villas meublées</div>
-    <div style="white-space:nowrap"><strong>Date</strong>Octobre 2026</div>
-    <div><strong>Une application</strong>éditée par eYamTech · +226 62 82 67 02 · contact@eyamtech.com</div>
+    <div><span class="etiquette-pied">Pour</span><span class="ligne">Promoteurs et bailleurs</span><span class="ligne">de villas meublées</span></div>
+    <div><span class="etiquette-pied">Date</span><span class="ligne">Octobre 2026</span></div>
+    <div><span class="etiquette-pied">Édité par eYamTech</span><span class="ligne">+226 62 82 67 02</span><span class="ligne">contact@eyamtech.com</span></div>
   </div>
 </div>
 
