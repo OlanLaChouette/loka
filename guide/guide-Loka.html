@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka – Guide d'utilisation</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --v: #6D5DF5; --vt: #5443D8; --vf: #4B3BC9; --vd: #EEEBFF; --vc: #D9D3FF; --encre: #16161D; --muet: #62627A; --bord: #E4E4EC; --fond: #F5F5F9; --alerte: #A15C07; --alerte-fond: #FFF4E0; }
+  @page {
+    size: A4; margin: 18mm 16mm 18mm 16mm;
+    @top-right { content: "Loka · Guide d'utilisation"; font: 8pt 'Inter', sans-serif; color: #77778C; }
+    @bottom-left { content: "Loka · par eYamTech · +226 62 82 67 02 · contact@eyamtech.com"; font: 8pt 'Inter', sans-serif; color: #77778C; }
+    @bottom-right { content: "Page " counter(page) " / " counter(pages); font: 8pt 'Inter', sans-serif; color: #77778C; }
+  }
+  @page couverture { margin: 0; @top-right { content: none; } @bottom-left { content: none; } @bottom-right { content: none; } }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font: 10pt/1.5 'Inter', sans-serif; color: var(--encre); }
+
+  .couverture { page: couverture; width: 210mm; height: 297mm; position: relative; overflow: hidden; color: #fff; padding: 22mm 20mm; display: flex; flex-direction: column; break-after: page;
+    background: linear-gradient(150deg, #6D5DF5 0%, #4B3BC9 100%); }
+  .couverture .marque { display: flex; align-items: center; gap: 14px; font: 700 30px 'Sora'; letter-spacing: -0.02em; }
+  .cercle { position: absolute; border-radius: 50%; }
+  .couverture .tels { position: absolute; right: -6mm; top: 52mm; width: 150mm; height: 140mm; }
+  .couverture .tels .tel { position: absolute; width: 58mm; }
+  .couverture .contenu { margin-top: auto; position: relative; z-index: 2; }
+  .couverture .surtitre { display: inline-block; background: #fff; color: var(--vf); font: 700 10pt 'Inter'; letter-spacing: .08em; text-transform: uppercase; padding: 6px 12px; border-radius: 6px; }
+  .couverture h1 { font: 800 42pt/1.03 'Sora'; letter-spacing: -0.03em; margin: 16px 0 14px; }
+  .couverture h1 em { font-style: normal; color: var(--vc); }
+  .couverture .sous { font-size: 13pt; color: #E4E0FF; max-width: 120mm; }
+  .couverture .pied { position: relative; z-index: 2; margin-top: 18mm; padding-top: 6mm; border-top: 1px solid rgba(255,255,255,.25); display: grid; grid-template-columns: repeat(3, 1fr); gap: 8mm; font-size: 10pt; }
+  .couverture .pied b { display: block; font-size: 8pt; letter-spacing: .08em; text-transform: uppercase; color: var(--vc); margin-bottom: 3px; }
+
+  /* Téléphone */
+  .tel { border-radius: 7mm; background: #1B1B22; padding: 1.6mm; box-shadow: 0 6mm 14mm rgba(30,20,90,.28), inset 0 0 0 .4mm #3A3A46; }
+  .tel img { display: block; width: 100%; border-radius: 5.6mm; }
+  .tel.petit { border-radius: 5.5mm; padding: 1.2mm; } .tel.petit img { border-radius: 4.4mm; }
+  .legende { font-size: 8pt; color: var(--muet); text-align: center; margin-top: 2.5mm; line-height: 1.35; }
+
+  h2 { font: 800 17pt 'Sora'; letter-spacing: -0.02em; display: flex; align-items: center; gap: 10px; margin: 0 0 4mm; break-after: avoid; }
+  h2 .num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; background: var(--v); color: #fff; font-size: 13pt; }
+  h3 { font: 700 12pt 'Sora'; color: var(--vt); margin: 5mm 0 2mm; break-after: avoid; letter-spacing: -0.01em; }
+  p { margin: 0 0 2.5mm; }
+  ol, ul { margin: 0 0 3mm 5mm; } li { margin-bottom: 1.4mm; padding-left: 1mm; } li::marker { color: var(--vt); font-weight: 700; }
+  .chap { break-before: page; }
+  .intro { font-size: 11pt; color: #3A3A4A; margin-bottom: 5mm; }
+  .bouton { display: inline-block; background: var(--v); color: #fff; font-weight: 600; font-size: 8.8pt; padding: 0 6px; border-radius: 5px; white-space: nowrap; }
+  .bouton.clair { background: var(--vd); color: var(--vt); }
+
+  .bloc { display: grid; grid-template-columns: 1fr 46mm; gap: 8mm; align-items: start; margin-bottom: 4mm; break-inside: avoid; }
+  .bloc.gauche { grid-template-columns: 46mm 1fr; }
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .trio { display: grid; grid-template-columns: repeat(3, 46mm); justify-content: space-between; gap: 6mm; margin: 4mm 0 6mm; break-inside: avoid; }
+
+  .astuce, .attention { border-radius: 8px; padding: 3mm 4mm; margin: 3mm 0; font-size: 9.4pt; break-inside: avoid; }
+  .astuce { background: var(--vd); border-left: 4px solid var(--v); }
+  .attention { background: var(--alerte-fond); border-left: 4px solid #E0A04A; }
+  .astuce b:first-child, .attention b:first-child { display: block; margin-bottom: 1mm; }
+
+  .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 4mm 0 6mm; }
+  .role { border: 1px solid var(--bord); border-top: 4px solid var(--v); border-radius: 8px; padding: 3.5mm 4mm; font-size: 9.3pt; break-inside: avoid; }
+  .role b { display: block; font: 700 11pt 'Sora'; margin-bottom: 1.5mm; }
+  .role ul { margin: 0 0 0 4mm; } .role li { margin-bottom: .8mm; }
+
+  table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 9.3pt; margin: 2mm 0 4mm; break-inside: avoid; }
+  th { background: var(--encre); color: #fff; text-align: left; font-weight: 600; padding: 2mm 3mm; }
+  th:first-child { border-top-left-radius: 7px; } th:last-child { border-top-right-radius: 7px; }
+  td { padding: 2mm 3mm; border-bottom: 1px solid var(--bord); vertical-align: top; }
+  td:first-child { font-weight: 600; }
+  tbody tr:nth-child(even) td { background: #F8F8FB; }
+
+  .sommaire { list-style: none; margin: 0; columns: 2; column-gap: 10mm; }
+  .sommaire li { display: flex; gap: 3mm; padding: 2.4mm 0; border-bottom: 1px solid var(--bord); break-inside: avoid; }
+  .sommaire li span { color: var(--vt); font: 700 10pt 'Sora'; width: 6mm; }
+  .contact { background: var(--v); color: #fff; border-radius: 12px; padding: 6mm 7mm; margin-top: 6mm; break-inside: avoid; display: flex; justify-content: space-between; gap: 6mm; align-items: center; }
+  .contact h3 { color: #fff; margin: 0 0 1mm; }
+  .contact p { margin: 0; color: #E4E0FF; }
+  .contact .num { font: 800 15pt 'Sora'; color: #fff; white-space: nowrap; text-align: right; }
+  .faq table { font-size: 8.9pt; margin-bottom: 3mm; } .faq td, .faq th { padding: 1.5mm 3mm; } .faq h3 { margin-top: 3mm; } .faq .contact { margin-top: 4mm; padding: 4.5mm 6mm; }
+</style>
+</head>
+<body>
+
+<!-- ================= Couverture ================= -->
+<div class="couverture">
+  <div class="cercle" style="width:170mm;height:170mm;right:-70mm;top:40mm;background:#fff;opacity:.07"></div>
+  <div class="cercle" style="width:100mm;height:100mm;right:6mm;top:96mm;border:2px solid #fff;opacity:.3"></div>
+  <div class="marque"><svg width="46" height="46" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>Loka</div>
+  <div class="tels">
+    <div class="tel" style="left:12mm;top:14mm;transform:rotate(-7deg)"><img src="captures/15-terrain.png" alt=""></div>
+    <div class="tel" style="left:72mm;top:0;transform:rotate(5deg)"><img src="captures/02-apercu.png" alt=""></div>
+  </div>
+  <div class="contenu">
+    <span class="surtitre">Guide d'utilisation</span>
+    <h1>Loka,<br><em>pas à pas.</em></h1>
+    <p class="sous">Tout ce qu'il faut pour démarrer et travailler au quotidien : le propriétaire, ses gérants et son comptable.</p>
+  </div>
+  <div class="pied">
+    <div><b>Pour</b>Propriétaires, gérants<br>et comptables</div>
+    <div><b>Version</b>Octobre 2026<br>Android et web</div>
+    <div><b>Édité par</b>eYamTech<br>+226 62 82 67 02</div>
+  </div>
+</div>
+
+<!-- ================= 1. Bienvenue ================= -->
+<section>
+  <h2><span class="num">1</span>Bienvenue dans Loka</h2>
+  <p class="intro">Loka sert à gérer vos biens loués <b>à la nuit</b> (villas meublées, appartements) et <b>au mois</b> (baux). Vous y suivez les réservations, l'argent encaissé, les dépenses de vos gérants et votre bénéfice réel, site par site.</p>
+
+  <h3>Qui fait quoi ?</h3>
+  <p>Chaque personne se connecte avec <b>son propre numéro de téléphone</b>. Ce qu'elle voit dépend de son rôle.</p>
+  <div class="roles">
+    <div class="role"><b>Propriétaire</b><ul><li>Crée les sites et les biens</li><li>Invite ses gérants</li><li>Valide les réductions et les dépenses</li><li>Suit les chiffres de tout le parc</li></ul></div>
+    <div class="role"><b>Gérant</b><ul><li>Réserve et encaisse sur le terrain</li><li>Envoie les reçus par WhatsApp</li><li>Note les dépenses avec photo</li><li>Ne voit que les sites qu'on lui confie</li></ul></div>
+    <div class="role"><b>Comptable</b><ul><li>Consulte tout, sans rien modifier</li><li>Encaissements, dépenses, charges</li><li>Reçus et contrats en PDF</li></ul></div>
+  </div>
+
+  <h3>Où trouver Loka ?</h3>
+  <table>
+    <thead><tr><th style="width:34%">Support</th><th>Comment y accéder</th></tr></thead>
+    <tbody>
+      <tr><td>Téléphone Android</td><td>Installez l'application Loka (fichier APK transmis par eYamTech). Idéal pour les gérants sur le terrain.</td></tr>
+      <tr><td>Ordinateur ou iPhone</td><td>Ouvrez le site <b>loka-web-djt1.onrender.com</b> dans votre navigateur. Mêmes comptes, mêmes données.</td></tr>
+    </tbody>
+  </table>
+  <div class="attention"><b>Première ouverture de la journée</b>Pendant la période de test, le serveur se met en veille quand personne ne l'utilise. La première connexion peut donc prendre jusqu'à une minute : patientez, les suivantes sont immédiates.</div>
+
+  <h3>Sommaire</h3>
+  <ol class="sommaire">
+    <li><span>1</span>Bienvenue dans Loka</li>
+    <li><span>2</span>Se connecter et se repérer</li>
+    <li><span>3</span>Mettre son espace en route</li>
+    <li><span>4</span>La journée du gérant</li>
+    <li><span>5</span>Le planning des réservations</li>
+    <li><span>6</span>Les locations au mois (baux)</li>
+    <li><span>7</span>L'argent : encaissements, dépenses, charges</li>
+    <li><span>8</span>Le tableau de bord du propriétaire</li>
+    <li><span>9</span>Sans connexion Internet</li>
+    <li><span>10</span>Questions fréquentes</li>
+  </ol>
+</section>
+
+<!-- ================= 2. Connexion ================= -->
+<section class="chap">
+  <h2><span class="num">2</span>Se connecter et se repérer</h2>
+  <div class="bloc">
+    <div>
+      <h3 style="margin-top:0">Se connecter</h3>
+      <ol>
+        <li>Ouvrez Loka (application ou site).</li>
+        <li>Saisissez votre <b>numéro de téléphone</b> (ou votre e-mail) et le <b>mot de passe provisoire</b> reçu.</li>
+        <li>Appuyez sur <span class="bouton">Se connecter</span>.</li>
+        <li>Changez tout de suite ce mot de passe : <b>Menu</b> › <b>Changer mon mot de passe</b>.</li>
+      </ol>
+      <p>Loka vous garde connecté sur votre téléphone : pas besoin de retaper le mot de passe à chaque fois.</p>
+      <div class="astuce"><b>Mot de passe oublié ?</b>Le gérant demande au propriétaire : page <b>Gérants</b> › <b>Mot de passe</b>. Le propriétaire, lui, contacte eYamTech.</div>
+    </div>
+    <div><div class="tel"><img src="captures/01-connexion.png" alt=""></div><div class="legende">L'écran de connexion</div></div>
+  </div>
+
+  <div class="bloc gauche">
+    <div><div class="tel"><img src="captures/03-menu.png" alt=""></div><div class="legende">Le menu, ouvert avec ☰ en haut à droite</div></div>
+    <div>
+      <h3 style="margin-top:0">Se repérer dans l'application</h3>
+      <ul>
+        <li><b>En haut</b> : le nom de votre entreprise (appuyez dessus pour changer d'espace si vous travaillez pour plusieurs bailleurs), la <b>cloche</b> des choses à traiter et le bouton <b>☰ Menu</b>.</li>
+        <li><b>En bas</b> (sur téléphone) : quatre raccourcis — <b>Accueil</b>, <b>Planning</b>, <b>Caisse</b> et <b>Dépenses</b>.</li>
+        <li><b>Le menu</b> donne accès à toutes les pages : Aperçu, Biens, Réservations, Baux, Argent, Gérants, Entreprise.</li>
+        <li>On y trouve aussi le <b>mode sombre</b>, le changement de mot de passe et <b>Se déconnecter</b>.</li>
+      </ul>
+      <div class="astuce"><b>La cloche</b>Le chiffre rouge indique les réductions et les dépenses qui attendent la décision du propriétaire. Un appui vous y emmène.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. Mise en route ================= -->
+<section class="chap">
+  <h2><span class="num">3</span>Mettre son espace en route <span style="font:600 9pt 'Inter';color:var(--muet);margin-left:auto">Propriétaire</span></h2>
+  <div class="bloc">
+    <div>
+      <p class="intro" style="margin-bottom:3mm">À la première connexion, l'accueil affiche une liste d'étapes. Suivez-les dans l'ordre : chaque étape a son bouton, et elle se coche toute seule une fois faite.</p>
+      <table>
+        <thead><tr><th>Étape</th><th>Pourquoi</th></tr></thead>
+        <tbody>
+          <tr><td>Informations de l'entreprise</td><td>Elles figurent sur les reçus et les contrats.</td></tr>
+          <tr><td>Logo</td><td>Conseillé : il apparaît dans l'appli et sur les PDF.</td></tr>
+          <tr><td>Premier site</td><td><b>Indispensable.</b> Une résidence, un immeuble.</td></tr>
+          <tr><td>Les biens</td><td><b>Indispensable.</b> Villas, appartements…</td></tr>
+          <tr><td>Un gérant</td><td>Conseillé : il travaille depuis son téléphone.</td></tr>
+          <tr><td>Charges fixes</td><td>Conseillé : pour connaître le vrai bénéfice.</td></tr>
+        </tbody>
+      </table>
+      <p>Dès qu'il y a <b>un site et des biens</b>, vous pouvez réserver et encaisser. Le bouton <span class="bouton clair">Masquer</span> range ensuite la liste.</p>
+    </div>
+    <div><div class="tel"><img src="captures/20-mise-en-route.png" alt=""></div><div class="legende">La liste de démarrage d'un nouvel espace</div></div>
+  </div>
+
+  <h3>Votre entreprise</h3>
+  <div class="bloc">
+    <div>
+      <p>Menu › <b>Entreprise</b>. Renseignez le nom, l'adresse, le téléphone, le RCCM et l'IFU, puis <span class="bouton">Enregistrer</span>. Ajoutez votre logo avec <span class="bouton clair">Ajouter un logo</span> (une photo ou une image PNG/JPEG suffit, elle est réduite automatiquement).</p>
+      <p>Sur cette page se règle aussi la <b>réduction maximale</b> qu'un gérant peut accorder sans votre accord (par exemple 10 %). Au-delà, la réservation attend votre validation.</p>
+    </div>
+    <div><div class="tel"><img src="captures/14-entreprise.png" alt=""></div><div class="legende">Page Entreprise</div></div>
+  </div>
+</section>
+
+<section>
+  <h3>Créer les sites et les biens</h3>
+  <div class="bloc">
+    <div>
+      <ol>
+        <li>Menu › <b>Biens</b>, puis <span class="bouton clair">+ Site</span> : donnez un nom (« Ouaga 2000 », « Résidence OH »…) et la ville.</li>
+        <li>Ajoutez les biens de ce site :
+          <ul>
+            <li><span class="bouton">+ Bien</span> pour un bien à la fois ;</li>
+            <li><span class="bouton clair">+ Plusieurs biens</span> pour en créer jusqu'à 100 d'un coup : une lettre (V), un numéro de début et de fin (1 à 10), et Loka crée V1, V2… V10.</li>
+          </ul>
+        </li>
+        <li>Pour chaque bien, choisissez s'il <b>se loue à la nuit</b> (prix par nuit) ou <b>au mois</b> (loyer mensuel).</li>
+        <li>Ajustez ensuite un bien avec <b>Modifier</b> : prix, standing, nombre de chambres, numéro de compteur.</li>
+      </ol>
+      <div class="astuce"><b>Le prix reste libre</b>Le standing et le nombre de chambres décrivent le bien, ils ne fixent pas le prix. Deux villas identiques peuvent avoir des prix différents.</div>
+      <p><b>État d'un bien</b> : <i>Disponible</i>, <i>En travaux</i> (il ne peut plus être réservé) ou <i>Retiré de la location</i>. Le gérant peut lui-même mettre un bien en travaux et le remettre en location.</p>
+    </div>
+    <div><div class="tel"><img src="captures/05-lot.png" alt=""></div><div class="legende">« Plusieurs biens » : V1 à V10 en un geste</div></div>
+  </div>
+
+  <h3>Inviter un gérant</h3>
+  <div class="bloc">
+    <div>
+      <ol>
+        <li>Menu › <b>Gérants</b>, puis <span class="bouton">+ Ajouter un membre</span>.</li>
+        <li>Saisissez son nom, son <b>numéro de téléphone</b> (ce sera son identifiant) et un <b>mot de passe provisoire</b>.</li>
+        <li>Choisissez le rôle : <b>Gérant</b> ou <b>Comptable</b> (consultation seule).</li>
+        <li>Pour un gérant, cochez les <b>sites qu'il gère</b> (aucun coché = tous) et, si besoin, sa limite de réduction personnelle.</li>
+        <li>Transmettez-lui son numéro et son mot de passe provisoire (par exemple par WhatsApp).</li>
+      </ol>
+      <p>Depuis la même page : <b>Modifier</b> ses sites, lui donner un nouveau <b>Mot de passe</b>, ou le <b>Désactiver</b> s'il quitte l'entreprise (son historique est conservé).</p>
+    </div>
+    <div><div class="tel"><img src="captures/13-ajout-membre.png" alt=""></div><div class="legende">Ajouter un gérant</div></div>
+  </div>
+</section>
+
+<!-- ================= 4. Gérant ================= -->
+<section class="chap">
+  <h2><span class="num">4</span>La journée du gérant</h2>
+  <div class="bloc">
+    <div>
+      <p class="intro">Le gérant arrive directement sur l'écran <b>Aujourd'hui</b>. Tout ce dont il a besoin sur le terrain y est réuni.</p>
+      <ul>
+        <li><b>En haut</b> : le nombre de biens libres ce soir et trois gros boutons : <span class="bouton clair">Réserver</span>, <span class="bouton clair">Encaisser</span> et l'icône de reçu pour <b>noter une dépense</b>.</li>
+        <li><b>À encaisser</b> : les séjours commencés qui ne sont pas encore soldés.</li>
+        <li><b>Aujourd'hui</b> : les arrivées et départs du jour, avec ce qui reste à payer.</li>
+        <li><b>Biens</b> : l'état de chaque bien (Libre, Occupé, Travaux, Au mois).</li>
+      </ul>
+    </div>
+    <div><div class="tel"><img src="captures/15-terrain.png" alt=""></div><div class="legende">L'écran « Aujourd'hui » du gérant</div></div>
+  </div>
+
+  <h3>Réserver un séjour</h3>
+  <div class="bloc">
+    <div>
+      <ol>
+        <li>Appuyez sur <span class="bouton clair">Réserver</span>.</li>
+        <li>Choisissez le <b>bien</b>, les dates d'<b>arrivée</b> et de <b>départ</b>.</li>
+        <li>Saisissez le <b>nom</b> et le <b>téléphone</b> du client (et sa pièce d'identité si vous le souhaitez).</li>
+        <li>Une réduction ? Indiquez-la en % ou en FCFA, avec sa <b>raison</b> (obligatoire).</li>
+        <li>Vérifiez le total en bas, puis enregistrez.</li>
+      </ol>
+      <p>Loka <b>refuse les doublons</b> : impossible de réserver un bien déjà pris sur ces dates.</p>
+      <div class="attention"><b>Réduction au-delà de la limite</b>Si la réduction dépasse la limite autorisée, la réservation passe « À valider ». Le propriétaire l'accepte ou la refuse depuis le planning ; en attendant, elle n'est pas encaissable.</div>
+    </div>
+    <div><div class="tel"><img src="captures/16-gerant-resa.png" alt=""></div><div class="legende">Nouvelle réservation</div></div>
+  </div>
+</section>
+
+<section>
+  <h3>Encaisser et envoyer le reçu</h3>
+  <div class="bloc">
+    <div>
+      <ol>
+        <li>Appuyez sur <span class="bouton clair">Encaisser</span>, puis choisissez le séjour.</li>
+        <li>Le montant restant est déjà rempli : modifiez-le si le client paie seulement une partie (un acompte).</li>
+        <li>Choisissez le moyen : <b>Espèces</b>, <b>Mobile Money</b> ou <b>Virement</b>. Pour Mobile Money et virement, notez la <b>référence de la transaction</b>.</li>
+        <li>Validez. Loka crée un <b>reçu numéroté</b> (R-00001, R-00002…).</li>
+        <li>Appuyez sur <span class="bouton">Envoyer par WhatsApp</span> : le reçu PDF part directement au client.</li>
+      </ol>
+      <p>Le reçu reprend votre logo, vos informations d'entreprise, le montant en lettres, la réduction éventuelle et ce qui reste à payer.</p>
+    </div>
+    <div><div class="tel"><img src="captures/18-encaisser.png" alt=""></div><div class="legende">Encaisser un séjour</div></div>
+  </div>
+  <div class="bloc gauche" style="grid-template-columns: 62mm 1fr">
+    <div><img src="captures/recu.png" alt="" style="width:100%;border:1px solid var(--bord);border-radius:8px;box-shadow:0 3mm 8mm rgba(30,20,90,.12)"><div class="legende">Exemple de reçu PDF généré par Loka</div></div>
+    <div>
+      <h3 style="margin-top:0">Noter une dépense</h3>
+      <ol>
+        <li>Appuyez sur l'icône de reçu (à côté d'Encaisser), ou sur <b>Dépenses</b> en bas de l'écran.</li>
+        <li>Indiquez <b>pour quoi</b> : tout un site ou un bien précis.</li>
+        <li>Choisissez la <b>catégorie</b> (recharge gaz, ménage, plomberie…), le <b>montant</b> et la date.</li>
+        <li><b>Prenez en photo le reçu</b> du fournisseur : c'est la preuve pour le propriétaire.</li>
+        <li>Envoyez. La dépense attend la validation du propriétaire.</li>
+      </ol>
+      <div class="astuce"><b>Prépayé électricité</b>L'électricité est payée par le client lui-même : ce n'est pas une dépense à noter. Le gaz et le Wi-Fi, payés par le propriétaire, se déclarent en charges fixes (chapitre 7).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. Planning ================= -->
+<section class="chap">
+  <h2><span class="num">5</span>Le planning des réservations</h2>
+  <div class="bloc">
+    <div>
+      <p class="intro">Menu › <b>Réservations</b> (ou <b>Planning</b> en bas de l'écran). Chaque site a son planning sur deux semaines : une ligne par bien, une barre par séjour.</p>
+      <ul>
+        <li>Les flèches <b>‹ ›</b> avancent ou reculent d'une semaine ; un appui sur les dates revient à aujourd'hui.</li>
+        <li><b>Barre pleine</b> : séjour payé. <b>Barre hachurée</b> : pas encore entièrement payé. <b>Barre orange</b> : réduction à valider.</li>
+        <li>Un appui sur une barre ouvre le détail du séjour : prix normal, réduction, déjà payé, et les boutons <b>Encaisser</b> ou <b>Annuler le séjour</b>.</li>
+        <li><span class="bouton">+ Nouvelle réservation</span> fonctionne comme sur l'écran du gérant.</li>
+      </ul>
+      <h3>Valider une réduction <span style="font:600 9pt 'Inter';color:var(--muet)">Propriétaire</span></h3>
+      <p>En haut du planning, le cadre orange <b>Réductions à valider</b> liste les demandes des gérants avec le motif et le pourcentage. Appuyez sur <b>Examiner</b>, puis <span class="bouton">Valider la réduction</span> ou <b>Annuler le séjour</b>.</p>
+    </div>
+    <div><div class="tel"><img src="captures/06-planning.png" alt=""></div><div class="legende">Le planning et les réductions à valider</div></div>
+  </div>
+
+  <!-- ================= 6. Baux ================= -->
+  <h2 style="margin-top:8mm"><span class="num">6</span>Les locations au mois (baux)</h2>
+  <div class="bloc">
+    <div>
+      <p>Menu › <b>Baux</b>. Pour les biens loués au mois, chaque ligne montre le locataire, le loyer et l'état du mois en cours : <b>Payé</b>, <b>Échéance le…</b> ou <b>En retard</b>.</p>
+      <ol>
+        <li><span class="bouton">+ Nouveau bail</span> : choisissez un bien au mois libre, le locataire, la date de début, le loyer, le jour d'échéance et la caution.</li>
+        <li><b>Contrat</b> : génère le contrat de bail en PDF, prêt à imprimer et signer.</li>
+        <li><b>Encaisser</b> : enregistre le loyer du mois (ou une partie) et produit le reçu.</li>
+        <li><b>Relancer</b> : apparaît quand le loyer est en retard ; ouvre WhatsApp avec un message de rappel poli déjà rédigé.</li>
+      </ol>
+    </div>
+    <div><div class="tel"><img src="captures/11-baux.png" alt=""></div><div class="legende">Les baux et l'état des loyers du mois</div></div>
+  </div>
+</section>
+
+<!-- ================= 7. Argent ================= -->
+<section class="chap">
+  <h2><span class="num">7</span>L'argent : encaissements, dépenses, charges</h2>
+  <p class="intro">Menu › <b>Argent</b> (ou <b>Caisse</b> en bas de l'écran). Trois onglets : ce qui entre, ce qui sort au quotidien, et ce qui sort chaque mois.</p>
+  <div class="trio">
+    <div><div class="tel petit"><img src="captures/08-encaissements.png" alt=""></div><div class="legende"><b>Encaissements</b><br>tous les paiements et leurs reçus</div></div>
+    <div><div class="tel petit"><img src="captures/09-depenses.png" alt=""></div><div class="legende"><b>Dépenses</b><br>à valider, puis l'historique</div></div>
+    <div><div class="tel petit"><img src="captures/10-charges.png" alt=""></div><div class="legende"><b>Charges fixes</b><br>gaz, Wi-Fi, gardiennage…</div></div>
+  </div>
+  <table>
+    <thead><tr><th style="width:24%">Onglet</th><th>Ce que vous y faites</th></tr></thead>
+    <tbody>
+      <tr><td>Encaissements</td><td>Retrouvez chaque paiement : date, numéro de reçu, client, moyen, montant. Le bouton <b>Reçu PDF</b> rouvre le reçu pour le renvoyer ou l'imprimer.</td></tr>
+      <tr><td>Dépenses</td><td>Le propriétaire voit en haut les dépenses <b>À valider</b> : il regarde le <b>Justificatif</b> (la photo), puis <b>Accepter</b> ou <b>Refuser</b> (avec un motif). Seules les dépenses acceptées comptent dans le bénéfice.</td></tr>
+      <tr><td>Charges fixes</td><td>Déclarez une fois pour toutes ce que vous payez régulièrement : nom, montant, fréquence (mois, trimestre, année) et ce qu'elle concerne (tous les sites, un site, un bien). Loka la compte chaque mois automatiquement. Une charge retirée reste comptée dans les mois passés.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= 8. Tableau de bord ================= -->
+<section class="chap">
+  <h2><span class="num">8</span>Le tableau de bord du propriétaire</h2>
+  <div class="duo" style="grid-template-columns: 1fr 46mm 46mm; gap: 6mm; align-items:start">
+    <div>
+      <p class="intro">L'<b>Aperçu</b> est la page d'accueil du propriétaire et du comptable. Les flèches <b>‹ ›</b> changent de mois.</p>
+      <ul>
+        <li><b>Encaissé</b> : l'argent reçu dans le mois, avec la courbe des 12 derniers mois.</li>
+        <li><b>Taux d'occupation</b> : nuits vendues sur nuits disponibles.</li>
+        <li><b>Reste à encaisser</b> : séjours et loyers impayés, avec le bouton WhatsApp pour relancer le client.</li>
+        <li><b>Vos sites</b> : l'occupation site par site, puis <b>Charges</b>, <b>Dépenses</b> et <b>Bénéfice</b> du mois.</li>
+        <li><b>En direct de vos gérants</b> : chaque encaissement, réservation ou dépense, au moment où il est fait.</li>
+      </ul>
+      <div class="astuce"><b>Le bénéfice, sans calcul</b>Bénéfice = encaissé − charges fixes du mois − dépenses acceptées. Plus besoin de cahier ni de tableur.</div>
+    </div>
+    <div><div class="tel"><img src="captures/02-apercu.png" alt=""></div><div class="legende">Encaissé et occupation</div></div>
+    <div><div class="tel"><img src="captures/02b-apercu-bas.png" alt=""></div><div class="legende">Sites, bénéfice et activité</div></div>
+  </div>
+
+  <!-- ================= 9. Hors ligne ================= -->
+  <h2 style="margin-top:9mm"><span class="num">9</span>Sans connexion Internet</h2>
+  <p>Le réseau coupe ? Le gérant peut continuer à <b>encaisser</b> et à <b>noter des dépenses</b> (avec photo). Loka les garde sur le téléphone et affiche « gardé sur l'appareil ».</p>
+  <ul>
+    <li>Dès que le réseau revient, tout part automatiquement. Un indicateur en haut de l'écran montre les envois en attente ; un appui permet de les envoyer tout de suite.</li>
+    <li>Aucun risque de doublon : un encaissement renvoyé deux fois n'est compté qu'une fois.</li>
+    <li>Les pages déjà consultées restent lisibles hors connexion. Les <b>réservations</b>, elles, demandent le réseau, pour éviter que deux personnes louent le même bien.</li>
+  </ul>
+</section>
+
+<!-- ================= 10. FAQ ================= -->
+<section class="chap faq">
+  <h2><span class="num">10</span>Questions fréquentes</h2>
+  <table>
+    <thead><tr><th style="width:38%">Question</th><th>Réponse</th></tr></thead>
+    <tbody>
+      <tr><td>Un client paie en deux fois ?</td><td>Encaissez l'acompte, puis le reste plus tard. Chaque paiement a son reçu ; le second indique « Soldé ».</td></tr>
+      <tr><td>Je me suis trompé de dates ou le client annule ?</td><td>Ouvrez le séjour dans le planning et appuyez sur <b>Annuler le séjour</b>, puis refaites la réservation. L'annulation reste tracée.</td></tr>
+      <tr><td>Un bien est en rénovation ?</td><td>Passez-le <b>En travaux</b> : il ne peut plus être réservé. Repassez-le <b>Disponible</b> à la fin des travaux.</td></tr>
+      <tr><td>Mon gérant travaille aussi pour un autre bailleur ?</td><td>Aucun souci : avec le même numéro, il passe d'un espace à l'autre depuis le nom de l'entreprise en haut de l'écran. Chaque bailleur ne voit que ses propres données.</td></tr>
+      <tr><td>Un gérant quitte l'entreprise ?</td><td>Page <b>Gérants</b> › <b>Désactiver</b>. Il ne peut plus se connecter à votre espace ; ce qu'il a saisi reste dans l'historique.</td></tr>
+      <tr><td>Comment voir les chiffres d'un mois passé ?</td><td>Sur l'<b>Aperçu</b>, utilisez la flèche <b>‹</b> à côté du mois.</td></tr>
+      <tr><td>Je préfère un écran sombre le soir.</td><td>Menu › <b>Mode sombre</b>. Le choix est mémorisé pour votre compte.</td></tr>
+      <tr><td>Que se passe-t-il à la fin des 14 jours d'essai ?</td><td>Vos données restent intactes. eYamTech active votre abonnement pour continuer. Sans abonnement, l'espace peut être suspendu : tout reste consultable, mais plus rien ne peut être saisi.</td></tr>
+      <tr><td>Mes données sont-elles en sécurité ?</td><td>Chaque bailleur est cloisonné dans la base de données elle-même : ni un autre bailleur, ni un gérant d'un autre site ne peut voir vos chiffres. Les mots de passe sont chiffrés.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>En résumé : les gestes de tous les jours</h3>
+  <table>
+    <thead><tr><th style="width:38%">Je veux…</th><th>J'appuie sur…</th></tr></thead>
+    <tbody>
+      <tr><td>Louer une villa ce soir</td><td>Accueil › <b>Réserver</b></td></tr>
+      <tr><td>Encaisser et envoyer le reçu</td><td>Accueil › <b>Encaisser</b> › <b>Envoyer par WhatsApp</b></td></tr>
+      <tr><td>Noter un achat de gaz</td><td>Accueil › icône de reçu, avec la photo</td></tr>
+      <tr><td>Valider les demandes des gérants</td><td>La <b>cloche</b> en haut de l'écran</td></tr>
+      <tr><td>Relancer un loyer en retard</td><td><b>Baux</b> › <b>Relancer</b></td></tr>
+      <tr><td>Connaître mon bénéfice du mois</td><td><b>Aperçu</b> › Vos sites</td></tr>
+    </tbody>
+  </table>
+
+  <div class="contact">
+    <div><h3>Besoin d'aide ?</h3><p>Formation et assistance à distance, par WhatsApp, Zoom ou Google Meet.<br>contact@eyamtech.com</p></div>
+    <div class="num">+226 62 82 67 02</div>
+  </div>
+</section>
+
+</body>
+</html>
