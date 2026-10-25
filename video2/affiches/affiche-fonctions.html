@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka – nos fonctionnalités</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="commun.css">
+<style>
+  .affiche { width: 1080px; height: 1350px; background: radial-gradient(900px 700px at 60% 55%, #2A2260 0%, #12101F 60%, #0A0910 100%); }
+  .script { position: absolute; left: 0; right: 0; top: 70px; text-align: center; font: 400 120px 'Great Vibes'; color: #fff; line-height: 1; }
+  .gros { position: absolute; left: 0; right: 0; top: 168px; text-align: center; font: 800 100px 'Sora'; letter-spacing: -0.04em; }
+  .trait { position: absolute; left: 50%; top: 300px; width: 520px; height: 4px; margin-left: -260px; border-radius: 4px; background: linear-gradient(90deg, transparent, #9C8FFF, transparent); box-shadow: 0 0 24px 4px rgba(156,143,255,.7); }
+  .arc { position: absolute; border-radius: 50%; border: 2px solid rgba(156,143,255,.25); }
+  .pile { position: absolute; left: 0; right: 0; top: 380px; perspective: 1600px; }
+  .pastille { position: absolute; height: 118px; border-radius: 26px; display: flex; align-items: center; gap: 26px; padding: 0 36px 0 26px;
+    background: linear-gradient(180deg, #8B7EFF 0%, #6D5DF5 55%, #5747E0 100%); color: #fff;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.4), 0 12px 0 #3B2DB0, 0 28px 50px rgba(0,0,0,.55); transform: rotateX(14deg) rotateZ(-4deg); }
+  .pastille .ic { width: 70px; height: 70px; border-radius: 18px; background: #fff; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .pastille .ic svg { width: 40px; height: 40px; }
+  .pastille .sep { width: 2px; height: 60px; background: rgba(255,255,255,.35); }
+  .pastille b { font: 800 34px/1.1 'Sora'; letter-spacing: -0.01em; text-transform: uppercase; }
+  .bande { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; background: var(--v); display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 44px; font: 700 25px 'Inter'; white-space: nowrap; }
+  .bande span { display: flex; align-items: center; gap: 14px; }
+</style>
+</head>
+<body>
+<div class="affiche">
+  <div class="arc" style="left:-420px;top:420px;width:900px;height:900px"></div>
+  <div class="arc" style="left:-360px;top:480px;width:780px;height:780px"></div>
+  <div class="arc" style="right:-460px;top:180px;width:860px;height:860px"></div>
+  <div class="marque" style="position:absolute;left:56px;top:46px;font-size:34px"><svg width="48" height="48" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#6D5DF5"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#fff"/><circle cx="27.6" cy="29.5" r="1.7" fill="#6D5DF5"/></svg>Loka</div>
+  <div class="script">Nos</div>
+  <div class="gros">FONCTIONNALITÉS</div>
+  <div class="trait"></div>
+
+  <div class="pile">
+    <div class="pastille" style="left:250px;top:0px"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v16H4zM4 10h16M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/></svg></span><span class="sep"></span><b>Réservations<br>sans doublon</b></div>
+    <div class="pastille" style="left:300px;top:140px"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#FF9F1C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg></span><span class="sep"></span><b>Paiement<br>Mobile Money</b></div>
+    <div class="pastille" style="left:230px;top:280px"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#22B573" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.2-2.1c.9.2 1.8.3 2.8.3 5 0 9-3.6 9-8.1S17 3 12 3z"/></svg></span><span class="sep"></span><b>Reçus PDF<br>par WhatsApp</b></div>
+    <div class="pastille" style="left:280px;top:420px"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#FF5C8A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></span><span class="sep"></span><b>Dépenses<br>avec photo</b></div>
+    <div class="pastille" style="left:210px;top:560px"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="sep"></span><b>Bilans<br>en temps réel</b></div>
+    <div class="pastille" style="left:260px;top:700px"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#2F80ED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><path d="M3 3l18 18"/></svg></span><span class="sep"></span><b>Même<br>sans réseau</b></div>
+  </div>
+
+  <div class="bande"><span><svg width="34" height="34" viewBox="0 0 24 24"><path d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.2-2.1c.9.2 1.8.3 2.8.3 5 0 9-3.6 9-8.1S17 3 12 3z" fill="#fff"/></svg>+226 62 82 67 02</span><span>Essai gratuit 14 jours</span><span><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>contact@eyamtech.com</span></div>
+  <div class="grain"></div>
+</div>
+<script>
+  window.DUREE = 0.1; window.TAILLE = { largeur: 1080, hauteur: 1350 }; window.seek = () => {};
+</script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka – pub 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="../video/node_modules/gsap/dist/gsap.min.js"></script>
+<style>
+  :root { --v: #6D5DF5; --vf: #4B3BC9; --vn: #2A1F7A; --vd: #EEEBFF; --encre: #16161D; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: 'Inter', sans-serif; color: #fff;
+    background: radial-gradient(1400px 900px at 50% 45%, #7B6CFA 0%, #5443D8 55%, #2A1F7A 100%); }
+  .scene { position: absolute; inset: 0; }
+  .centre { position: absolute; left: 50%; top: 50%; }
+  .grain { position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: overlay; z-index: 90;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+  .vignette { position: absolute; inset: 0; z-index: 89; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(10,6,40,.55) 100%); }
+
+  /* Fonds */
+  .rayons { position: absolute; left: 50%; top: 50%; width: 3200px; height: 3200px; margin: -1600px; border-radius: 50%;
+    background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.10) 0 9deg, transparent 9deg 18deg); }
+  .anneaux { position: absolute; left: 50%; top: 50%; width: 2600px; height: 2600px; margin: -1300px; border-radius: 50%;
+    background: repeating-radial-gradient(circle, rgba(255,255,255,.09) 0 70px, transparent 70px 140px); }
+  .particule { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: #fff; opacity: .5; }
+
+  /* Tuiles brillantes en relief */
+  .tuile { position: absolute; width: 230px; height: 230px; margin: -115px; border-radius: 56px;
+    background: linear-gradient(160deg, #FFFFFF 0%, #F1EEFF 55%, #DCD5FF 100%);
+    box-shadow: inset 0 3px 0 rgba(255,255,255,.9), inset 0 -10px 18px rgba(109,93,245,.18), 0 22px 0 #B9AEFF, 0 26px 0 #8F80F2, 0 60px 80px rgba(20,10,80,.45);
+    display: flex; align-items: center; justify-content: center; }
+  .tuile svg { width: 112px; height: 112px; }
+  .tuile.petite { width: 150px; height: 150px; margin: -75px; border-radius: 38px; box-shadow: inset 0 2px 0 #fff, 0 14px 0 #B9AEFF, 0 17px 0 #8F80F2, 0 40px 60px rgba(20,10,80,.4); }
+  .tuile.petite svg { width: 72px; height: 72px; }
+  .etiquette-tuile { position: absolute; left: 50%; top: 100%; transform: translate(-50%, 34px); white-space: nowrap; font: 800 30px 'Sora'; color: #fff; text-shadow: 0 4px 16px rgba(20,10,80,.5); }
+
+  /* Titres qui claquent */
+  .claque { position: absolute; left: 0; right: 0; text-align: center; font-family: 'Sora'; font-weight: 800; letter-spacing: -0.04em;
+    color: #fff; text-shadow: 0 10px 0 #3B2DB0, 0 24px 50px rgba(20,10,80,.5); transform-origin: 50% 50%; }
+  .penche { display: inline-block; transform: skewX(-9deg); }
+
+  /* Téléphone */
+  .tel { position: absolute; width: 470px; height: 960px; border-radius: 80px; padding: 11px;
+    background: linear-gradient(140deg, #8A8E95 0%, #2E3136 20%, #55595F 42%, #1D1F22 64%, #6A6E74 86%, #2A2C2F 100%);
+    box-shadow: 0 90px 140px rgba(15,8,60,.6), inset 0 0 0 1.5px rgba(255,255,255,.25); }
+  .tel .bezel { width: 100%; height: 100%; border-radius: 70px; background: #000; padding: 11px; }
+  .tel .ecran { position: relative; width: 100%; height: 100%; border-radius: 60px; overflow: hidden; background: #F6F6F9; color: #16161D; }
+  .tel .ile { position: absolute; top: 16px; left: 50%; width: 130px; height: 38px; margin-left: -65px; background: #000; border-radius: 22px; z-index: 5; }
+  .tel .reflet { position: absolute; inset: 0; border-radius: 60px; z-index: 6; background: linear-gradient(118deg, rgba(255,255,255,.2), rgba(255,255,255,.03) 30%, transparent 45%); }
+  .app-tete { background: var(--v); color: #fff; padding: 70px 24px 22px; border-radius: 0 0 26px 26px; }
+  .kpi { background: #fff; border: 1px solid #E4E4EC; border-radius: 18px; padding: 14px; }
+  .kpi .l { font-size: 13px; color: #62627A; font-weight: 600; } .kpi .v { font: 800 24px 'Sora'; letter-spacing: -0.03em; margin-top: 2px; }
+  .barre { width: 22px; border-radius: 6px; background: #E2DEFD; }
+  .ligne-app { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #EEEEF4; font-size: 14px; }
+  .ligne-app b { font-family: 'Sora'; }
+
+  /* Cartes de fonctions */
+  .carte-f { position: absolute; left: 50%; width: 1060px; height: 168px; margin-left: -530px; border-radius: 40px; display: flex; align-items: center; gap: 34px; padding: 0 44px;
+    background: linear-gradient(180deg, #FFFFFF, #F3F1FF); color: #16161D; box-shadow: 0 16px 0 #B9AEFF, 0 40px 70px rgba(20,10,80,.45); }
+  .carte-f .ic { width: 112px; height: 112px; border-radius: 30px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; box-shadow: inset 0 2px 0 rgba(255,255,255,.5), 0 8px 0 rgba(0,0,0,.15); }
+  .carte-f .ic svg { width: 62px; height: 62px; }
+  .carte-f .t { font: 800 50px 'Sora'; letter-spacing: -0.03em; line-height: 1; }
+  .carte-f .s { font: 600 24px 'Inter'; color: #62627A; margin-top: 8px; }
+
+  /* Réseau de sites */
+  .site { position: absolute; width: 120px; height: 120px; margin: -60px; border-radius: 34px; background: linear-gradient(160deg, #fff, #E6E1FF);
+    box-shadow: 0 12px 0 #B9AEFF, 0 30px 50px rgba(20,10,80,.45); display: flex; align-items: center; justify-content: center; }
+  .site svg { width: 58px; height: 58px; }
+  .site .nom { position: absolute; top: 100%; left: 50%; transform: translate(-50%, 26px); white-space: nowrap; font: 800 28px 'Sora'; }
+
+  .bouton-cta { display: inline-flex; align-items: center; gap: 18px; background: #fff; color: var(--vf); border-radius: 999px; padding: 26px 54px; font: 800 52px 'Sora'; letter-spacing: -0.02em;
+    box-shadow: 0 14px 0 #B9AEFF, 0 36px 70px rgba(20,10,80,.5); }
+  #bug { position: absolute; left: 56px; top: 44px; display: flex; align-items: center; gap: 14px; font: 800 40px 'Sora'; letter-spacing: -0.03em; z-index: 70; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="rayons" id="rayons"></div>
+  <div class="anneaux" id="anneaux" style="opacity:0"></div>
+  <div id="particules"></div>
+
+  <div id="bug"><svg width="54" height="54" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>Loka</div>
+
+  <!-- ============ S1 : tuiles + « Vos villas. Vos loyers. Vos chiffres. » ============ -->
+  <div class="scene" id="s1">
+    <div class="tuile" id="t1" style="left:330px;top:300px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/></svg></div>
+    <div class="tuile" id="t2" style="left:1590px;top:290px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h15a3 3 0 0 1 3 3v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 7l12-4v4M16 13.5h2"/></svg></div>
+    <div class="tuile" id="t3" style="left:380px;top:800px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+    <div class="tuile" id="t4" style="left:1540px;top:810px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v16H4zM4 10h16M8 3v4M16 3v4"/></svg></div>
+    <div class="claque" id="c1" style="top:300px;font-size:170px"><span class="penche">Vos villas.</span></div>
+    <div class="claque" id="c2" style="top:440px;font-size:170px"><span class="penche">Vos loyers.</span></div>
+    <div class="claque" id="c3" style="top:580px;font-size:170px;color:#FFE7A3"><span class="penche">Vos chiffres.</span></div>
+  </div>
+
+  <!-- ============ S2 : logo ============ -->
+  <div class="scene" id="s2" style="opacity:0">
+    <div class="centre" id="logoBloc" style="margin:-200px 0 0 -600px;width:1200px;text-align:center">
+      <div id="logoIcone" style="display:inline-block"><svg width="300" height="300" viewBox="0 0 48 48" style="filter:drop-shadow(0 24px 50px rgba(20,10,80,.5))"><rect width="48" height="48" rx="12" fill="#fff"/><path id="porte" d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg></div>
+      <div id="logoMot" style="font:800 150px 'Sora';letter-spacing:-0.05em;margin-top:6px;text-shadow:0 10px 0 #3B2DB0">Loka</div>
+      <div id="logoSlogan" style="font:700 46px 'Inter';color:#E4E0FF;margin-top:6px">La gestion locative, enfin simple.</div>
+    </div>
+    <div class="centre" id="onde" style="width:300px;height:300px;margin:-350px 0 0 -150px;border-radius:70px;border:6px solid #fff;opacity:0"></div>
+  </div>
+
+  <!-- ============ S3 : téléphone + LOKA géant + tuiles ============ -->
+  <div class="scene" id="s3" style="opacity:0">
+    <div id="geant" style="position:absolute;left:0;right:0;top:250px;text-align:center;font:800 520px 'Sora';letter-spacing:-0.06em;color:transparent;-webkit-text-stroke:5px rgba(255,255,255,.22)">LOKA</div>
+    <div class="tel" id="tel" style="left:725px;top:60px">
+      <div class="bezel"><div class="ecran">
+        <div class="ile"></div>
+        <div class="app-tete">
+          <div style="font-size:15px;opacity:.85">Samedi 24 octobre</div>
+          <div style="font:800 26px 'Sora';letter-spacing:-0.03em;margin-top:2px">Bonjour Issa</div>
+          <div style="font-size:14px;opacity:.85;margin-top:12px">Encaissé en octobre</div>
+          <div style="font:800 40px 'Sora';letter-spacing:-0.04em"><span id="compteur">0</span> <span style="font:600 16px 'Inter'">FCFA</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px">
+          <div class="kpi"><div class="l">Occupation</div><div class="v"><span id="occ">0</span> %</div></div>
+          <div class="kpi"><div class="l">Nuits vendues</div><div class="v" id="nuits">0</div></div>
+        </div>
+        <div style="margin:0 14px;background:#fff;border:1px solid #E4E4EC;border-radius:18px;padding:14px">
+          <div style="font:700 15px 'Sora'">Encaissements</div>
+          <div id="barres" style="display:flex;align-items:flex-end;gap:9px;height:110px;margin-top:10px"></div>
+        </div>
+        <div style="padding:6px 22px">
+          <div class="ligne-app"><span style="width:34px;height:34px;border-radius:10px;background:#EEEBFF;color:#4F3FD6;display:flex;align-items:center;justify-content:center;font:800 12px 'Sora'">B2</span><span style="flex:1">Arrivée · M. Kaboré</span><b>54 000</b></div>
+          <div class="ligne-app"><span style="width:34px;height:34px;border-radius:10px;background:#EEEBFF;color:#4F3FD6;display:flex;align-items:center;justify-content:center;font:800 12px 'Sora'">Z4</span><span style="flex:1">Loyer d'octobre</span><b>150 000</b></div>
+          <div class="ligne-app" style="border:0"><span style="width:34px;height:34px;border-radius:10px;background:#FFF1E0;color:#8A4B00;display:flex;align-items:center;justify-content:center;font:800 12px 'Sora'">A1</span><span style="flex:1">Ménage · photo jointe</span><b style="color:#C23A3A">− 3 000</b></div>
+        </div>
+        <div class="reflet"></div>
+      </div></div>
+    </div>
+    <div class="tuile petite" id="f1" style="left:470px;top:300px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v16H4zM4 10h16M8 3v4M16 3v4"/></svg><span class="etiquette-tuile">Réserver</span></div>
+    <div class="tuile petite" id="f2" style="left:1450px;top:280px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h15a3 3 0 0 1 3 3v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 7l12-4v4M16 13.5h2"/></svg><span class="etiquette-tuile">Encaisser</span></div>
+    <div class="tuile petite" id="f3" style="left:430px;top:740px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg><span class="etiquette-tuile">Dépenses</span></div>
+    <div class="tuile petite" id="f4" style="left:1490px;top:740px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span class="etiquette-tuile">Bilans</span></div>
+  </div>
+
+  <!-- ============ S4 : cartes de fonctions ============ -->
+  <div class="scene" id="s4" style="opacity:0">
+    <div class="carte-f" id="k1" style="top:110px"><div class="ic" style="background:#6D5DF5"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v16H4zM4 10h16M8 3v4M16 3v4"/><path d="m9 15 2 2 4-4"/></svg></div><div><div class="t">Réservé en 10 secondes</div><div class="s">Jamais deux fois la même nuit</div></div></div>
+    <div class="carte-f" id="k2" style="top:300px"><div class="ic" style="background:#FF9F1C"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></svg></div><div><div class="t">Payé par Mobile Money</div><div class="s">Orange Money, Moov Money, Wave…</div></div></div>
+    <div class="carte-f" id="k3" style="top:490px"><div class="ic" style="background:#22B573"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.2-2.1c.9.2 1.8.3 2.8.3 5 0 9-3.6 9-8.1S17 3 12 3z"/></svg></div><div><div class="t">Reçu PDF par WhatsApp</div><div class="s">Avec votre logo, en un toucher</div></div></div>
+    <div class="carte-f" id="k4" style="top:680px"><div class="ic" style="background:#FF5C8A"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2l2-2h6l2 2h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg></div><div><div class="t">Dépense avec photo</div><div class="s">Chaque reçu, chaque franc justifié</div></div></div>
+    <div class="carte-f" id="k5" style="top:870px"><div class="ic" style="background:#2F80ED"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><path d="M3 3l18 18"/></svg></div><div><div class="t">Même sans réseau</div><div class="s">Tout part dès que la connexion revient</div></div></div>
+  </div>
+
+  <!-- ============ S5 : « Et ce n'est pas tout » + réseau de sites ============ -->
+  <div class="scene" id="s5" style="opacity:0">
+    <div class="claque" id="pasTout" style="top:110px;font-size:120px"><span class="penche">Et ce n’est pas tout !!</span></div>
+    <svg id="reseau" width="1920" height="1080" style="position:absolute;inset:0" fill="none">
+      <defs><filter id="lueur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="f"/><feMerge><feMergeNode in="f"/><feMergeNode in="f"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+      <path id="trait" d="M380 640 C 600 420, 760 420, 960 560 S 1320 760, 1540 600" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" filter="url(#lueur)"/>
+      <path id="trait2" d="M960 560 C 980 720, 1000 800, 1010 880" stroke="#FFE7A3" stroke-width="6" stroke-linecap="round" filter="url(#lueur)"/>
+    </svg>
+    <div class="site" id="p1" style="left:380px;top:640px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21H3z"/></svg><span class="nom">Ouaga 2000</span></div>
+    <div class="site" id="p2" style="left:960px;top:560px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5l8-3 8 3v16"/><path d="M9 21v-4h6v4M8 8h.01M12 8h.01M16 8h.01M8 12h.01M12 12h.01M16 12h.01"/></svg><span class="nom" style="transform:translate(-50%,-190px)">Zogona</span></div>
+    <div class="site" id="p3" style="left:1540px;top:600px"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21H3z"/></svg><span class="nom">Bobo-Dioulasso</span></div>
+    <div class="site" id="p4" style="left:1010px;top:900px;width:100px;height:100px;margin:-50px;border-radius:50%"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></div>
+    <div id="sousReseau" style="position:absolute;left:0;right:0;top:300px;text-align:center;font:800 64px 'Sora';letter-spacing:-0.03em">Tous vos sites. Tous vos gérants.</div>
+  </div>
+
+  <!-- ============ S6 : 14 jours gratuits ============ -->
+  <div class="scene" id="s6" style="opacity:0">
+    <div class="centre" style="margin:-330px 0 0 -800px;width:1600px;text-align:center;perspective:1400px">
+      <div id="essai" style="font:800 330px 'Sora';letter-spacing:-0.06em;line-height:.9;text-shadow:0 16px 0 #3B2DB0, 0 40px 80px rgba(20,10,80,.5)"><span class="penche">14 jours</span></div>
+      <div id="gratuits" style="display:inline-block;margin-top:24px;background:#FFE7A3;color:#2A1F7A;border-radius:28px;padding:14px 46px;font:800 92px 'Sora';letter-spacing:-0.03em;transform:rotate(-3deg);box-shadow:0 12px 0 #E0B85C, 0 30px 60px rgba(20,10,80,.45)">GRATUITS</div>
+      <div id="prix" style="margin-top:46px;font:700 54px 'Inter';color:#E4E0FF">puis dès <b style="font-family:'Sora';color:#fff;font-size:68px">25 000 F</b> par mois</div>
+    </div>
+  </div>
+
+  <!-- ============ S7 : fin ============ -->
+  <div class="scene" id="s7" style="opacity:0">
+    <div class="centre" style="margin:-380px 0 0 -800px;width:1600px;text-align:center">
+      <div id="finLogo" style="display:inline-flex;align-items:center;gap:30px"><svg width="170" height="170" viewBox="0 0 48 48" style="filter:drop-shadow(0 20px 40px rgba(20,10,80,.5))"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg><span style="font:800 170px 'Sora';letter-spacing:-0.05em;text-shadow:0 10px 0 #3B2DB0">Loka</span></div>
+      <div id="finSlogan" style="font:700 46px 'Inter';color:#E4E0FF;margin-top:10px">Vos biens, vos loyers, vos chiffres.</div>
+      <div id="finCta" style="margin-top:54px"><span class="bouton-cta"><svg width="56" height="56" viewBox="0 0 24 24"><path d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.2-2.1c.9.2 1.8.3 2.8.3 5 0 9-3.6 9-8.1S17 3 12 3z" fill="#25D366"/></svg>Contactez-nous !</span></div>
+      <div id="finContacts" style="margin-top:46px;display:flex;justify-content:center;gap:60px;font:700 42px 'Inter'">
+        <span>+226 62 82 67 02</span><span style="opacity:.5">·</span><span>contact@eyamtech.com</span>
+      </div>
+      <div id="finDispo" style="margin-top:22px;font:600 30px 'Inter';color:#D9D3FF">Sur Android et sur le web · une application éditée par eYamTech</div>
+    </div>
+  </div>
+
+  <div class="vignette"></div>
+  <div class="grain"></div>
+</div>
+<script>
+// Particules et barres du téléphone (positions fixes : la vidéo est identique à chaque rendu)
+const part = document.getElementById('particules');
+for (let i = 0; i < 26; i++) {
+  const p = document.createElement('div'); p.className = 'particule';
+  const t = 4 + (i * 7) % 12;
+  Object.assign(p.style, { left: ((i * 397) % 1920) + 'px', top: ((i * 613) % 1080) + 'px', width: t + 'px', height: t + 'px', opacity: .18 + (i % 5) * .08 });
+  part.appendChild(p);
+}
+const barres = document.getElementById('barres');
+const hauteurs = [38, 52, 46, 60, 66, 58, 74, 80, 70, 86, 92, 100];
+hauteurs.forEach((h, i) => { const b = document.createElement('div'); b.className = 'barre'; b.style.height = '0%'; b.dataset.h = h; if (i === 11) b.style.background = '#6D5DF5'; barres.appendChild(b); });
+
+const fmt = n => Math.round(n).toLocaleString('fr-FR').replace(/ | /g, ' ');
+const E = 'power3.out', B = 'back.out(1.8)';
+const tl = gsap.timeline({ paused: true });
+const DUREE = 30;
+
+// Fond vivant
+tl.to('#rayons', { rotation: 140, duration: DUREE, ease: 'none' }, 0);
+tl.to('.particule', { y: '-=160', duration: DUREE, ease: 'none', stagger: { each: .1 } }, 0);
+
+// ---------- S1 : 0 → 4 ----------
+[['#t1', -40], ['#t2', 30], ['#t3', 25], ['#t4', -30]].forEach(([s, r], i) => {
+  tl.from(s, { scale: 0, rotation: r * 3, y: 200, duration: .7, ease: 'back.out(2.2)' }, .05 + i * .12)
+    .to(s, { y: '+=-26', rotation: r / 4, duration: 1.4, ease: 'sine.inOut', yoyo: true, repeat: 1 }, .8 + i * .1);
+});
+const claquer = (s, t) => tl.fromTo(s, { scale: 2.6, opacity: 0, filter: 'blur(14px)' }, { scale: 1, opacity: 1, filter: 'blur(0px)', duration: .28, ease: 'power4.out' }, t)
+  .to('#stage', { x: 10, duration: .04, yoyo: true, repeat: 3, ease: 'none' }, t + .26);
+claquer('#c1', .45); claquer('#c2', 1.45); claquer('#c3', 2.35);
+tl.to(['#c1', '#c2', '#c3'], { y: -40, opacity: 0, duration: .3, stagger: .05, ease: 'power2.in' }, 3.55)
+  .to(['#t1', '#t2', '#t3', '#t4'], { left: 960, top: 540, scale: .3, rotation: 360, duration: .55, ease: 'power3.in' }, 3.55)
+  .set('#s1', { opacity: 0 }, 4.1);
+
+// ---------- S2 : logo 4 → 7 ----------
+tl.set('#s2', { opacity: 1 }, 4.0)
+  .from('#logoIcone', { scale: 0, rotation: -200, duration: .7, ease: 'back.out(1.7)' }, 4.0)
+  .fromTo('#onde', { scale: .9, opacity: .9 }, { scale: 3.2, opacity: 0, duration: .9, ease: 'power2.out' }, 4.45)
+  .from('#logoMot', { y: 80, opacity: 0, duration: .5, ease: E }, 4.5)
+  .from('#logoSlogan', { y: 40, opacity: 0, duration: .5, ease: E }, 4.9)
+  .to('#logoBloc', { scale: 1.06, duration: 1.6, ease: 'sine.inOut' }, 5.0)
+  .to('#logoBloc', { scale: .15, x: -830, y: -480, opacity: 0, duration: .55, ease: 'power3.in' }, 6.65)
+  .to('#bug', { opacity: 1, duration: .3 }, 7.0)
+  .set('#s2', { opacity: 0 }, 7.25);
+
+// ---------- S3 : téléphone 7 → 12 ----------
+tl.to('#rayons', { opacity: 0, duration: .5 }, 6.9).to('#anneaux', { opacity: 1, duration: .6 }, 6.9)
+  .fromTo('#anneaux', { scale: .8 }, { scale: 1.25, duration: 5.5, ease: 'none' }, 6.9)
+  .set('#s3', { opacity: 1 }, 7.0)
+  .from('#geant', { scale: 1.6, opacity: 0, duration: .8, ease: E }, 7.0);
+gsap.set('#tel', { transformPerspective: 2000, rotateY: -28, rotateX: 14, rotateZ: 6 });
+tl.from('#tel', { y: 1100, rotateZ: 25, duration: .9, ease: E }, 7.1)
+  .to('#tel', { rotateY: 18, rotateX: 6, rotateZ: -4, duration: 4.4, ease: 'sine.inOut' }, 7.6);
+{ const o = { v: 0 }; tl.to(o, { v: 6128000, duration: 2.2, ease: 'power2.out', onUpdate: () => { document.getElementById('compteur').textContent = fmt(o.v); } }, 7.9); }
+{ const o = { v: 0 }; tl.to(o, { v: 69, duration: 2, ease: 'power2.out', onUpdate: () => { document.getElementById('occ').textContent = Math.round(o.v); } }, 8.0); }
+{ const o = { v: 0 }; tl.to(o, { v: 214, duration: 2, ease: 'power2.out', onUpdate: () => { document.getElementById('nuits').textContent = Math.round(o.v); } }, 8.1); }
+document.querySelectorAll('.barre').forEach((b, i) => tl.to(b, { height: b.dataset.h + '%', duration: .5, ease: 'back.out(2)' }, 8.1 + i * .06));
+[['#f1', 7.7], ['#f2', 8.4], ['#f3', 9.1], ['#f4', 9.8]].forEach(([s, t], i) => {
+  tl.from(s, { scale: 0, rotation: (i % 2 ? 40 : -40), duration: .55, ease: 'back.out(2.4)' }, t)
+    .to(s, { y: '-=22', duration: 1.1, ease: 'sine.inOut', yoyo: true, repeat: 1 }, t + .55);
+});
+tl.to('#tel', { y: -1200, rotateZ: -20, duration: .55, ease: 'power3.in' }, 11.75)
+  .to(['#f1', '#f2', '#f3', '#f4', '#geant'], { scale: 0, opacity: 0, duration: .4, stagger: .04, ease: 'power2.in' }, 11.7)
+  .set('#s3', { opacity: 0 }, 12.35);
+
+// ---------- S4 : cartes 12.3 → 16.6 ----------
+tl.set('#s4', { opacity: 1 }, 12.3).to('#anneaux', { opacity: 0, duration: .4 }, 12.2).to('#rayons', { opacity: 1, duration: .5 }, 12.2);
+['#k1', '#k2', '#k3', '#k4', '#k5'].forEach((s, i) => {
+  tl.from(s, { x: i % 2 ? 1500 : -1500, rotation: i % 2 ? 8 : -8, duration: .55, ease: 'back.out(1.4)' }, 12.4 + i * .5)
+    .from(s + ' .ic', { scale: 0, rotation: -90, duration: .45, ease: 'back.out(2.6)' }, 12.7 + i * .5);
+});
+tl.to('#s4 .carte-f', { scale: 1.03, duration: .3, yoyo: true, repeat: 1, stagger: .06, ease: 'sine.inOut' }, 15.2)
+  .to('#s4 .carte-f', { x: (i) => (i % 2 ? -1600 : 1600), duration: .45, stagger: .05, ease: 'power3.in' }, 16.15)
+  .set('#s4', { opacity: 0 }, 16.75);
+
+// ---------- S5 : pas tout + sites 16.7 → 20.6 ----------
+tl.set('#s5', { opacity: 1 }, 16.7)
+  .fromTo('#pasTout', { scale: 3, opacity: 0, rotation: -6 }, { scale: 1, opacity: 1, rotation: 0, duration: .35, ease: 'power4.out' }, 16.8)
+  .to('#stage', { x: 12, duration: .04, yoyo: true, repeat: 3 }, 17.12)
+  .to('#pasTout', { y: -40, scale: .7, opacity: .0, duration: .4, ease: 'power2.in' }, 18.0);
+['#trait', '#trait2'].forEach((s) => { const L = document.querySelector(s).getTotalLength(); gsap.set(s, { strokeDasharray: L, strokeDashoffset: L }); });
+tl.to('#trait', { strokeDashoffset: 0, duration: 1.4, ease: 'power2.inOut' }, 18.1)
+  .to('#trait2', { strokeDashoffset: 0, duration: .6, ease: 'power2.out' }, 18.9)
+  .from('#p1', { scale: 0, duration: .45, ease: 'back.out(2.4)' }, 18.1)
+  .from('#p2', { scale: 0, duration: .45, ease: 'back.out(2.4)' }, 18.6)
+  .from('#p3', { scale: 0, duration: .45, ease: 'back.out(2.4)' }, 19.2)
+  .from('#p4', { scale: 0, duration: .45, ease: 'back.out(2.4)' }, 19.35)
+  .from('#sousReseau', { y: 50, opacity: 0, duration: .5, ease: E }, 18.4)
+  .to('#s5', { opacity: 0, scale: 1.1, duration: .4, ease: 'power2.in' }, 20.4);
+
+// ---------- S6 : essai 20.8 → 24.6 ----------
+tl.set('#s6', { opacity: 1 }, 20.75)
+  .fromTo('#essai', { rotateX: -90, opacity: 0 }, { rotateX: 0, opacity: 1, duration: .6, ease: 'back.out(1.6)' }, 20.85)
+  .from('#gratuits', { scale: 0, rotation: -40, duration: .5, ease: 'back.out(2.5)' }, 21.6)
+  .to('#stage', { x: 10, duration: .04, yoyo: true, repeat: 3 }, 22.05)
+  .from('#prix', { y: 40, opacity: 0, duration: .5, ease: E }, 23.0)
+  .to('#s6', { opacity: 0, y: -60, duration: .4, ease: 'power2.in' }, 24.4);
+
+// ---------- S7 : fin 24.8 → 30 ----------
+tl.set('#s7', { opacity: 1 }, 24.8)
+  .to('#bug', { opacity: 0, duration: .3 }, 24.6)
+  .from('#finLogo', { scale: .4, opacity: 0, duration: .6, ease: 'back.out(1.7)' }, 24.85)
+  .from('#finSlogan', { y: 40, opacity: 0, duration: .5, ease: E }, 25.3)
+  .from('#finCta', { scale: 0, duration: .55, ease: 'back.out(2.2)' }, 25.6)
+  .from('#finContacts', { y: 40, opacity: 0, duration: .5, ease: E }, 26.1)
+  .from('#finDispo', { opacity: 0, duration: .5 }, 26.5)
+  .to('#finCta', { scale: 1.06, duration: .45, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 26.6)
+  .to({}, { duration: .1 }, DUREE - .1);
+
+window.DUREE = DUREE;
+window.TAILLE = { largeur: 1920, hauteur: 1080 };
+window.seek = (t) => { tl.seek(t, false); };
+window.pret = document.fonts.ready.then(() => true);
+tl.seek(0);
+</script>
+</body>
+</html>

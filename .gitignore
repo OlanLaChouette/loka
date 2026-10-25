@@ -8,3 +8,6 @@ video/out/
 .pgdata/
 frontend/.env.production
 *.apk
+.navigateurs/
+video2/out/
+video2/affiches/rendu/

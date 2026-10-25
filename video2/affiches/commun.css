@@ -1,0 +1,32 @@
+/* Éléments communs aux affiches Loka */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --v: #6D5DF5; --vf: #4B3BC9; --vn: #2A1F7A; --vc: #D9D3FF; }
+body { font-family: 'Inter', sans-serif; color: #fff; }
+.affiche { position: relative; overflow: hidden; }
+.rayons { position: absolute; left: 50%; top: 50%; border-radius: 50%; background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.08) 0 8deg, transparent 8deg 16deg); }
+.grain { position: absolute; inset: 0; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+.marque { display: flex; align-items: center; gap: 14px; font: 800 44px 'Sora'; letter-spacing: -0.03em; }
+.tuile { position: absolute; border-radius: 26%; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, #FFFFFF 0%, #F1EEFF 55%, #DCD5FF 100%);
+  box-shadow: inset 0 3px 0 rgba(255,255,255,.9), 0 14px 0 #B9AEFF, 0 17px 0 #8F80F2, 0 40px 60px rgba(20,10,80,.45); }
+.tuile svg { width: 50%; height: 50%; }
+/* Téléphone */
+.tel { position: absolute; border-radius: 17%/8%; padding: 2.3%;
+  background: linear-gradient(140deg, #8A8E95 0%, #2E3136 20%, #55595F 42%, #1D1F22 64%, #6A6E74 86%, #2A2C2F 100%);
+  box-shadow: 0 60px 120px rgba(15,8,60,.6), inset 0 0 0 1.5px rgba(255,255,255,.25); }
+.tel .bezel { width: 100%; height: 100%; border-radius: 15%/7%; background: #000; padding: 2.4%; }
+.tel .ecran { position: relative; width: 100%; height: 100%; border-radius: 13%/6.2%; overflow: hidden; background: #F6F6F9; color: #16161D; font-size: 15px; }
+.tel .ile { position: absolute; top: 1.8%; left: 50%; width: 28%; height: 4%; transform: translateX(-50%); background: #000; border-radius: 20px; z-index: 5; }
+.tel .reflet { position: absolute; inset: 0; z-index: 6; background: linear-gradient(118deg, rgba(255,255,255,.22), rgba(255,255,255,.03) 30%, transparent 45%); }
+.app-tete { background: var(--v); color: #fff; padding: 22% 7% 7%; border-radius: 0 0 26px 26px; }
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px; }
+.kpi { background: #fff; border: 1px solid #E4E4EC; border-radius: 16px; padding: 12px; }
+.kpi .l { font-size: 12px; color: #62627A; font-weight: 600; } .kpi .v { font: 800 22px 'Sora'; letter-spacing: -0.03em; margin-top: 2px; }
+.graph { margin: 0 14px; background: #fff; border: 1px solid #E4E4EC; border-radius: 16px; padding: 12px; }
+.barres { display: flex; align-items: flex-end; gap: 7px; height: 90px; margin-top: 8px; }
+.barres span { flex: 1; border-radius: 5px; background: #E2DEFD; }
+.barres span:last-child { background: var(--v); }
+.ligne-app { display: flex; align-items: center; gap: 10px; padding: 9px 18px; font-size: 13px; border-bottom: 1px solid #EEEEF4; }
+.ligne-app .r { width: 30px; height: 30px; border-radius: 9px; background: #EEEBFF; color: #4F3FD6; display: flex; align-items: center; justify-content: center; font: 800 11px 'Sora'; }
+.ligne-app b { margin-left: auto; font-family: 'Sora'; }
