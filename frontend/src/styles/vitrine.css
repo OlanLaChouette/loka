@@ -1,0 +1,163 @@
+/* Page d'accueil publique de Loka. Toujours en clair : c'est la vitrine de la marque. */
+.vitrine { --vv: #6D5DF5; --vvf: #4B3BC9; --vvt: #4F3FD6; --vvd: #EEEBFF; --vvc: #D9D3FF; --ve: #16161D; --vm: #5E5E74; --vb: #E6E6EE;
+  background: #fff; color: var(--ve); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.55; overflow-x: hidden; }
+.vitrine h1, .vitrine h2, .vitrine h3 { font-family: 'Sora', 'Inter', sans-serif; letter-spacing: -0.025em; margin: 0; }
+.vitrine p { margin: 0; }
+.vt-cadre { width: min(1160px, 100% - 32px); margin: 0 auto; }
+.vt-etroit { width: min(780px, 100% - 32px); }
+
+/* En-tête */
+.vt-entete { position: sticky; top: 0; z-index: 30; background: rgba(255, 255, 255, .88); backdrop-filter: blur(12px); border-bottom: 1px solid var(--vb); padding-top: var(--haut-sur, 0px); }
+.vt-entete-ligne { display: flex; align-items: center; gap: 20px; height: 64px; }
+.vt-marque { display: inline-flex; align-items: center; gap: 10px; font: 700 22px 'Sora', sans-serif; letter-spacing: -0.02em; color: var(--ve); text-decoration: none; }
+.vt-marque.petit { font-size: 17px; }
+.vt-nav { display: flex; align-items: center; gap: 26px; margin-left: auto; }
+.vt-nav a { color: var(--vm); text-decoration: none; font-weight: 500; font-size: 15px; }
+.vt-nav a:hover { color: var(--vvt); }
+.vt-nav .vt-nav-connexion { color: var(--ve); font-weight: 600; }
+.vt-burger { display: none; margin-left: auto; width: 44px; height: 44px; border: 1px solid var(--vb); border-radius: 12px; background: #fff; color: var(--ve); align-items: center; justify-content: center; cursor: pointer; }
+
+/* Boutons */
+.vt-bouton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 24px; border-radius: 14px; background: var(--vv); color: #fff; font-weight: 700; font-size: 16px; text-decoration: none; border: 0; cursor: pointer;
+  box-shadow: 0 6px 0 var(--vvf), 0 14px 30px rgba(77, 59, 201, .28); transition: transform .12s ease, box-shadow .12s ease; text-align: center; }
+.vt-bouton:hover { transform: translateY(-1px); }
+.vt-bouton:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--vvf), 0 6px 14px rgba(77, 59, 201, .25); }
+.vt-bouton.petit { min-height: 42px; padding: 0 16px; font-size: 14.5px; box-shadow: 0 4px 0 var(--vvf); }
+.vt-bouton.clair { background: var(--vvd); color: var(--vvt); box-shadow: none; }
+.vt-bouton.blanc { background: #fff; color: var(--vvf); box-shadow: 0 6px 0 var(--vvc), 0 14px 30px rgba(20, 10, 80, .3); }
+.vt-bouton.contour { background: transparent; color: #fff; border: 2px solid rgba(255, 255, 255, .6); box-shadow: none; }
+.vt-bouton:focus-visible, .vitrine a:focus-visible, .vitrine button:focus-visible { outline: 3px solid var(--vvc); outline-offset: 3px; }
+
+/* Héros */
+.vt-heros { position: relative; padding: 64px 0 40px; background: radial-gradient(900px 600px at 85% 30%, #E8E4FF 0%, rgba(232, 228, 255, 0) 70%), linear-gradient(180deg, #FAF9FF 0%, #fff 100%); }
+.vt-heros-grille { display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; }
+.vt-pastille { display: inline-block; background: var(--vvd); color: var(--vvt); font-weight: 600; font-size: 13.5px; padding: 6px 12px; border-radius: 999px; }
+.vt-heros h1 { font-size: clamp(38px, 6vw, 66px); line-height: 1.02; font-weight: 800; margin: 18px 0 18px; letter-spacing: -0.045em; }
+.vt-heros h1 em { font-style: normal; color: var(--vv); }
+.vt-chapeau { font-size: clamp(17px, 2vw, 19px); color: var(--vm); max-width: 560px; }
+.vt-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+.vt-garanties { display: flex; flex-wrap: wrap; gap: 8px 20px; list-style: none; padding: 0; margin: 22px 0 0; color: var(--vm); font-size: 14.5px; }
+.vt-garanties li { display: inline-flex; align-items: center; gap: 6px; }
+.vt-garanties svg { color: var(--vv); }
+
+.vt-heros-visuel { position: relative; height: 560px; }
+.vt-halo { position: absolute; inset: 8% 6%; border-radius: 50%; background: radial-gradient(circle, rgba(109, 93, 245, .35) 0%, rgba(109, 93, 245, 0) 65%); }
+.vt-tel { border-radius: 38px; background: #1B1B22; padding: 8px; box-shadow: 0 30px 70px rgba(30, 20, 90, .28), inset 0 0 0 2px #3A3A46; }
+.vt-tel img { display: block; width: 100%; height: auto; border-radius: 30px; }
+.vt-heros-visuel .vt-tel { position: absolute; width: 250px; }
+.vt-heros-visuel .avant { left: 46%; top: 20px; transform: rotate(5deg); animation: vt-flotte 6s ease-in-out infinite; }
+.vt-heros-visuel .arriere { left: 8%; top: 70px; transform: rotate(-7deg); opacity: .96; animation: vt-flotte 6s ease-in-out -3s infinite; }
+@keyframes vt-flotte { 0%, 100% { translate: 0 0; } 50% { translate: 0 -10px; } }
+.vt-bulle { position: absolute; display: inline-flex; align-items: center; gap: 8px; background: #fff; border-radius: 14px; padding: 10px 14px; font-weight: 600; font-size: 14px; box-shadow: 0 14px 30px rgba(30, 20, 90, .16); white-space: nowrap; }
+.vt-bulle svg { color: var(--vv); }
+.vt-bulle.b1 { left: 0; bottom: 70px; }
+.vt-bulle.b2 { right: 0; top: 40px; }
+
+/* Bande de points forts */
+.vt-bande { background: var(--ve); color: #fff; padding: 22px 0; }
+.vt-bande-grille { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.vt-bande b { display: block; font-family: 'Sora', sans-serif; font-size: 16px; }
+.vt-bande span { color: #B9B6CC; font-size: 14px; }
+
+/* Sections */
+.vt-section { padding: 88px 0; }
+.vt-gris { background: #F6F6FA; }
+.vt-titre-section { text-align: center; max-width: 720px; margin: 0 auto 44px; }
+.vt-surtitre { display: inline-block; color: var(--vvt); font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; }
+.vitrine h2 { font-size: clamp(28px, 4vw, 42px); line-height: 1.1; font-weight: 800; }
+
+.vt-fonctions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.vt-fonction { border: 1px solid var(--vb); border-radius: 20px; padding: 26px; background: #fff; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+.vt-fonction:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(30, 20, 90, .1); border-color: var(--vvc); }
+.vt-icone { display: inline-flex; width: 48px; height: 48px; border-radius: 14px; align-items: center; justify-content: center; background: var(--vvd); color: var(--vv); margin-bottom: 16px; }
+.vt-fonction h3 { font-size: 19px; margin-bottom: 6px; }
+.vt-fonction p { color: var(--vm); font-size: 15.5px; }
+
+.vt-duo-section { background: linear-gradient(180deg, #fff 0%, #F7F6FF 100%); }
+.vt-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.vt-duo h2 { margin-bottom: 26px; }
+.vt-duo-visuel { position: relative; display: flex; justify-content: center; }
+.vt-duo-visuel .vt-tel { width: min(280px, 70vw); }
+.vt-recu { position: absolute; right: 2%; bottom: -20px; width: min(230px, 46%); border-radius: 10px; box-shadow: 0 20px 50px rgba(30, 20, 90, .2); transform: rotate(4deg); background: #fff; }
+.vt-liste { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+.vt-liste li { display: flex; gap: 14px; align-items: flex-start; font-size: 16.5px; color: #33334A; }
+.vt-liste svg { flex: 0 0 auto; color: var(--vv); margin-top: 3px; }
+
+/* Étapes */
+.vt-fonce { background: linear-gradient(150deg, #6D5DF5 0%, #4B3BC9 100%); color: #fff; }
+.vt-fonce .vt-surtitre { color: var(--vvc); }
+.vt-etapes { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; counter-reset: none; }
+.vt-etapes li { background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .2); border-radius: 20px; padding: 26px; }
+.vt-numero { display: inline-flex; width: 40px; height: 40px; border-radius: 12px; background: #fff; color: var(--vvf); font: 800 18px 'Sora', sans-serif; align-items: center; justify-content: center; margin-bottom: 14px; }
+.vt-etapes h3 { font-size: 20px; margin-bottom: 6px; }
+.vt-etapes p { color: #E4E0FF; }
+.vt-centre { text-align: center; margin-top: 36px; }
+
+/* Tarif */
+.vt-tarif { display: flex; justify-content: center; }
+.vt-tarif-carte { width: min(520px, 100%); border: 2px solid var(--vv); border-radius: 26px; padding: 34px; box-shadow: 0 0 0 6px var(--vvd), 0 30px 60px rgba(30, 20, 90, .12); text-align: center; }
+.vt-prix { font: 800 54px/1 'Sora', sans-serif; letter-spacing: -0.04em; margin: 18px 0 12px; }
+.vt-prix small { font: 600 16px 'Inter', sans-serif; letter-spacing: 0; color: var(--vm); }
+.vt-tarif-carte > p { color: var(--vm); font-size: 15px; }
+.vt-tarif-carte ul { list-style: none; padding: 0; margin: 22px 0 26px; text-align: left; display: flex; flex-direction: column; gap: 10px; }
+.vt-tarif-carte li { display: flex; gap: 10px; align-items: flex-start; }
+.vt-tarif-carte li svg { color: var(--vv); flex: 0 0 auto; margin-top: 3px; }
+.vt-tarif-carte .vt-bouton { width: 100%; }
+
+/* Questions */
+.vt-questions { display: flex; flex-direction: column; gap: 12px; }
+.vt-question { background: #fff; border: 1px solid var(--vb); border-radius: 16px; }
+.vt-question button { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 20px; background: none; border: 0; font: 600 16.5px 'Inter', sans-serif; color: var(--ve); text-align: left; cursor: pointer; min-height: 56px; }
+.vt-question button svg { flex: 0 0 auto; color: var(--vm); transition: transform .2s ease; }
+.vt-question.ouverte button svg { transform: rotate(180deg); }
+.vt-question p { padding: 0 20px 18px; color: var(--vm); }
+
+/* Appel final */
+.vt-appel { display: flex; justify-content: space-between; align-items: center; gap: 30px; flex-wrap: wrap; background: var(--ve); color: #fff; border-radius: 28px; padding: 48px; position: relative; overflow: hidden; }
+.vt-appel::after { content: ''; position: absolute; right: -80px; top: -80px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(109, 93, 245, .55), rgba(109, 93, 245, 0) 70%); }
+.vt-appel > * { position: relative; z-index: 1; }
+.vt-appel p { color: #C9C6DA; margin-top: 10px; max-width: 520px; }
+.vt-appel .vt-actions { margin-top: 0; }
+
+.vt-pied { border-top: 1px solid var(--vb); padding: 28px 0 calc(28px + var(--bas-sur, 0px)); color: var(--vm); font-size: 14px; }
+.vt-pied-ligne { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.vt-pied a { color: var(--vvt); text-decoration: none; font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) { .vt-heros-visuel .vt-tel { animation: none; } .vt-bouton, .vt-fonction { transition: none; } }
+
+/* Tablette */
+@media (max-width: 980px) {
+  .vt-heros-grille, .vt-duo { grid-template-columns: 1fr; }
+  .vt-heros { padding-top: 44px; }
+  .vt-heros-visuel { height: 480px; max-width: 520px; width: 100%; margin: 0 auto; }
+  .vt-fonctions, .vt-etapes { grid-template-columns: 1fr 1fr; }
+  .vt-bande-grille { grid-template-columns: 1fr 1fr; }
+  .vt-duo.inverse .vt-duo-visuel { order: -1; }
+  .vt-duo { gap: 44px; }
+}
+
+/* Téléphone */
+@media (max-width: 760px) {
+  .vt-burger { display: inline-flex; }
+  .vt-nav { display: none; position: absolute; left: 0; right: 0; top: calc(64px + var(--haut-sur, 0px)); flex-direction: column; align-items: stretch; gap: 0; background: #fff; border-bottom: 1px solid var(--vb); padding: 8px 16px 16px; box-shadow: 0 20px 40px rgba(30, 20, 90, .1); }
+  .vt-nav.ouvert { display: flex; }
+  .vt-nav a { padding: 14px 4px; border-bottom: 1px solid var(--vb); font-size: 16px; }
+  .vt-nav a:last-child { border-bottom: 0; }
+  .masquer-petit { display: none; }
+  .vt-section { padding: 64px 0; }
+  .vt-actions .vt-bouton { width: 100%; }
+  .vt-heros-visuel { height: 420px; }
+  .vt-heros-visuel .vt-tel { width: 190px; border-radius: 30px; padding: 6px; }
+  .vt-heros-visuel .vt-tel img { border-radius: 24px; }
+  .vt-heros-visuel .avant { left: auto; right: 4%; }
+  .vt-heros-visuel .arriere { left: 4%; }
+  .vt-bulle { font-size: 13px; padding: 8px 12px; }
+  .vt-bulle.b1 { bottom: 30px; }
+  .vt-bulle.b2 { top: 4px; }
+  .vt-fonctions, .vt-etapes, .vt-bande-grille { grid-template-columns: 1fr; }
+  .vt-bande-grille { gap: 12px; }
+  .vt-appel { padding: 32px 24px; }
+  .vt-tarif-carte { padding: 26px 20px; }
+  .vt-prix { font-size: 44px; }
+  .vt-pied-ligne { flex-direction: column; text-align: center; }
+}

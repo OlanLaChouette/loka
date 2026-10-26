@@ -8,7 +8,9 @@ import './styles/app.css';
 import { SessionProvider, useSession } from './lib/session';
 import Cadre from './composants/Cadre';
 import { Chargement } from './composants/Ui';
+import { Capacitor } from '@capacitor/core';
 import Connexion from './pages/Connexion';
+import Vitrine from './pages/Vitrine';
 import Inscription from './pages/Inscription';
 import MotDePasseOublie from './pages/MotDePasseOublie';
 import Apercu from './pages/Apercu';
@@ -29,7 +31,8 @@ const persistance = createSyncStoragePersister({ storage: window.localStorage, k
 function Garde({ children, roles }) {
   const { pret, utilisateur, role, espace } = useSession();
   if (!pret) return <Chargement />;
-  if (!utilisateur) return <Navigate to="/connexion" replace />;
+  // Sur le site, un visiteur arrive sur la présentation de Loka ; dans l'application Android, directement à la connexion.
+  if (!utilisateur) return <Navigate to={Capacitor.isNativePlatform() ? '/connexion' : '/bienvenue'} replace />;
   if (!espace && !utilisateur.est_admin_plateforme) return <div className="page"><div className="info">Votre compte n’est rattaché à aucun espace bailleur pour l’instant.</div></div>;
   if (!espace) return <Navigate to="/plateforme" replace />;
   if (roles && !roles.includes(role)) return <Navigate to={role === 'gerant' ? '/terrain' : '/'} replace />;
@@ -46,6 +49,7 @@ function Application() {
   return (
     <Routes>
       <Route path="/connexion" element={pret && utilisateur ? <Navigate to="/" replace /> : <Connexion />} />
+      <Route path="/bienvenue" element={<Vitrine />} />
       <Route path="/inscription" element={pret && utilisateur ? <Navigate to="/" replace /> : <Inscription />} />
       <Route path="/mot-de-passe-oublie" element={pret && utilisateur ? <Navigate to="/" replace /> : <MotDePasseOublie />} />
       <Route element={<Cadre />}>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { Capacitor } from '@capacitor/core';
 import { Bell, Check, ChevronDown, KeyRound, LayoutGrid, LogOut, Menu, Moon, Receipt, CalendarDays, Sun, Wallet, Shield, RefreshCw, WifiOff, X, ChevronRight } from 'lucide-react';
 import { useSession } from '../lib/session';
 import { api } from '../lib/api';
@@ -172,7 +173,7 @@ export default function Cadre() {
   const nav = useNavigate();
   useEffect(() => { setVolet(false); }, [lieu.pathname]);
   if (!pret) return <Chargement />;
-  if (!utilisateur) return <Navigate to="/connexion" replace />;
+  if (!utilisateur) return <Navigate to={Capacitor.isNativePlatform() ? '/connexion' : '/bienvenue'} replace />;
   const onglets = espace ? ONGLETS.filter(o => !o.roles || o.roles.includes(role)) : [];
   const ongletsHaut = utilisateur.est_admin_plateforme ? [...onglets, { a: '/plateforme', label: 'Administration' }] : onglets;
 
