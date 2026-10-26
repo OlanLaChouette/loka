@@ -57,7 +57,7 @@
   .attention { background: var(--alerte-fond); border-left: 4px solid #E0A04A; }
   .astuce b:first-child, .attention b:first-child { display: block; margin-bottom: 1mm; }
 
-  .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 4mm 0 6mm; }
+  .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 3mm 0 3mm; }
   .role { border: 1px solid var(--bord); border-top: 4px solid var(--v); border-radius: 8px; padding: 3.5mm 4mm; font-size: 9.3pt; break-inside: avoid; }
   .role b { display: block; font: 700 11pt 'Sora'; margin-bottom: 1.5mm; }
   .role ul { margin: 0 0 0 4mm; } .role li { margin-bottom: .8mm; }
@@ -70,13 +70,14 @@
   tbody tr:nth-child(even) td { background: #F8F8FB; }
 
   .sommaire { list-style: none; margin: 0; columns: 2; column-gap: 10mm; }
-  .sommaire li { display: flex; gap: 3mm; padding: 2.4mm 0; border-bottom: 1px solid var(--bord); break-inside: avoid; }
+  .sommaire li { display: flex; gap: 3mm; padding: 1.5mm 0; border-bottom: 1px solid var(--bord); break-inside: avoid; }
   .sommaire li span { color: var(--vt); font: 700 10pt 'Sora'; width: 6mm; }
   .contact { background: var(--v); color: #fff; border-radius: 12px; padding: 6mm 7mm; margin-top: 6mm; break-inside: avoid; display: flex; justify-content: space-between; gap: 6mm; align-items: center; }
   .contact h3 { color: #fff; margin: 0 0 1mm; }
   .contact p { margin: 0; color: #E4E0FF; }
   .contact .num { font: 800 15pt 'Sora'; color: #fff; white-space: nowrap; text-align: right; }
   .faq table { font-size: 8.9pt; margin-bottom: 3mm; } .faq td, .faq th { padding: 1.5mm 3mm; } .faq h3 { margin-top: 3mm; } .faq .contact { margin-top: 4mm; padding: 4.5mm 6mm; }
+  .ouverture td, .ouverture th { padding: 1.5mm 3mm; } .ouverture h3 { margin-top: 4mm; } .ouverture .intro { margin-bottom: 3mm; }
 </style>
 </head>
 <body>
@@ -103,7 +104,7 @@
 </div>
 
 <!-- ================= 1. Bienvenue ================= -->
-<section>
+<section class="ouverture">
   <h2><span class="num">1</span>Bienvenue dans Loka</h2>
   <p class="intro">Loka sert à gérer vos biens loués <b>à la nuit</b> (villas meublées, appartements) et <b>au mois</b> (baux). Vous y suivez les réservations, l'argent encaissé, les dépenses de vos gérants et votre bénéfice réel, site par site.</p>
 
@@ -124,7 +125,7 @@
       <tr><td>Ordinateur ou iPhone</td><td>Ouvrez <b>loka.eyamtech.com</b> dans votre navigateur. Mêmes comptes, mêmes données.</td></tr>
     </tbody>
   </table>
-  <div class="attention"><b>Première ouverture de la journée</b>Pendant la période de test, le serveur se met en veille quand personne ne l'utilise. La première connexion peut donc prendre jusqu'à une minute : patientez, les suivantes sont immédiates.</div>
+  <div class="attention"><b>Première ouverture de la journée</b>Le serveur se met en veille quand personne ne l'utilise : la première connexion peut prendre jusqu'à une minute. Les suivantes sont immédiates.</div>
 
   <h3>Sommaire</h3>
   <ol class="sommaire">
