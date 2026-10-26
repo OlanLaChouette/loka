@@ -192,6 +192,11 @@ table.tableau { width: 100%; border-collapse: collapse; font-size: 14px; }
 .ecran-connexion form { max-width: 380px; width: 100%; margin: auto; display: flex; flex-direction: column; gap: 16px; padding: 24px; }
 @media (max-width: 860px) { .ecran-connexion { grid-template-columns: 1fr; } .ecran-connexion .cote { display: none; } .ecran-connexion form { padding-top: calc(24px + var(--haut-sur)); } }
 .marque-connexion { display: none; }
+.lien { background: none; border: 0; padding: 0; color: var(--violet-texte); font: inherit; font-weight: 600; text-decoration: none; cursor: pointer; }
+.lien:hover { text-decoration: underline; }
+.lien:disabled { opacity: .5; cursor: default; }
+.appel-inscription { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; padding-top: 18px; border-top: 1px solid var(--bord); font-size: 14px; color: var(--muet); text-align: center; }
+.appel-inscription .bouton { min-height: 46px; justify-content: center; }
 @media (max-width: 860px) { .marque-connexion { display: flex; margin-bottom: 8px; } }
 
 .vide { text-align: center; padding: 40px 20px; color: var(--muet); }

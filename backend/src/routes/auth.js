@@ -18,6 +18,14 @@ async function espacesDe(utilisateurId) {
   }));
 }
 
+// Réponse d'ouverture de session : jeton, profil et espaces de la personne.
+async function sessionDe(utilisateur) {
+  await definir('app.utilisateur_id', utilisateur.id);
+  const jeton = jwt.sign({ id: utilisateur.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
+  const { mot_de_passe_hash, ...profil } = utilisateur.toJSON();
+  return { jeton, utilisateur: profil, espaces: await espacesDe(utilisateur.id) };
+}
+
 // Connexion par téléphone ou e-mail.
 router.post('/connexion', limiteur, route(async (req, res) => {
   const { identifiant, mot_de_passe } = req.body || {};
@@ -27,10 +35,7 @@ router.post('/connexion', limiteur, route(async (req, res) => {
   if (!utilisateur || !utilisateur.actif || !(await bcrypt.compare(mot_de_passe, utilisateur.mot_de_passe_hash))) {
     throw new Erreur(401, 'Identifiant ou mot de passe incorrect');
   }
-  await definir('app.utilisateur_id', utilisateur.id);
-  const jeton = jwt.sign({ id: utilisateur.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '7d' });
-  const { mot_de_passe_hash, ...profil } = utilisateur.toJSON();
-  res.json({ jeton, utilisateur: profil, espaces: await espacesDe(utilisateur.id) });
+  res.json(await sessionDe(utilisateur));
 }));
 
 router.get('/moi', authentifier, route(async (req, res) => {
@@ -53,4 +58,4 @@ router.patch('/moi/mot-de-passe', authentifier, route(async (req, res) => {
   res.json({ ok: true });
 }));
 
-module.exports = { router, espacesDe };
+module.exports = { router, espacesDe, sessionDe };

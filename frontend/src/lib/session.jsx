@@ -40,6 +40,10 @@ export function SessionProvider({ children }) {
       ...etat, espace, role: espace?.role,
       async connecter(identifiant, mot_de_passe) {
         const { data } = await api.post('/auth/connexion', { identifiant, mot_de_passe });
+        return valeur.ouvrir(data);
+      },
+      // Ouvre la session à partir d'une réponse du serveur (connexion, inscription, nouveau mot de passe).
+      ouvrir(data) {
         stockage.definirJeton(data.jeton);
         memoriser(data);
         const premier = data.espaces[0]?.id || null;

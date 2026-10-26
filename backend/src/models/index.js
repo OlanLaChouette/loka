@@ -37,7 +37,21 @@ const Bailleur = sequelize.define('Bailleur', {
   essai_fin: DataTypes.DATEONLY,
   limite_reduction_defaut: { type: DataTypes.INTEGER, defaultValue: 10, validate: { min: 0, max: 100 } },
   dernier_numero_recu: { type: DataTypes.INTEGER, defaultValue: 0 },
+  origine: { type: DataTypes.ENUM('plateforme', 'inscription'), defaultValue: 'plateforme' },
 }, { tableName: 'bailleurs' });
+
+// Codes envoyés par e-mail : création d'un espace par le bailleur lui-même, mot de passe oublié.
+// Pour une inscription, le compte n'est créé qu'une fois le code saisi : `donnees` le garde en attendant.
+const Verification = sequelize.define('Verification', {
+  id,
+  objet: { type: DataTypes.ENUM('inscription', 'mot_de_passe'), allowNull: false },
+  email: { type: DataTypes.STRING(160), allowNull: false },
+  code_hash: { type: DataTypes.STRING(64), allowNull: false },
+  donnees: { type: DataTypes.JSONB, defaultValue: {} },
+  expire_le: { type: DataTypes.DATE, allowNull: false },
+  tentatives: { type: DataTypes.INTEGER, defaultValue: 0 },
+  envois: { type: DataTypes.INTEGER, defaultValue: 1 },
+}, { tableName: 'verifications' });
 
 // Lien entre une personne et un espace bailleur. Une personne peut appartenir à plusieurs espaces.
 const Membre = sequelize.define('Membre', {
@@ -196,4 +210,4 @@ Depense.belongsTo(Site, { foreignKey: 'site_id' });
 Depense.belongsTo(Utilisateur, { foreignKey: 'saisie_par', as: 'auteur' });
 Journal.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
 
-module.exports = { sequelize, Utilisateur, Bailleur, Membre, Site, Bien, Client, Reservation, Bail, Paiement, ChargeFixe, Depense, Journal, Fichier };
+module.exports = { sequelize, Utilisateur, Bailleur, Verification, Membre, Site, Bien, Client, Reservation, Bail, Paiement, ChargeFixe, Depense, Journal, Fichier };

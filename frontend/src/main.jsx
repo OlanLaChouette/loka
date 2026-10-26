@@ -9,6 +9,8 @@ import { SessionProvider, useSession } from './lib/session';
 import Cadre from './composants/Cadre';
 import { Chargement } from './composants/Ui';
 import Connexion from './pages/Connexion';
+import Inscription from './pages/Inscription';
+import MotDePasseOublie from './pages/MotDePasseOublie';
 import Apercu from './pages/Apercu';
 import Terrain from './pages/Terrain';
 import Biens from './pages/Biens';
@@ -44,6 +46,8 @@ function Application() {
   return (
     <Routes>
       <Route path="/connexion" element={pret && utilisateur ? <Navigate to="/" replace /> : <Connexion />} />
+      <Route path="/inscription" element={pret && utilisateur ? <Navigate to="/" replace /> : <Inscription />} />
+      <Route path="/mot-de-passe-oublie" element={pret && utilisateur ? <Navigate to="/" replace /> : <MotDePasseOublie />} />
       <Route element={<Cadre />}>
         <Route path="/" element={<Garde><Accueil /></Garde>} />
         <Route path="/terrain" element={<Garde><Terrain /></Garde>} />

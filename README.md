@@ -45,6 +45,15 @@ L'application appelle l'API indiquée par `VITE_API_URL` (`frontend/.env`, voir 
 Sans réseau, l'application garde les encaissements et les dépenses (photos comprises) sur le téléphone et les envoie
 au retour de la connexion, sans doublon. Les réservations demandent le réseau, pour ne jamais vendre deux fois la même nuit.
 
+## Inscription en libre-service et e-mails
+
+Un bailleur peut créer son espace depuis l'écran de connexion (« Créer mon espace ») : il reçoit un code à 6 chiffres
+par e-mail, et son espace s'ouvre en essai de 14 jours. L'activation reste faite par l'administration Loka.
+« Mot de passe oublié » fonctionne de la même façon pour tout compte qui a une adresse e-mail.
+
+Les e-mails partent par l'API de Brevo (`BREVO_API_KEY`), depuis `COURRIEL_EXPEDITEUR` sous le nom `COURRIEL_NOM`.
+Chaque nouvel espace est signalé à `ADMIN_COURRIEL`. Sans clé, en local, les e-mails s'affichent dans la console de l'API.
+
 ## Mise en ligne (gratuite)
 
 - API et site : Render, offre gratuite (`render.yaml`). L'API se met en veille après 15 minutes sans visite ;

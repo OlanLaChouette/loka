@@ -227,3 +227,58 @@ test('mise en route d\u2019un espace vide : site, lot de biens, gérant, mot de 
   assert.equal((await appel('POST', `/api/plateforme/bailleurs/${esp}/mot-de-passe`, { jeton: admin.jeton, corps: { mot_de_passe: 'retrouve-1' } })).statut, 200);
   assert.ok((await appel('POST', '/api/auth/connexion', { corps: { identifiant: '70999999', mot_de_passe: 'retrouve-1' } })).corps.jeton);
 });
+
+test('un bailleur crée lui-même son espace après vérification de son e-mail', async () => {
+  const { envoyes } = require('../src/services/courriel');
+  const dernierCode = () => envoyes.at(-1).texte.match(/\b(\d{6})\b/)[1];
+  const formulaire = { nom: 'Aïcha Test', entreprise: 'Villas du Lac', ville: 'Koudougou', telephone: '70 77 77 77', email: 'Aicha@Exemple.test', mot_de_passe: 'mon-mot-de-passe' };
+  // Numéro ou adresse déjà utilisés : refus, rien n'est envoyé.
+  assert.equal((await appel('POST', '/api/comptes/inscription', { corps: { ...formulaire, telephone: '70111111' } })).statut, 409);
+  const demande = await appel('POST', '/api/comptes/inscription', { corps: formulaire });
+  assert.equal(demande.statut, 201);
+  assert.equal(envoyes.at(-1).a, 'aicha@exemple.test');
+  assert.match(envoyes.at(-1).sujet, /^Loka · /);
+  const code = dernierCode();
+  // Tant que le code n'est pas saisi, aucun compte n'existe.
+  assert.equal((await appel('POST', '/api/auth/connexion', { corps: { identifiant: '70777777', mot_de_passe: formulaire.mot_de_passe } })).statut, 401);
+  // Les essais ratés sont comptés, même si la requête échoue.
+  const faux = code === '000000' ? '111111' : '000000';
+  assert.match((await appel('POST', '/api/comptes/inscription/verifier', { corps: { id: demande.corps.id, code: faux } })).corps.message, /Encore 4 essais/);
+  assert.match((await appel('POST', '/api/comptes/inscription/verifier', { corps: { id: demande.corps.id, code: faux } })).corps.message, /Encore 3 essais/);
+  const ok = await appel('POST', '/api/comptes/inscription/verifier', { corps: { id: demande.corps.id, code } });
+  assert.equal(ok.statut, 201);
+  assert.ok(ok.corps.jeton);
+  assert.equal(ok.corps.espaces.length, 1);
+  assert.equal(ok.corps.espaces[0].role, 'proprietaire');
+  assert.equal(ok.corps.espaces[0].statut, 'essai');
+  assert.match(envoyes.at(-1).sujet, /Nouvel espace : Villas du Lac/);
+  // Le code ne sert qu'une fois ; l'espace reste en essai et l'administration le voit.
+  assert.equal((await appel('POST', '/api/comptes/inscription/verifier', { corps: { id: demande.corps.id, code } })).statut, 400);
+  const admin = await connecter('70000000');
+  const b = (await appel('GET', '/api/plateforme/bailleurs', { jeton: admin.jeton })).corps.find(x => x.nom === 'Villas du Lac');
+  assert.equal(b.origine, 'inscription');
+  assert.equal(b.essai_fin, new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10));
+  assert.equal(b.proprietaire.telephone, '70777777');
+  // Il est seul dans son espace : il ne voit aucun bien d'un autre bailleur.
+  const o = { jeton: ok.corps.jeton, espace: ok.corps.espaces[0].id };
+  assert.deepEqual((await appel('GET', '/api/biens', o)).corps, []);
+  // Une seconde inscription avec la même adresse est refusée.
+  assert.equal((await appel('POST', '/api/comptes/inscription', { corps: { ...formulaire, telephone: '70666666' } })).statut, 409);
+});
+
+test('mot de passe oublié : code par e-mail, sans révéler si l’adresse existe', async () => {
+  const { envoyes } = require('../src/services/courriel');
+  const avant = envoyes.length;
+  const inconnu = await appel('POST', '/api/comptes/mot-de-passe/oubli', { corps: { email: 'personne@exemple.test' } });
+  assert.equal(inconnu.statut, 200);
+  assert.ok(inconnu.corps.id);
+  assert.equal(envoyes.length, avant);
+  const demande = await appel('POST', '/api/comptes/mot-de-passe/oubli', { corps: { email: 'issa@kabore.test' } });
+  assert.equal(envoyes.length, avant + 1);
+  assert.equal((await appel('POST', '/api/comptes/verification/renvoyer', { corps: { id: demande.corps.id } })).statut, 200);
+  const code = envoyes.at(-1).texte.match(/\b(\d{6})\b/)[1];
+  assert.equal((await appel('POST', '/api/comptes/mot-de-passe/reinitialiser', { corps: { id: demande.corps.id, code, mot_de_passe: 'court' } })).statut, 400);
+  const ok = await appel('POST', '/api/comptes/mot-de-passe/reinitialiser', { corps: { id: demande.corps.id, code, mot_de_passe: 'nouveau-secret' } });
+  assert.equal(ok.statut, 200);
+  assert.ok((await appel('POST', '/api/auth/connexion', { corps: { identifiant: '70111111', mot_de_passe: 'nouveau-secret' } })).corps.jeton);
+});

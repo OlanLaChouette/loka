@@ -52,4 +52,8 @@ function abonnementMensuel({ nuit = 0, mois = 0 } = {}, { parNuit = 2500, parMoi
 
 const numeroRecu = (n) => 'R-' + String(n).padStart(5, '0');
 
-module.exports = { nuitsEntre, prixSejour, besoinValidation, nuitsDansMois, joursDuMois, chargeMensuelle, abonnementMensuel, numeroRecu, versTexte };
+// Essai gratuit d'un nouvel espace : 14 jours, puis l'administration Loka active l'abonnement.
+const JOURS_ESSAI = 14;
+const finEssai = (depuis = new Date()) => new Date(depuis.getTime() + JOURS_ESSAI * 86400000).toISOString().slice(0, 10);
+
+module.exports = { JOURS_ESSAI, finEssai, nuitsEntre, prixSejour, besoinValidation, nuitsDansMois, joursDuMois, chargeMensuelle, abonnementMensuel, numeroRecu, versTexte };

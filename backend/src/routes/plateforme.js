@@ -6,15 +6,13 @@ const { sequelize, Bailleur, Utilisateur, Membre, Bien, Site } = require('../mod
 const { authentifier, adminPlateforme } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
-const { abonnementMensuel } = require('../services/calculs');
-
-const JOURS_ESSAI = 14;
+const { abonnementMensuel, finEssai } = require('../services/calculs');
 
 router.use(authentifier, adminPlateforme);
 
 router.get('/bailleurs', route(async (req, res) => {
   const bailleurs = await Bailleur.findAll({ order: [['cree_le', 'DESC']] });
-  const proprietaires = await Membre.findAll({ where: { role: 'proprietaire' }, include: [{ model: Utilisateur, attributes: ['nom', 'telephone'] }] });
+  const proprietaires = await Membre.findAll({ where: { role: 'proprietaire' }, include: [{ model: Utilisateur, attributes: ['nom', 'telephone', 'email'] }] });
   const proprioDe = Object.fromEntries(proprietaires.map(m => [m.bailleur_id, m.Utilisateur]));
   const biens = await Bien.findAll({ attributes: ['bailleur_id', 'mode', [fn('COUNT', col('id')), 'n']], where: { etat: ['disponible', 'travaux'] }, group: ['bailleur_id', 'mode'], raw: true });
   const sites = await Site.findAll({ attributes: ['bailleur_id', [fn('COUNT', col('id')), 'n']], group: ['bailleur_id'], raw: true });
@@ -36,8 +34,7 @@ router.post('/bailleurs', route(async (req, res) => {
   if (!bailleur.nom) throw new Erreur(400, 'Nom du bailleur requis');
   if (!proprietaire.nom || !proprietaire.telephone || !proprietaire.mot_de_passe) throw new Erreur(400, 'Nom, téléphone et mot de passe du propriétaire requis');
   const resultat = await transaction(async (t) => {
-    const essaiFin = new Date(Date.now() + JOURS_ESSAI * 86400000).toISOString().slice(0, 10);
-    const b = await Bailleur.create({ ...bailleur, statut: 'essai', essai_fin: essaiFin }, { transaction: t });
+    const b = await Bailleur.create({ ...bailleur, statut: 'essai', essai_fin: finEssai(), origine: 'plateforme' }, { transaction: t });
     let u = await Utilisateur.findOne({ where: { telephone: proprietaire.telephone }, transaction: t });
     if (!u) u = await Utilisateur.create({
       nom: proprietaire.nom, telephone: proprietaire.telephone, email: proprietaire.email || null,

@@ -22,6 +22,7 @@ if (process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
 app.get('/api/sante', (req, res) => res.json({ ok: true }));
 app.use('/api', contexteRequete);
 app.use('/api/auth', require('./src/routes/auth').router);
+app.use('/api/comptes', require('./src/routes/inscription'));
 app.use('/api/plateforme', require('./src/routes/plateforme'));
 app.use('/api', require('./src/routes/tableau'));
 app.use('/api', require('./src/routes/espace').router);

@@ -32,6 +32,14 @@ services:
         sync: false
       - key: ADMIN_MOT_DE_PASSE    # à choisir soi-même, 10 caractères minimum
         sync: false
+      - key: BREVO_API_KEY         # clé API Brevo (inscription et mot de passe oublié par e-mail)
+        sync: false
+      - key: COURRIEL_EXPEDITEUR   # adresse validée dans Brevo
+        value: contact@eyamtech.com
+      - key: COURRIEL_NOM          # nom d'expéditeur, pour distinguer Loka d'eYamTech
+        value: Loka · eYamTech
+      - key: ADMIN_COURRIEL        # reçoit l'avis de chaque nouvel espace
+        value: contact@eyamtech.com
 
   - type: web
     name: loka-web
