@@ -47,8 +47,17 @@ async function preparer({ demo = false, silencieux = false } = {}) {
 
   // Nombre d'espaces auxquels appartient une personne, tous bailleurs confondus. Ne révèle qu'un nombre :
   // sert à empêcher un bailleur de changer le mot de passe d'une personne qui travaille aussi ailleurs.
-  await q(`CREATE OR REPLACE FUNCTION loka_nb_espaces(u uuid) RETURNS integer LANGUAGE sql STABLE SECURITY DEFINER
-    SET app.plateforme = 'on' SET search_path = public AS $$ SELECT count(DISTINCT bailleur_id)::int FROM membres WHERE utilisateur_id = u $$`);
+  // Le mode plateforme est ouvert puis refermé dans le corps : une clause « SET app.plateforme » sur la fonction
+  // est refusée aux comptes qui ne sont pas superutilisateurs (Neon).
+  await q('DROP FUNCTION IF EXISTS loka_nb_espaces(uuid)');
+  await q(`CREATE FUNCTION loka_nb_espaces(u uuid) RETURNS integer LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+    DECLARE n integer; avant text := coalesce(current_setting('app.plateforme', true), '');
+    BEGIN
+      PERFORM set_config('app.plateforme', 'on', true);
+      SELECT count(DISTINCT bailleur_id)::int INTO n FROM membres WHERE utilisateur_id = u;
+      PERFORM set_config('app.plateforme', avant, true);
+      RETURN n;
+    END $$`);
   if (app) await q(`GRANT EXECUTE ON FUNCTION loka_nb_espaces(uuid) TO ${ident(app)}`);
 
   for (const t of TABLES_BAILLEUR) {
