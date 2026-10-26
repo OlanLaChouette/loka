@@ -47,7 +47,7 @@ function gabarit({ titre, lignes, code, fin }) {
 <h1 style="margin:0 0 16px;font-size:20px;color:#16161D">${titre}</h1>${corps}${bloc}
 ${fin ? `<p style="margin:0;font-size:13px;line-height:1.5;color:#62627A">${fin}</p>` : ''}
 </td></tr>
-<tr><td style="padding:16px 28px;border-top:1px solid #E4E4EC;font-size:12px;color:#77778C">Loka, la gestion locative simple · une application éditée par eYamTech<br>+226 62 82 67 02 · contact@eyamtech.com</td></tr>
+<tr><td style="padding:16px 28px;border-top:1px solid #E4E4EC;font-size:12px;color:#77778C"><a href="https://loka.eyamtech.com" style="color:#4F3FD6;font-weight:600;text-decoration:none">loka.eyamtech.com</a> · une application éditée par eYamTech<br>+226 62 82 67 02 · contact@eyamtech.com</td></tr>
 </table></td></tr></table></body></html>`;
 }
 
