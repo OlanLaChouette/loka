@@ -1,0 +1,137 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Loka</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>/* Série d'affiches Loka : charte violette, Sora + Inter, vrais écrans dans des téléphones en relief. */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #000; }
+.affiche { position: relative; overflow: hidden; font-family: 'Inter', sans-serif; }
+.grain { position: absolute; inset: 0; pointer-events: none; opacity: .05; mix-blend-mode: overlay; z-index: 50;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+/* Fonds */
+.fond-violet { background: radial-gradient(900px 800px at 85% 10%, rgba(255,255,255,.18), transparent 60%), linear-gradient(160deg, #7566F7 0%, #5A49E6 50%, #3E2FB8 100%); color: #fff; --em: #FFE7A3; --muet: #E4E0FF; --puce: rgba(255,255,255,.16); --puce-texte: #fff; }
+.fond-nuit { background: radial-gradient(800px 700px at 90% 20%, rgba(109,93,245,.55), transparent 60%), radial-gradient(700px 700px at 0% 100%, rgba(109,93,245,.35), transparent 60%), #12101F; color: #fff; --em: #A99DFF; --muet: #C9C6DA; --puce: rgba(169,157,255,.16); --puce-texte: #D9D3FF; }
+.fond-clair { background: radial-gradient(800px 700px at 90% 15%, #DCD5FF, transparent 60%), #F5F3FF; color: #16161D; --em: #6D5DF5; --muet: #5E5E74; --puce: #fff; --puce-texte: #4F3FD6; }
+.deco { position: absolute; border-radius: 50%; border: 2px solid currentColor; opacity: .1; }
+.d1 { width: 1100px; height: 1100px; right: -620px; top: 280px; }
+.d2 { width: 760px; height: 760px; left: -480px; bottom: -260px; }
+
+/* En-tête */
+.entete { position: absolute; left: 64px; right: 64px; top: 58px; display: flex; align-items: center; gap: 16px; z-index: 10; }
+.marque { display: flex; align-items: center; gap: 14px; font: 800 44px 'Sora'; letter-spacing: -0.03em; }
+.surtitre { margin-left: auto; background: var(--puce); color: var(--puce-texte); border-radius: 999px; padding: 12px 24px; font: 700 25px 'Inter'; letter-spacing: .02em; }
+.fond-clair .surtitre { box-shadow: 0 6px 20px rgba(80,60,200,.12); }
+
+/* Texte */
+.haut { position: absolute; left: 64px; z-index: 6; }
+.haut h1 { font: 800 100px/1.0 'Sora'; letter-spacing: -0.045em; }
+.haut h1 em { font-style: normal; color: var(--em); }
+.haut p { font: 500 34px/1.38 'Inter'; color: var(--muet); margin-top: 24px; }
+.puces { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.puces span { display: inline-flex; align-items: center; gap: 10px; background: var(--puce); color: var(--puce-texte); border-radius: 999px; padding: 12px 22px 12px 16px; font: 700 26px 'Inter'; }
+.fond-clair .puces span { box-shadow: 0 6px 18px rgba(80,60,200,.12); }
+
+/* Téléphones et éléments flottants */
+.scene { position: absolute; inset: 0; z-index: 4; }
+.tel { position: absolute; border-radius: 15.5% / 7.2%; padding: 2.4%;
+  background: linear-gradient(140deg, #8A8E95 0%, #2E3136 20%, #55595F 42%, #1D1F22 64%, #6A6E74 86%, #2A2C2F 100%);
+  box-shadow: 0 50px 110px rgba(15,8,60,.55), inset 0 0 0 1.5px rgba(255,255,255,.25); }
+.tel .bezel { width: 100%; height: 100%; border-radius: 13.5% / 6.3%; background: #000; padding: 2%; }
+.tel .ecran { position: relative; width: 100%; height: 100%; border-radius: 12% / 5.6%; overflow: hidden; background: #fff; }
+.tel .ecran img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.tel .ile { position: absolute; top: 1.6%; left: 50%; width: 28%; height: 3.6%; transform: translateX(-50%); background: #000; border-radius: 20px; }
+.tuile { position: absolute; border-radius: 26%; display: flex; align-items: center; justify-content: center; z-index: 8;
+  background: linear-gradient(160deg, #FFFFFF 0%, #F1EEFF 55%, #DCD5FF 100%);
+  box-shadow: inset 0 3px 0 rgba(255,255,255,.9), 0 12px 0 #B9AEFF, 0 15px 0 #8F80F2, 0 36px 56px rgba(20,10,80,.4); }
+.tuile svg { width: 52%; height: 52%; }
+.carte-image { position: absolute; z-index: 5; background: #fff; border-radius: 14px; padding: 10px; box-shadow: 0 30px 70px rgba(15,8,60,.45); }
+.carte-image img { display: block; width: 100%; border-radius: 8px; }
+
+/* Bande du bas */
+.bande { position: absolute; left: 0; right: 0; bottom: 0; z-index: 12; display: flex; align-items: center; gap: 24px; padding: 0 64px; background: #fff; color: #16161D; }
+.bande-texte { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.bande-texte b { font: 800 40px 'Sora'; letter-spacing: -0.02em; color: #4B3BC9; }
+.bande-texte span { font: 600 28px 'Inter'; color: #3A3A4A; }
+.bande .qr { background: #fff; }
+.qr-grand { position: absolute; z-index: 9; background: #fff; border-radius: 28px; padding: 26px; text-align: center; color: #16161D; box-shadow: 0 30px 70px rgba(15,8,60,.5); }
+.qr-grand img { display: block; width: 100%; }
+.qr-grand span { display: block; font: 800 26px 'Sora'; margin-top: 14px; color: #4B3BC9; }
+
+/* ===== Statut 9:16 (1080 × 1920) ===== */
+.statut .haut { top: 190px; right: 64px; }
+.statut .haut h1 { font-size: 122px; }
+.statut .haut p { font-size: 38px; }
+.statut .puces span { font-size: 29px; }
+.statut .tel.principal { width: 470px; height: 1017px; left: 305px; top: 790px; transform: rotate(-4deg); }
+.statut.avec-carte .tel.principal { left: 420px; }
+.statut .tel.second { width: 360px; height: 779px; left: 60px; top: 930px; transform: rotate(-10deg); }
+.statut .carte-image { width: 380px; left: 50px; top: 1040px; transform: rotate(-7deg); }
+.statut .tuile.t0 { width: 150px; height: 150px; left: 110px; top: 880px; transform: rotate(-12deg); }
+.statut .tuile.t1 { width: 130px; height: 130px; right: 90px; top: 1060px; transform: rotate(10deg); }
+.statut.avec-carte .tuile.t0 { left: auto; right: 80px; top: 820px; }
+.statut.avec-carte .tuile.t1 { right: 70px; top: 1300px; }
+.statut .bande { height: 200px; }
+.statut .bande .qr { width: 140px; height: 140px; }
+.statut .qr-grand { width: 330px; left: 70px; top: 1150px; transform: rotate(-6deg); }
+.statut.fond-nuit .qr-grand { }
+
+/* ===== Fil 4:5 (1080 × 1350) ===== */
+.fil .haut { top: 175px; width: 600px; }
+.fil .haut h1 { font-size: 80px; }
+.fil .haut p { font-size: 30px; margin-top: 20px; }
+.fil .puces span { font-size: 23px; padding: 10px 18px 10px 14px; }
+.fil .tel.principal { width: 380px; height: 822px; left: 660px; top: 300px; transform: rotate(6deg); }
+.fil .tel.second { width: 300px; height: 649px; left: 380px; top: 640px; transform: rotate(-8deg); }
+.fil .carte-image { width: 330px; left: 330px; top: 720px; transform: rotate(-6deg); }
+.fil .tuile.t0 { width: 128px; height: 128px; left: 90px; top: 900px; transform: rotate(-10deg); }
+.fil .tuile.t1 { width: 108px; height: 108px; left: 270px; top: 1040px; transform: rotate(9deg); }
+.fil.avec-carte .tuile.t0 { left: 70px; top: 760px; }
+.fil.avec-carte .tuile.t1 { left: 120px; top: 980px; }
+.fil .bande { height: 140px; }
+.fil .bande-texte b { font-size: 34px; } .fil .bande-texte span { font-size: 25px; }
+.fil .bande .qr { width: 100px; height: 100px; }
+.fil .qr-grand { width: 270px; left: 90px; top: 760px; transform: rotate(-5deg); padding: 20px; }
+
+/* ===== Carré 1:1 (1080 × 1080) ===== */
+.carre .entete { top: 48px; }
+.carre .haut { top: 150px; width: 600px; }
+.carre .haut h1 { font-size: 70px; }
+.carre .haut p { font-size: 27px; margin-top: 16px; }
+.carre .puces { display: none; }
+.carre .tel.principal { width: 330px; height: 714px; left: 690px; top: 210px; transform: rotate(6deg); }
+.carre .tel.second { display: none; }
+.carre .carte-image { width: 270px; left: 380px; top: 600px; transform: rotate(-6deg); }
+.carre .tuile.t0 { width: 116px; height: 116px; left: 80px; top: 690px; transform: rotate(-10deg); }
+.carre .tuile.t1 { width: 96px; height: 96px; left: 240px; top: 770px; transform: rotate(9deg); }
+.carre.avec-carte .tuile.t1 { display: none; }
+.carre .bande { height: 120px; }
+.carre .bande-texte b { font-size: 30px; } .carre .bande-texte span { font-size: 23px; }
+.carre .bande .qr { width: 88px; height: 88px; }
+.carre .qr-grand { width: 230px; left: 80px; top: 620px; transform: rotate(-5deg); padding: 18px; }
+.carre .qr-grand span { font-size: 20px; }
+
+/* ===== Carrousel ===== */
+.carrousel .points { position: absolute; left: 64px; bottom: 60px; display: flex; gap: 10px; z-index: 12; }
+.carrousel .points i { width: 14px; height: 14px; border-radius: 50%; background: currentColor; opacity: .3; }
+.carrousel .points i.actif { opacity: 1; width: 40px; border-radius: 8px; }
+.carrousel .glissez { position: absolute; right: 64px; bottom: 44px; z-index: 12; display: flex; align-items: center; gap: 10px; font: 800 30px 'Sora'; background: var(--puce); color: var(--puce-texte); border-radius: 999px; padding: 12px 24px; }
+.carrousel .tel.principal { top: 330px; }
+.carrousel .accroche { top: 210px; width: auto; right: 64px; }
+.carrousel .accroche h1 { font-size: 104px; }
+.douleurs { position: absolute; left: 64px; right: 64px; top: 560px; display: flex; flex-direction: column; gap: 22px; z-index: 6; }
+.douleur { display: flex; align-items: center; gap: 22px; background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,138,154,.35); border-radius: 26px; padding: 26px 28px; font: 700 34px 'Inter'; }
+.douleur .ic { width: 66px; height: 66px; border-radius: 18px; background: rgba(255,138,154,.12); display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+.douleur .x { margin-left: auto; }
+.final { position: absolute; left: 0; right: 0; top: 190px; text-align: center; z-index: 6; }
+.final .gros { font: 800 190px/0.9 'Sora'; letter-spacing: -0.06em; text-shadow: 0 12px 0 rgba(40,25,140,.55); }
+.final .gratuits { display: inline-block; margin-top: 20px; transform: rotate(-3deg); background: #FFE7A3; color: #2A1F7A; border-radius: 22px; padding: 10px 40px; font: 800 74px 'Sora'; box-shadow: 0 10px 0 #E0B85C; }
+.final p { font: 600 34px/1.4 'Inter'; color: #E4E0FF; margin-top: 40px; }
+.qr-final { display: inline-block; margin-top: 40px; background: #fff; border-radius: 28px; padding: 24px; box-shadow: 0 30px 70px rgba(15,8,60,.45); }
+.qr-final img { display: block; width: 250px; height: 250px; }
+.final .lien { font: 800 52px 'Sora'; margin-top: 30px; letter-spacing: -0.02em; }
+.final .tel-contact { font: 600 30px 'Inter'; color: #E4E0FF; margin-top: 10px; }
+</style></head><body><div class="affiche carre fond-nuit" style="width:1080px;height:1080px"><div class="deco d1"></div><div class="deco d2"></div>
+<div class="entete"><div class="marque"><svg width="58" height="58" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#6D5DF5"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#fff"/><circle cx="27.6" cy="29.5" r="1.7" fill="#6D5DF5"/></svg>Loka</div><div class="surtitre">Tableau de bord</div></div>
+<div class="haut"><h1>Votre vrai bénéfice, <em>en direct.</em></h1><p>Encaissé, occupation, charges et dépenses, site par site. Sans cahier ni calculatrice.</p><div class="puces"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Site par site</span><span><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>Mis à jour en direct</span></div></div>
+<div class="scene"><div class="tel principal"><div class="bezel"><div class="ecran"><img src="../../../guide/captures/02-apercu.png"><div class="ile"></div></div></div></div><div class="tuile t0"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div><div class="tuile t1"><svg viewBox="0 0 24 24" fill="none" stroke="#6D5DF5" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div></div>
+<div class="bande"><div class="bande-texte"><b>Essai gratuit 14 jours</b><span>loka.eyamtech.com · +226 62 82 67 02</span></div><img class="qr" src="../../qr-loka.svg"></div><div class="grain"></div></div>
+<script>window.TAILLE = { largeur: 1080, hauteur: 1080 };</script></body></html>
