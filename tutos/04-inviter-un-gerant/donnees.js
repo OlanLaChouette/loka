@@ -1,0 +1,98 @@
+window.DONNEES = {
+ "id": "04-inviter-un-gerant",
+ "numero": 4,
+ "titre": "Inviter un gérant",
+ "total_serie": 11,
+ "suivant": "Déclarer ses charges fixes",
+ "intro": 4.6,
+ "etapes": [
+  {
+   "image": "01.png",
+   "texte": "Pour inviter un gérant, ouvrez le menu, en haut à droite.",
+   "tap": {
+    "x": 327.03125,
+    "y": 26,
+    "w": 67,
+    "h": 34
+   },
+   "debut": 4.6,
+   "duree": 4.47,
+   "voix": 5.0,
+   "dureeVoix": 3.12,
+   "zoom": 1.14
+  },
+  {
+   "image": "02.png",
+   "texte": "Puis choisissez « Gérants ».",
+   "tap": {
+    "x": 220.5,
+    "y": 370.5625,
+    "w": 323,
+    "h": 44
+   },
+   "debut": 9.07,
+   "duree": 2.95,
+   "voix": 9.47,
+   "dureeVoix": 1.6,
+   "zoom": 1.14
+  },
+  {
+   "image": "03.png",
+   "texte": "Appuyez sur « Ajouter un membre ».",
+   "tap": {
+    "x": 195,
+    "y": 142.84375,
+    "w": 362,
+    "h": 38
+   },
+   "debut": 12.02,
+   "duree": 3.37,
+   "voix": 12.42,
+   "dureeVoix": 2.02,
+   "zoom": 1.14
+  },
+  {
+   "image": "04.png",
+   "texte": "Saisissez son nom, son numéro de téléphone, qui sera son identifiant, et un mot de passe provisoire.",
+   "tap": {
+    "x": 195,
+    "y": 327.71875,
+    "w": 340,
+    "h": 43.75
+   },
+   "debut": 15.39,
+   "duree": 6.83,
+   "voix": 15.79,
+   "dureeVoix": 5.48,
+   "zoom": 1.14
+  },
+  {
+   "image": "05.png",
+   "texte": "Cochez les sites qu’il gère, puis enregistrez.",
+   "tap": {
+    "x": 314.9765625,
+    "y": 800,
+    "w": 100.046875,
+    "h": 38
+   },
+   "debut": 22.22,
+   "duree": 3.87,
+   "voix": 22.62,
+   "dureeVoix": 2.52,
+   "zoom": 1.14
+  },
+  {
+   "image": "06.png",
+   "texte": "Transmettez-lui son numéro et son mot de passe : depuis son téléphone, il arrive directement sur ses tâches du jour.",
+   "tap": null,
+   "debut": 26.09,
+   "duree": 6.72,
+   "voix": 26.49,
+   "dureeVoix": 5.92,
+   "zoom": 1.0
+  }
+ ],
+ "fin": 32.81,
+ "duree": 36.41,
+ "voixIntro": 0.45
+};

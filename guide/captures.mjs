@@ -75,10 +75,25 @@ await cliquer(p, '+ Ajouter un membre'); await capture(p, '13-ajout-membre');
 await aller(p, '/parametres'); await capture(p, '14-entreprise');
 await p.close();
 
+// Photos d'exemple sur la villa A2 (galerie et envoi au client)
+{
+  const API = 'http://localhost:4100/api';
+  const s = await (await fetch(API + '/auth/connexion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identifiant: '70111111', mot_de_passe: MOT_DE_PASSE }) })).json();
+  const h = { Authorization: 'Bearer ' + s.jeton, 'X-Espace': s.espaces[0].id };
+  const a2 = (await (await fetch(API + '/biens', { headers: h })).json()).find(b => b.reference === 'A2');
+  for (const n of a2.photos.length ? [] : ['facade', 'salon', 'chambre', 'piscine']) {
+    const f = new FormData();
+    f.append('photo', new Blob([fs.readFileSync(path.join(ici, '../tutos/assets/villas', n + '.jpg'))], { type: 'image/jpeg' }), n + '.jpg');
+    await fetch(`${API}/biens/${a2.id}/photos`, { method: 'POST', headers: h, body: f });
+  }
+}
+
 // Gérant
 p = await session();
 await connecter(p, '70222222');
 await capture(p, '15-terrain');
+await p.click('[aria-label="Photos de A2"]'); await pause(1500); await capture(p, '21-photos');
+await p.keyboard.press('Escape'); await pause(500);
 await cliquer(p, 'Réserver'); await capture(p, '16-gerant-resa');
 await aller(p, '/terrain');
 await cliquer(p, 'Encaisser'); await capture(p, '17-choix-encaisser');

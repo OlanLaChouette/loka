@@ -1,0 +1,21 @@
+{
+ "taux": 24000,
+ "durees": [
+  4.58,
+  4.14,
+  3.74,
+  4.32,
+  4.26,
+  2.6,
+  5.36
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 7 : Encaisser et envoyer le reçu.",
+  "Les séjours à encaisser sont listés en haut. Appuyez sur « Encaisser ».",
+  "Le montant restant est déjà rempli. Choisissez le moyen de paiement.",
+  "Pour Mobile Money, notez la référence de la transaction, puis validez.",
+  "Le reçu est prêt. Envoyez-le au client par WhatsApp, en un seul geste.",
+  "Le client reçoit aussitôt son reçu numéroté…",
+  "…avec le logo et les informations de l’entreprise, le montant en lettres et ce qui reste à payer."
+ ]
+}

@@ -1,0 +1,68 @@
+{
+ "id": "08-noter-une-depense",
+ "numero": 8,
+ "titre": "Noter une dépense",
+ "total_serie": 11,
+ "suivant": "Valider les dépenses et les réductions",
+ "intro": 4.96,
+ "etapes": [
+  {
+   "image": "01.png",
+   "texte": "Une dépense sur le terrain ? Appuyez sur l’icône de reçu.",
+   "tap": {
+    "x": 350,
+    "y": 180.578125,
+    "w": 48,
+    "h": 38
+   },
+   "debut": 4.96,
+   "duree": 4.69,
+   "voix": 5.36,
+   "dureeVoix": 3.34,
+   "zoom": 1.14
+  },
+  {
+   "image": "02.png",
+   "texte": "Indiquez pour quel site ou quelle villa, la catégorie et le montant.",
+   "tap": {
+    "x": 195,
+    "y": 492.09375,
+    "w": 340,
+    "h": 43.75
+   },
+   "debut": 9.65,
+   "duree": 5.85,
+   "voix": 10.05,
+   "dureeVoix": 4.5,
+   "zoom": 1.14
+  },
+  {
+   "image": "03.png",
+   "texte": "Puis prenez en photo le reçu du fournisseur : c’est la preuve pour le propriétaire.",
+   "tap": {
+    "x": 195,
+    "y": 659.90625,
+    "w": 340,
+    "h": 45
+   },
+   "debut": 15.5,
+   "duree": 5.67,
+   "voix": 15.9,
+   "dureeVoix": 4.32,
+   "zoom": 1.14
+  },
+  {
+   "image": "04.png",
+   "texte": "C’est envoyé : le propriétaire la valide de son côté. Et sans réseau, elle partira toute seule au retour de la connexion.",
+   "tap": null,
+   "debut": 21.17,
+   "duree": 7.88,
+   "voix": 21.57,
+   "dureeVoix": 7.08,
+   "zoom": 1.0
+  }
+ ],
+ "fin": 29.05,
+ "duree": 32.65,
+ "voixIntro": 0.45
+}

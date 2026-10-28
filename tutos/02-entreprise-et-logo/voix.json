@@ -1,0 +1,21 @@
+{
+ "taux": 24000,
+ "durees": [
+  3.8,
+  1.8,
+  1.88,
+  3.82,
+  4.78,
+  4.52,
+  3.62
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 2 : Votre entreprise et votre logo.",
+  "Ouvrez le menu, en haut à droite.",
+  "Puis choisissez « Entreprise ».",
+  "Ajoutez d’abord votre logo : il apparaîtra sur vos reçus et vos contrats.",
+  "Complétez ensuite la forme juridique, le RCCM, l’IFU et l’adresse.",
+  "Fixez enfin la réduction qu’un gérant peut accorder sans votre accord, puis enregistrez.",
+  "C’est enregistré : ces informations figurent désormais sur tous vos documents."
+ ]
+}

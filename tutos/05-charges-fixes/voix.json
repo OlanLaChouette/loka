@@ -1,0 +1,21 @@
+{
+ "taux": 24000,
+ "durees": [
+  4.14,
+  5.92,
+  1.94,
+  2.22,
+  4.94,
+  3.52,
+  3.9
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 5 : Déclarer ses charges fixes.",
+  "Pour connaître votre vrai bénéfice, déclarez vos charges fixes. Appuyez sur « Caisse ».",
+  "Puis sur l’onglet « Charges fixes ».",
+  "Appuyez sur « Ajouter une charge ».",
+  "Donnez-lui un nom, un montant, une fréquence, et choisissez ce qu’elle concerne.",
+  "Ajoutez de même le gaz, le gardiennage ou l’assurance.",
+  "Loka les compte automatiquement chaque mois, dans le bénéfice de chaque site."
+ ]
+}

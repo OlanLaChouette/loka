@@ -1,0 +1,37 @@
+{
+  "id": "11-tableau-de-bord",
+  "numero": 11,
+  "titre": "Lire son tableau de bord",
+  "etapes": [
+    {
+      "image": "01.png",
+      "texte": "Votre tableau de bord s’ouvre sur l’argent encaissé ce mois-ci, et son évolution sur douze mois.",
+      "tap": null
+    },
+    {
+      "image": "02.png",
+      "texte": "Puis le taux d’occupation de vos villas, et ce qui reste à encaisser, avec un bouton pour relancer le client.",
+      "tap": null
+    },
+    {
+      "image": "03.png",
+      "texte": "Chaque site a son occupation. En bas : charges, dépenses, et votre bénéfice réel du mois.",
+      "tap": null
+    },
+    {
+      "image": "04.png",
+      "texte": "Et en direct, tout ce que font vos gérants : réservations, encaissements, dépenses.",
+      "tap": null
+    },
+    {
+      "image": "05.png",
+      "texte": "Les flèches, en haut, permettent de revoir les mois passés.",
+      "tap": {
+        "x": 32.703125,
+        "y": 160.546875,
+        "w": 29.40625,
+        "h": 32.84375
+      }
+    }
+  ]
+}

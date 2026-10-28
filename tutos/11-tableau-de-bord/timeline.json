@@ -1,0 +1,68 @@
+{
+ "id": "11-tableau-de-bord",
+ "numero": 11,
+ "titre": "Lire son tableau de bord",
+ "total_serie": 11,
+ "suivant": null,
+ "intro": 5.26,
+ "etapes": [
+  {
+   "image": "01.png",
+   "texte": "Votre tableau de bord s’ouvre sur l’argent encaissé ce mois-ci, et son évolution sur douze mois.",
+   "tap": null,
+   "debut": 5.26,
+   "duree": 6.04,
+   "voix": 5.66,
+   "dureeVoix": 5.24,
+   "zoom": 1.0
+  },
+  {
+   "image": "02.png",
+   "texte": "Puis le taux d’occupation de vos villas, et ce qui reste à encaisser, avec un bouton pour relancer le client.",
+   "tap": null,
+   "debut": 11.3,
+   "duree": 6.24,
+   "voix": 11.7,
+   "dureeVoix": 5.44,
+   "zoom": 1.0
+  },
+  {
+   "image": "03.png",
+   "texte": "Chaque site a son occupation. En bas : charges, dépenses, et votre bénéfice réel du mois.",
+   "tap": null,
+   "debut": 17.54,
+   "duree": 7.1,
+   "voix": 17.94,
+   "dureeVoix": 6.3,
+   "zoom": 1.0
+  },
+  {
+   "image": "04.png",
+   "texte": "Et en direct, tout ce que font vos gérants : réservations, encaissements, dépenses.",
+   "tap": null,
+   "debut": 24.64,
+   "duree": 5.64,
+   "voix": 25.04,
+   "dureeVoix": 4.84,
+   "zoom": 1.0
+  },
+  {
+   "image": "05.png",
+   "texte": "Les flèches, en haut, permettent de revoir les mois passés.",
+   "tap": {
+    "x": 32.703125,
+    "y": 160.546875,
+    "w": 29.40625,
+    "h": 32.84375
+   },
+   "debut": 30.28,
+   "duree": 4.25,
+   "voix": 30.68,
+   "dureeVoix": 2.9,
+   "zoom": 1.14
+  }
+ ],
+ "fin": 34.53,
+ "duree": 38.13,
+ "voixIntro": 0.45
+}

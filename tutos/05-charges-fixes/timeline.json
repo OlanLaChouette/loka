@@ -1,0 +1,98 @@
+{
+ "id": "05-charges-fixes",
+ "numero": 5,
+ "titre": "Déclarer ses charges fixes",
+ "total_serie": 11,
+ "suivant": "Réserver un séjour",
+ "intro": 5.44,
+ "etapes": [
+  {
+   "image": "01.png",
+   "texte": "Pour connaître votre vrai bénéfice, déclarez vos charges fixes. Appuyez sur « Caisse ».",
+   "tap": {
+    "x": 242.25,
+    "y": 816.53125,
+    "w": 94.5,
+    "h": 38.9375
+   },
+   "debut": 5.44,
+   "duree": 7.27,
+   "voix": 5.84,
+   "dureeVoix": 5.92,
+   "zoom": 1.14
+  },
+  {
+   "image": "02.png",
+   "texte": "Puis sur l’onglet « Charges fixes ».",
+   "tap": {
+    "x": 279.4609375,
+    "y": 144.265625,
+    "w": 110.609375,
+    "h": 32.84375
+   },
+   "debut": 12.71,
+   "duree": 3.29,
+   "voix": 13.11,
+   "dureeVoix": 1.94,
+   "zoom": 1.14
+  },
+  {
+   "image": "03.png",
+   "texte": "Appuyez sur « Ajouter une charge ».",
+   "tap": {
+    "x": 278.5,
+    "y": 210.6875,
+    "w": 165,
+    "h": 38
+   },
+   "debut": 16.0,
+   "duree": 3.57,
+   "voix": 16.4,
+   "dureeVoix": 2.22,
+   "zoom": 1.14
+  },
+  {
+   "image": "04.png",
+   "texte": "Donnez-lui un nom, un montant, une fréquence, et choisissez ce qu’elle concerne.",
+   "tap": {
+    "x": 314.9765625,
+    "y": 800,
+    "w": 100.046875,
+    "h": 38
+   },
+   "debut": 19.57,
+   "duree": 6.29,
+   "voix": 19.97,
+   "dureeVoix": 4.94,
+   "zoom": 1.14
+  },
+  {
+   "image": "05.png",
+   "texte": "Ajoutez de même le gaz, le gardiennage ou l’assurance.",
+   "tap": {
+    "x": 278.5,
+    "y": 210.6875,
+    "w": 165,
+    "h": 38
+   },
+   "debut": 25.86,
+   "duree": 4.87,
+   "voix": 26.26,
+   "dureeVoix": 3.52,
+   "zoom": 1.14
+  },
+  {
+   "image": "06.png",
+   "texte": "Loka les compte automatiquement chaque mois, dans le bénéfice de chaque site.",
+   "tap": null,
+   "debut": 30.73,
+   "duree": 4.7,
+   "voix": 31.13,
+   "dureeVoix": 3.9,
+   "zoom": 1.0
+  }
+ ],
+ "fin": 35.43,
+ "duree": 39.03,
+ "voixIntro": 0.45
+}

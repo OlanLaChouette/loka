@@ -1,0 +1,62 @@
+{
+  "id": "05-charges-fixes",
+  "numero": 5,
+  "titre": "Déclarer ses charges fixes",
+  "etapes": [
+    {
+      "image": "01.png",
+      "texte": "Pour connaître votre vrai bénéfice, déclarez vos charges fixes. Appuyez sur « Caisse ».",
+      "tap": {
+        "x": 242.25,
+        "y": 816.53125,
+        "w": 94.5,
+        "h": 38.9375
+      }
+    },
+    {
+      "image": "02.png",
+      "texte": "Puis sur l’onglet « Charges fixes ».",
+      "tap": {
+        "x": 279.4609375,
+        "y": 144.265625,
+        "w": 110.609375,
+        "h": 32.84375
+      }
+    },
+    {
+      "image": "03.png",
+      "texte": "Appuyez sur « Ajouter une charge ».",
+      "tap": {
+        "x": 278.5,
+        "y": 210.6875,
+        "w": 165,
+        "h": 38
+      }
+    },
+    {
+      "image": "04.png",
+      "texte": "Donnez-lui un nom, un montant, une fréquence, et choisissez ce qu’elle concerne.",
+      "tap": {
+        "x": 314.9765625,
+        "y": 800,
+        "w": 100.046875,
+        "h": 38
+      }
+    },
+    {
+      "image": "05.png",
+      "texte": "Ajoutez de même le gaz, le gardiennage ou l’assurance.",
+      "tap": {
+        "x": 278.5,
+        "y": 210.6875,
+        "w": 165,
+        "h": 38
+      }
+    },
+    {
+      "image": "06.png",
+      "texte": "Loka les compte automatiquement chaque mois, dans le bénéfice de chaque site.",
+      "tap": null
+    }
+  ]
+}

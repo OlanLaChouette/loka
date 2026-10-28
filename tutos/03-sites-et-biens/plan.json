@@ -1,0 +1,97 @@
+{
+  "id": "03-sites-et-biens",
+  "numero": 3,
+  "titre": "Créer ses sites et ses biens",
+  "etapes": [
+    {
+      "image": "01.png",
+      "texte": "Créez maintenant votre premier site : une résidence, ou un immeuble.",
+      "tap": {
+        "x": 213,
+        "y": 422,
+        "w": 296,
+        "h": 38
+      }
+    },
+    {
+      "image": "02.png",
+      "texte": "Donnez-lui un nom et une ville, puis ajoutez-le.",
+      "tap": {
+        "x": 327.0859375,
+        "y": 800,
+        "w": 75.828125,
+        "h": 38
+      }
+    },
+    {
+      "image": "03.png",
+      "texte": "Votre site est créé. Pour ajouter ses villas d’un coup, appuyez sur « Plusieurs biens ».",
+      "tap": {
+        "x": 178.6875,
+        "y": 142.84375,
+        "w": 151.5,
+        "h": 38
+      }
+    },
+    {
+      "image": "04.png",
+      "texte": "Choisissez une lettre, de un à huit par exemple, puis le prix par nuit et le nombre de chambres.",
+      "tap": {
+        "x": 301.546875,
+        "y": 799.71875,
+        "w": 126.90625,
+        "h": 38
+      }
+    },
+    {
+      "image": "05.png",
+      "texte": "Et voilà : huit villas créées en un seul geste.",
+      "tap": {
+        "x": 324.3671875,
+        "y": 800,
+        "w": 81.265625,
+        "h": 38
+      }
+    },
+    {
+      "image": "06.png",
+      "texte": "Pour changer le prix ou l’état d’une villa, appuyez simplement sur « Modifier ».",
+      "tap": {
+        "x": 320.0703125,
+        "y": 299.0625,
+        "w": 82.828125,
+        "h": 38
+      }
+    },
+    {
+      "image": "07.png",
+      "texte": "Prix, standing, chambres, compteur électrique, ou mise en travaux : tout se règle ici.",
+      "tap": null
+    },
+    {
+      "image": "08.png",
+      "texte": "Ajoutez enfin des photos : appuyez sur l’appareil photo de la villa.",
+      "tap": {
+        "x": 248.609375,
+        "y": 295.78125,
+        "w": 60.09375,
+        "h": 38
+      }
+    },
+    {
+      "image": "09.png",
+      "texte": "Jusqu’à six photos par villa, prises au téléphone ou choisies dans la galerie.",
+      "tap": {
+        "x": 107.5,
+        "y": 703.4375,
+        "w": 165,
+        "h": 123.75
+      }
+    },
+    {
+      "image": "10.png",
+      "texte": "Elles sont réduites automatiquement, et la première sert de couverture.",
+      "tap": null
+    }
+  ]
+}

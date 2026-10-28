@@ -1,0 +1,25 @@
+{
+ "taux": 24000,
+ "durees": [
+  3.62,
+  3.66,
+  4.14,
+  3.78,
+  2.94,
+  3.2,
+  2.16,
+  4.28,
+  4.72
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 6 : Réserver un séjour.",
+  "Un client veut voir une villa libre ? Appuyez sur son appareil photo.",
+  "Envoyez-lui toutes les photos sur WhatsApp, avec le prix, en un seul geste.",
+  "Il les reçoit aussitôt, avec la description et le prix de la villa.",
+  "Le client est d’accord ? Appuyez sur « Réserver ».",
+  "Choisissez la villa, puis les dates d’arrivée et de départ.",
+  "Saisissez le nom et le téléphone du client.",
+  "Une réduction ? Indiquez-la avec sa raison : le total se calcule tout seul.",
+  "C’est réservé ! Et Loka refuse toute autre réservation de cette villa sur les mêmes dates."
+ ]
+}

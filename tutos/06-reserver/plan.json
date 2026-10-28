@@ -1,0 +1,77 @@
+{
+  "id": "06-reserver",
+  "numero": 6,
+  "titre": "Réserver un séjour",
+  "etapes": [
+    {
+      "image": "01.png",
+      "texte": "Un client veut voir une villa libre ? Appuyez sur son appareil photo.",
+      "tap": {
+        "x": 343,
+        "y": 422.671875,
+        "w": 36,
+        "h": 36
+      }
+    },
+    {
+      "image": "02.png",
+      "texte": "Envoyez-lui toutes les photos sur WhatsApp, avec le prix, en un seul geste.",
+      "tap": {
+        "x": 283.171875,
+        "y": 800,
+        "w": 163.65625,
+        "h": 38
+      }
+    },
+    {
+      "image": "03.png",
+      "texte": "Il les reçoit aussitôt, avec la description et le prix de la villa.",
+      "tap": null
+    },
+    {
+      "image": "04.png",
+      "texte": "Le client est d’accord ? Appuyez sur « Réserver ».",
+      "tap": {
+        "x": 89.5,
+        "y": 180.578125,
+        "w": 147,
+        "h": 38
+      }
+    },
+    {
+      "image": "05.png",
+      "texte": "Choisissez la villa, puis les dates d’arrivée et de départ.",
+      "tap": {
+        "x": 195,
+        "y": 358.6875,
+        "w": 340,
+        "h": 45.75
+      }
+    },
+    {
+      "image": "06.png",
+      "texte": "Saisissez le nom et le téléphone du client.",
+      "tap": {
+        "x": 195,
+        "y": 455.875,
+        "w": 340,
+        "h": 43.75
+      }
+    },
+    {
+      "image": "07.png",
+      "texte": "Une réduction ? Indiquez-la avec sa raison : le total se calcule tout seul.",
+      "tap": {
+        "x": 321.6953125,
+        "y": 799.421875,
+        "w": 86.609375,
+        "h": 38
+      }
+    },
+    {
+      "image": "08.png",
+      "texte": "C’est réservé ! Et Loka refuse toute autre réservation de cette villa sur les mêmes dates.",
+      "tap": null
+    }
+  ]
+}

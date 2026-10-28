@@ -1,0 +1,21 @@
+{
+ "taux": 24000,
+ "durees": [
+  3.3,
+  3.12,
+  1.6,
+  2.02,
+  5.48,
+  2.52,
+  5.92
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 4 : Inviter un gérant.",
+  "Pour inviter un gérant, ouvrez le menu, en haut à droite.",
+  "Puis choisissez « Gérants ».",
+  "Appuyez sur « Ajouter un membre ».",
+  "Saisissez son nom, son numéro de téléphone, qui sera son identifiant, et un mot de passe provisoire.",
+  "Cochez les sites qu’il gère, puis enregistrez.",
+  "Transmettez-lui son numéro et son mot de passe : depuis son téléphone, il arrive directement sur ses tâches du jour."
+ ]
+}

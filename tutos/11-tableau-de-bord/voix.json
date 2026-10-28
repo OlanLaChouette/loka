@@ -1,0 +1,19 @@
+{
+ "taux": 24000,
+ "durees": [
+  3.96,
+  5.24,
+  5.44,
+  6.3,
+  4.84,
+  2.9
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 11 : Lire son tableau de bord.",
+  "Votre tableau de bord s’ouvre sur l’argent encaissé ce mois-ci, et son évolution sur douze mois.",
+  "Puis le taux d’occupation de vos villas, et ce qui reste à encaisser, avec un bouton pour relancer le client.",
+  "Chaque site a son occupation. En bas : charges, dépenses, et votre bénéfice réel du mois.",
+  "Et en direct, tout ce que font vos gérants : réservations, encaissements, dépenses.",
+  "Les flèches, en haut, permettent de revoir les mois passés."
+ ]
+}

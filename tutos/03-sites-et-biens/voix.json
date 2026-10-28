@@ -1,0 +1,29 @@
+{
+ "taux": 24000,
+ "durees": [
+  4.24,
+  3.94,
+  3.14,
+  5.36,
+  5.54,
+  3.0,
+  4.18,
+  4.94,
+  3.4,
+  3.72,
+  3.02
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 3 : Créer ses sites et ses biens.",
+  "Créez maintenant votre premier site : une résidence, ou un immeuble.",
+  "Donnez-lui un nom et une ville, puis ajoutez-le.",
+  "Votre site est créé. Pour ajouter ses villas d’un coup, appuyez sur « Plusieurs biens ».",
+  "Choisissez une lettre, de un à huit par exemple, puis le prix par nuit et le nombre de chambres.",
+  "Et voilà : huit villas créées en un seul geste.",
+  "Pour changer le prix ou l’état d’une villa, appuyez simplement sur « Modifier ».",
+  "Prix, standing, chambres, compteur électrique, ou mise en travaux : tout se règle ici.",
+  "Ajoutez enfin des photos : appuyez sur l’appareil photo de la villa.",
+  "Jusqu’à six photos par villa, prises au téléphone ou choisies dans la galerie.",
+  "Elles sont réduites automatiquement, et la première sert de couverture."
+ ]
+}

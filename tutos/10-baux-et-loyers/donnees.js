@@ -1,0 +1,103 @@
+window.DONNEES = {
+ "id": "10-baux-et-loyers",
+ "numero": 10,
+ "titre": "Baux et loyers au mois",
+ "total_serie": 11,
+ "suivant": "Lire son tableau de bord",
+ "intro": 5.3,
+ "etapes": [
+  {
+   "image": "01.png",
+   "texte": "Pour vos locations au mois, ouvrez « Baux » : chaque loyer du mois est payé, à venir, ou en retard.",
+   "tap": null,
+   "debut": 5.3,
+   "duree": 7.08,
+   "voix": 5.7,
+   "dureeVoix": 6.28,
+   "zoom": 1.0
+  },
+  {
+   "image": "02.png",
+   "texte": "« Contrat » génère le contrat de bail en PDF, prêt à imprimer et à signer.",
+   "tap": {
+    "x": 322.5234375,
+    "y": 287.828125,
+    "w": 76.953125,
+    "h": 38
+   },
+   "debut": 12.38,
+   "duree": 5.89,
+   "voix": 12.78,
+   "dureeVoix": 4.54,
+   "zoom": 1.14
+  },
+  {
+   "image": "03.png",
+   "texte": "Il reprend le bien, le locataire, le loyer, l’échéance et la caution.",
+   "tap": null,
+   "debut": 18.27,
+   "duree": 5.88,
+   "voix": 18.67,
+   "dureeVoix": 5.08,
+   "zoom": 1.0
+  },
+  {
+   "image": "04.png",
+   "texte": "Pour un loyer reçu, appuyez sur « Encaisser » : le reçu suit, comme pour un séjour.",
+   "tap": {
+    "x": 315.0546875,
+    "y": 712.171875,
+    "w": 91.890625,
+    "h": 38
+   },
+   "debut": 24.15,
+   "duree": 6.39,
+   "voix": 24.55,
+   "dureeVoix": 5.04,
+   "zoom": 1.14
+  },
+  {
+   "image": "05.png",
+   "texte": "Pour un nouveau locataire, appuyez sur « Nouveau bail ».",
+   "tap": {
+    "x": 195,
+    "y": 142.84375,
+    "w": 362,
+    "h": 38
+   },
+   "debut": 30.54,
+   "duree": 4.31,
+   "voix": 30.94,
+   "dureeVoix": 2.96,
+   "zoom": 1.14
+  },
+  {
+   "image": "06.png",
+   "texte": "Choisissez l’appartement et le locataire : le loyer et la caution se remplissent tout seuls. Ajustez le jour d’échéance si besoin.",
+   "tap": {
+    "x": 311.984375,
+    "y": 800,
+    "w": 106.03125,
+    "h": 38
+   },
+   "debut": 34.85,
+   "duree": 8.45,
+   "voix": 35.25,
+   "dureeVoix": 7.1,
+   "zoom": 1.14
+  },
+  {
+   "image": "07.png",
+   "texte": "Le bail est créé. Loka suit maintenant chaque loyer du mois pour vous.",
+   "tap": null,
+   "debut": 43.3,
+   "duree": 4.24,
+   "voix": 43.7,
+   "dureeVoix": 3.44,
+   "zoom": 1.0
+  }
+ ],
+ "fin": 47.54,
+ "duree": 51.14,
+ "voixIntro": 0.45
+};

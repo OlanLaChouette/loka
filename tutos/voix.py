@@ -100,8 +100,17 @@ def couper(x, sr, a, b):
 
 
 prise = os.path.join(ICI, 'voix', 'prise.wav')
+# Modèles de voix essayés dans l'ordre : chacun a son propre quota gratuit journalier.
+MODELES = os.environ.get('MODELES_VOIX', 'gemini-3.1-flash-tts-preview,gemini-2.5-flash-preview-tts,gemini-3.8-flash-tts').split(',')
 if '--reprendre' not in sys.argv or not os.path.exists(prise):
-    voix(CONSIGNE + '\n\n'.join(dire(l) for l in lignes), prise, voix=VOIX)
+    for i, m in enumerate(MODELES):
+        try:
+            voix(CONSIGNE + '\n\n'.join(dire(l) for l in lignes), prise, voix=VOIX, modele=m)
+            print('voix :', m)
+            break
+        except SystemExit as e:
+            if '429' not in str(e) or i == len(MODELES) - 1: raise
+            print(f'{m} : quota épuisé, modèle suivant')
 x, sr = lire(prise)
 segs = segments(x, sr, [len(dire(l)) for l in lignes])
 # Contrôle : chaque morceau garde une durée proche de la part de sa phrase dans le texte.

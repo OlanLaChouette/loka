@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tuto Loka</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="../../video/node_modules/gsap/dist/gsap.min.js"></script>
+<script src="donnees.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: 'Inter', sans-serif; color: #fff;
+    background: radial-gradient(900px 800px at 85% 8%, rgba(255,255,255,.16), transparent 60%), radial-gradient(1000px 900px at 0% 100%, rgba(30,20,110,.55), transparent 60%), linear-gradient(165deg, #7566F7 0%, #5A49E6 45%, #3E2FB8 100%); }
+  .anneau { position: absolute; border-radius: 50%; border: 2px solid rgba(255,255,255,.12); }
+  .grain { position: absolute; inset: 0; pointer-events: none; opacity: .06; mix-blend-mode: overlay; z-index: 90;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+  /* En-tête */
+  #entete { position: absolute; left: 60px; right: 60px; top: 58px; display: flex; align-items: center; gap: 16px; }
+  .marque { display: flex; align-items: center; gap: 14px; font: 800 44px 'Sora'; letter-spacing: -0.03em; }
+  #pastille { margin-left: auto; background: rgba(255,255,255,.16); border: 1.5px solid rgba(255,255,255,.3); border-radius: 999px; padding: 10px 22px; font: 700 26px 'Inter'; }
+  #titre { position: absolute; left: 60px; right: 60px; top: 142px; font: 800 52px/1.08 'Sora'; letter-spacing: -0.03em; }
+  #progres { position: absolute; left: 60px; right: 60px; top: 222px; height: 8px; border-radius: 8px; background: rgba(255,255,255,.2); overflow: hidden; }
+  #progres span { display: block; height: 100%; width: 0; background: #fff; border-radius: 8px; }
+
+  /* Téléphone */
+  #tel { position: absolute; left: 50%; top: 262px; width: 668px; height: 1403px; margin-left: -334px; border-radius: 82px; padding: 17px;
+    background: linear-gradient(140deg, #8A8E95 0%, #2E3136 20%, #55595F 42%, #1D1F22 64%, #6A6E74 86%, #2A2C2F 100%);
+    box-shadow: 0 60px 120px rgba(15,8,60,.55), inset 0 0 0 2px rgba(255,255,255,.25); }
+  #bezel { width: 100%; height: 100%; border-radius: 66px; background: #000; padding: 0; overflow: hidden; position: relative; }
+  #ecran { position: absolute; left: 0; top: 0; width: 390px; height: 844px; transform: scale(1.62); transform-origin: 0 0; overflow: hidden; border-radius: 40px; background: #F6F6F9; }
+  #camera { position: absolute; inset: 0; transform-origin: 195px 422px; }
+  #camera img { position: absolute; inset: 0; width: 390px; height: 844px; opacity: 0; }
+  #ile { position: absolute; top: 12px; left: 50%; width: 112px; height: 32px; margin-left: -56px; background: #000; border-radius: 20px; z-index: 5; }
+
+  /* Doigt et onde */
+  #doigt { position: absolute; left: 0; top: 0; width: 150px; height: 150px; z-index: 40; opacity: 0; filter: drop-shadow(0 14px 18px rgba(10,5,40,.45)); }
+  #onde { position: absolute; left: 0; top: 0; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 8px solid #fff; z-index: 39; opacity: 0; box-shadow: 0 0 0 6px rgba(109,93,245,.55); }
+  #halo { position: absolute; left: 0; top: 0; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; background: rgba(255,255,255,.55); z-index: 38; opacity: 0; }
+
+  /* Sous-titres */
+  #soustitre { position: absolute; left: 50px; right: 50px; top: 1694px; height: 190px; display: flex; align-items: center; justify-content: center; text-align: center; }
+  #soustitre div { position: absolute; left: 0; right: 0; background: #fff; color: #16161D; border-radius: 30px; padding: 22px 34px; font: 700 37px/1.28 'Inter'; letter-spacing: -0.01em; opacity: 0;
+    box-shadow: 0 20px 50px rgba(20,10,80,.35); }
+  #soustitre b { color: #4F3FD6; }
+
+  /* Intro et fin */
+  .carte { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 80px; z-index: 50; opacity: 0; }
+  #intro .num { font: 800 34px 'Inter'; letter-spacing: .14em; text-transform: uppercase; background: #fff; color: #4B3BC9; border-radius: 999px; padding: 12px 30px; }
+  #intro h1 { font: 800 104px/1.02 'Sora'; letter-spacing: -0.045em; margin-top: 34px; text-shadow: 0 10px 0 rgba(40,25,140,.55); }
+  #intro .logo, #fin .logo { margin-bottom: 40px; }
+  #fin h2 { font: 800 64px/1.1 'Sora'; letter-spacing: -0.04em; }
+  #fin .lien { margin-top: 46px; background: #fff; color: #4B3BC9; border-radius: 999px; padding: 26px 50px; font: 800 52px 'Sora'; letter-spacing: -0.02em; box-shadow: 0 12px 0 #B9AEFF, 0 30px 60px rgba(20,10,80,.45); }
+  #fin .suivant { margin-top: 70px; font: 600 34px 'Inter'; color: #E4E0FF; }
+  #fin .suivant b { display: block; color: #fff; font: 800 46px 'Sora'; margin-top: 8px; letter-spacing: -0.02em; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:900px"></div>
+  <div class="anneau" style="width:1000px;height:1000px;right:-560px;top:-200px"></div>
+
+  <div id="entete">
+    <div class="marque"><svg width="58" height="58" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>Loka</div>
+    <div id="pastille"></div>
+  </div>
+  <div id="titre"></div>
+  <div id="progres"><span></span></div>
+
+  <div id="tel"><div id="bezel"><div id="ecran"><div id="camera"></div><div id="ile"></div></div></div></div>
+
+  <div id="halo"></div><div id="onde"></div>
+  <svg id="doigt" viewBox="0 0 24 24"><path d="M10 9.5V4a2 2 0 0 0-4 0v10l-1.6-1.6a2 2 0 0 0-2.83 2.83l3.6 3.6C6.66 20.32 8.4 22 12 22h2a8 8 0 0 0 8-8v-3a2 2 0 0 0-4 0v-1a2 2 0 0 0-4 0v-.5a2 2 0 0 0-4 0z" fill="#fff" stroke="#16161D" stroke-width="1.1" stroke-linejoin="round"/><path d="M14 9.5V12M18 10.5V12M10 9.5V12" stroke="#16161D" stroke-width="1.1" stroke-linecap="round"/></svg>
+
+  <div id="soustitre"></div>
+
+  <div class="carte" id="intro">
+    <svg class="logo" width="150" height="150" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>
+    <div class="num" id="introNum"></div>
+    <h1 id="introTitre"></h1>
+  </div>
+  <div class="carte" id="fin">
+    <svg class="logo" width="130" height="130" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>
+    <h2>C’est aussi simple<br>que ça&nbsp;!</h2>
+    <div class="lien">loka.eyamtech.com</div>
+    <div class="suivant" id="finSuivant"></div>
+  </div>
+  <div class="grain"></div>
+</div>
+
+<script>
+const D = window.DONNEES;
+const ECHELLE = 1.62;                     // écran 390 × 844 → 632 × 1367 dans le téléphone
+const ORIGINE = { x: 540 - 334 + 17, y: 262 + 17 };   // coin haut gauche de l'écran dans la vidéo
+const $ = (s) => document.querySelector(s);
+const E = 'power3.out';
+
+$('#pastille').textContent = `Tuto ${D.numero} / ${D.total_serie}`;
+$('#titre').textContent = D.titre;
+$('#introNum').textContent = `Tuto n° ${D.numero}`;
+$('#introTitre').textContent = D.titre;
+$('#finSuivant').innerHTML = D.suivant ? `Prochain tuto<b>${D.suivant}</b>` : `Retrouvez tous les tutos<b>sur notre WhatsApp</b>`;
+
+const camera = $('#camera');
+const images = D.etapes.map((e) => { const i = document.createElement('img'); i.src = e.image.startsWith('ecrans/') ? e.image : 'ecrans/' + e.image; camera.appendChild(i); return i; });
+const sous = D.etapes.map((e) => { const d = document.createElement('div'); d.innerHTML = e.texte.replace(/«\s?([^»]+?)\s?»/g, '« <b>$1</b> »'); $('#soustitre').appendChild(d); return d; });
+
+// Position d'un point de l'écran (px CSS du téléphone) dans la vidéo, compte tenu du zoom de la caméra.
+const versVideo = (p, zoom, foyer) => ({
+  x: ORIGINE.x + ECHELLE * (foyer.x + zoom * (p.x - foyer.x)),
+  y: ORIGINE.y + ECHELLE * (foyer.y + zoom * (p.y - foyer.y)),
+});
+// Foyer du zoom : la cible, ramenée vers l'intérieur pour ne pas montrer de bord.
+const foyerDe = (e) => e.tap ? { x: 195, y: Math.min(Math.max(e.tap.y, 160), 720) } : { x: 195, y: 422 };
+
+const tl = gsap.timeline({ paused: true });
+gsap.set('#doigt', { xPercent: -33, yPercent: -8, transformOrigin: '33% 8%' });
+
+// Intro
+tl.set('#intro', { opacity: 1 }, 0)
+  .from('#intro .logo', { scale: 0, rotation: -60, duration: .6, ease: 'back.out(1.8)' }, 0.05)
+  .from('#introNum', { y: 40, opacity: 0, duration: .45, ease: E }, 0.3)
+  .from('#introTitre', { y: 80, opacity: 0, duration: .6, ease: E }, 0.45)
+  .set(['#tel', '#entete', '#titre', '#progres', '#halo', '#onde', '#doigt'], { opacity: 0 }, 0)
+  .set('#tel', { opacity: 1 }, D.intro - 0.35)
+  .to('#intro', { opacity: 0, scale: 1.08, duration: .45, ease: 'power2.in' }, D.intro - 0.5)
+  .from('#tel', { y: 500, rotation: -6, duration: .8, ease: 'back.out(1.1)' }, D.intro - 0.35)
+  .fromTo(['#entete', '#titre', '#progres'], { y: -40, opacity: 0 }, { y: 0, opacity: 1, duration: .5, ease: E, stagger: .08 }, D.intro - 0.3);
+
+// Étapes
+D.etapes.forEach((e, i) => {
+  const t0 = e.debut, fin = e.debut + e.duree;
+  const foyer = foyerDe(e);
+  tl.set(camera, { transformOrigin: `${foyer.x}px ${foyer.y}px` }, t0)
+    .to(images[i], { opacity: 1, duration: i ? .35 : .01 }, t0)
+    .set(images.filter((_, j) => j < i), { opacity: 0 }, t0 + .36)
+    .fromTo(camera, { scale: 1 }, { scale: e.zoom, duration: 1.1, ease: 'power2.inOut' }, t0 + 0.25)
+    .to('#progres span', { width: `${(i + 1) / D.etapes.length * 100}%`, duration: .5, ease: E }, t0)
+    .to(sous[i], { opacity: 1, y: 0, duration: .35, ease: E, startAt: { y: 24 } }, t0 + 0.15)
+    .to(sous[i], { opacity: 0, duration: .25 }, fin - 0.12);
+  if (e.tap) {
+    const p = versVideo(e.tap, e.zoom, foyer);
+    const arrivee = fin - 1.05, appui = fin - 0.5;
+    tl.fromTo('#doigt', { x: p.x + 160, y: p.y + 260, opacity: 0, scale: 1 }, { x: p.x, y: p.y, opacity: 1, duration: .5, ease: 'power2.out', immediateRender: false }, arrivee)
+      .to('#doigt', { scale: .86, duration: .12, ease: 'power2.in' }, appui)
+      .to('#doigt', { scale: 1, duration: .18, ease: 'power2.out' }, appui + .12)
+      .fromTo('#halo', { x: p.x, y: p.y, opacity: .9, scale: .4 }, { opacity: 0, scale: 1.6, duration: .5, ease: 'power2.out', immediateRender: false }, appui)
+      .fromTo('#onde', { x: p.x, y: p.y, opacity: 1, scale: .3 }, { opacity: 0, scale: 1.9, duration: .6, ease: 'power2.out', immediateRender: false }, appui + .03)
+      .to('#doigt', { opacity: 0, y: p.y + 120, duration: .3, ease: 'power2.in' }, fin + 0.05);
+  }
+  if (e.zoom > 1) tl.to(camera, { scale: 1, duration: .4, ease: 'power2.inOut' }, fin - 0.05);
+});
+
+// Fin
+tl.to('#tel', { y: 300, scale: .8, opacity: 0, duration: .5, ease: 'power2.in' }, D.fin)
+  .to(['#entete', '#titre', '#progres'], { opacity: 0, duration: .3 }, D.fin)
+  .set('#fin', { opacity: 1 }, D.fin + .35)
+  .from('#fin .logo', { scale: 0, duration: .5, ease: 'back.out(1.8)' }, D.fin + .35)
+  .from('#fin h2', { y: 50, opacity: 0, duration: .5, ease: E }, D.fin + .5)
+  .from('#fin .lien', { scale: .4, opacity: 0, duration: .5, ease: 'back.out(2)' }, D.fin + .8)
+  .from('#fin .suivant', { y: 30, opacity: 0, duration: .5, ease: E }, D.fin + 1.15)
+  .to('#fin .lien', { scale: 1.05, duration: .4, yoyo: true, repeat: 3, ease: 'sine.inOut' }, D.fin + 1.4)
+  .to({}, { duration: .1 }, D.duree - .1);
+
+window.DUREE = D.duree;
+window.TAILLE = { largeur: 1080, hauteur: 1920 };
+window.seek = (t) => { tl.seek(t, false); };
+</script>
+</body>
+</html>

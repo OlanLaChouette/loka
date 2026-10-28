@@ -1,0 +1,17 @@
+{
+ "taux": 24000,
+ "durees": [
+  3.66,
+  3.34,
+  4.5,
+  4.32,
+  7.08
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 8 : Noter une dépense.",
+  "Une dépense sur le terrain ? Appuyez sur l’icône de reçu.",
+  "Indiquez pour quel site ou quelle villa, la catégorie et le montant.",
+  "Puis prenez en photo le reçu du fournisseur : c’est la preuve pour le propriétaire.",
+  "C’est envoyé : le propriétaire la valide de son côté. Et sans réseau, elle partira toute seule au retour de la connexion."
+ ]
+}
