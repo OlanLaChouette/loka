@@ -1,0 +1,88 @@
+window.DONNEES = {
+ "id": "01-creer-son-espace",
+ "numero": 1,
+ "titre": "Créer son espace",
+ "total_serie": 11,
+ "suivant": "Votre entreprise et votre logo",
+ "intro": 5.08,
+ "etapes": [
+  {
+   "image": "01.png",
+   "texte": "Pour commencer, ouvrez loka.eyamtech.com sur votre téléphone, puis appuyez sur « Créer mon espace ».",
+   "tap": {
+    "x": 195,
+    "y": 414.796875,
+    "w": 358,
+    "h": 52
+   },
+   "debut": 5.08,
+   "duree": 7.25,
+   "voix": 5.48,
+   "dureeVoix": 5.9,
+   "zoom": 1.14
+  },
+  {
+   "image": "02.png",
+   "texte": "Indiquez votre nom, le nom de votre entreprise et votre ville.",
+   "tap": null,
+   "debut": 12.33,
+   "duree": 4.24,
+   "voix": 12.73,
+   "dureeVoix": 3.44,
+   "zoom": 1.0
+  },
+  {
+   "image": "03.png",
+   "texte": "Ajoutez votre numéro de téléphone, qui vous servira à vous connecter, votre e-mail et un mot de passe.",
+   "tap": {
+    "x": 195,
+    "y": 730.90625,
+    "w": 332,
+    "h": 48
+   },
+   "debut": 16.57,
+   "duree": 6.71,
+   "voix": 16.97,
+   "dureeVoix": 5.36,
+   "zoom": 1.14
+  },
+  {
+   "image": "04.png",
+   "texte": "Loka vous envoie aussitôt un code à six chiffres par e-mail.",
+   "tap": null,
+   "debut": 23.28,
+   "duree": 3.5,
+   "voix": 23.68,
+   "dureeVoix": 2.7,
+   "zoom": 1.0
+  },
+  {
+   "image": "05.png",
+   "texte": "Saisissez ce code, puis appuyez sur « Ouvrir mon espace ».",
+   "tap": {
+    "x": 195,
+    "y": 599.234375,
+    "w": 332,
+    "h": 48
+   },
+   "debut": 26.78,
+   "duree": 4.45,
+   "voix": 27.18,
+   "dureeVoix": 3.1,
+   "zoom": 1.14
+  },
+  {
+   "image": "06.png",
+   "texte": "Votre espace est prêt, avec quatorze jours d’essai gratuit. Il ne reste qu’à suivre les étapes, une par une.",
+   "tap": null,
+   "debut": 31.23,
+   "duree": 5.9,
+   "voix": 31.63,
+   "dureeVoix": 5.1,
+   "zoom": 1.0
+  }
+ ],
+ "fin": 37.13,
+ "duree": 40.73,
+ "voixIntro": 0.45
+};

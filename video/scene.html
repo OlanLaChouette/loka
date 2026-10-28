@@ -4,21 +4,21 @@
 <meta charset="utf-8">
 <title>Loka – pub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 <script src="node_modules/gsap/dist/gsap.min.js"></script>
 <style>
   :root {
-    --vert: #1D6A45; --vert-fonce: #0D2B1A; --vert-nuit: #07190F; --vert-clair: #E8F5EE;
-    --lime: #7EC845; --fond: #F5F2EC; --texte: #1a1a18; --muted: #6B6B68; --orange: #FF7900;
+    --vert: #5443D8; --vert-fonce: #1E1650; --vert-nuit: #0E0A26; --vert-clair: #EEEBFF;
+    --lime: #A99DFF; --fond: #F5F2EC; --texte: #1a1a18; --muted: #6B6B68; --orange: #FF7900;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
   #stage {
     position: relative; width: 1080px; height: 1920px; overflow: hidden;
-    background: radial-gradient(1200px 900px at 20% 10%, #174a30 0%, transparent 60%),
-                radial-gradient(1000px 1000px at 90% 85%, #12402a 0%, transparent 60%),
+    background: radial-gradient(1200px 900px at 20% 10%, #2C2270 0%, transparent 60%),
+                radial-gradient(1000px 1000px at 90% 85%, #251C60 0%, transparent 60%),
                 var(--vert-nuit);
-    font-family: 'Space Grotesk', sans-serif; color: #fff;
+    font-family: 'Inter', sans-serif; color: #fff;
   }
   .grain { position: absolute; inset: 0; pointer-events: none; opacity: .09; mix-blend-mode: overlay; z-index: 90;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
@@ -28,7 +28,7 @@
   .scene { position: absolute; inset: 0; }
 
   /* ---------- Légendes ---------- */
-  .legende { position: absolute; left: 70px; right: 70px; top: 190px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800;
+  .legende { position: absolute; left: 70px; right: 70px; top: 190px; font-family: 'Sora', sans-serif; font-weight: 800;
     font-size: 92px; line-height: 1.0; letter-spacing: -0.022em; word-spacing: 0.06em; z-index: 60; text-shadow: 0 6px 30px rgba(0,0,0,.45); }
   .legende .l { display: block; overflow: hidden; padding-bottom: 8px; }
   .legende .l span { display: inline-block; }
@@ -36,7 +36,7 @@
 
   /* ---------- Marque ---------- */
   .badge { display: inline-flex; align-items: center; justify-content: center; background: var(--lime); border-radius: 26%; }
-  .marque { display: flex; align-items: center; gap: 22px; font-family: 'Syne', sans-serif; font-weight: 800; letter-spacing: -0.03em; }
+  .marque { display: flex; align-items: center; gap: 22px; font-family: 'Sora', sans-serif; font-weight: 800; letter-spacing: -0.03em; }
   #bug { position: absolute; left: 70px; top: 80px; z-index: 70; font-size: 46px; gap: 14px; opacity: 0; }
 
   /* ---------- Cahier ---------- */
@@ -82,7 +82,7 @@
 
   /* App Loka */
   .entete { background: var(--vert-fonce); color: #fff; padding: 108px 34px 30px; border-radius: 0 0 36px 36px; }
-  .entete .petit { font-size: 21px; color: #b9d4c3; }
+  .entete .petit { font-size: 21px; color: #CFC9F2; }
   .entete .gros { font-size: 36px; font-weight: 800; margin-top: 2px; }
   .entete .puces { display: flex; gap: 10px; margin-top: 18px; }
   .puce { font-size: 19px; font-weight: 700; padding: 8px 14px; border-radius: 20px; }
@@ -93,7 +93,7 @@
   .carte-villa .det { font-size: 19px; color: var(--muted); margin-top: 2px; }
   .carte-villa .prix { font-size: 21px; font-weight: 700; margin-top: 6px; color: var(--vert-fonce); }
   .carte-villa .etat { position: absolute; right: 16px; top: 16px; }
-  .libre { background: #E3F4DA; color: #2f7a12; } .occupee { background: #FCE9E0; color: #b2441b; }
+  .libre { background: #EEEBFF; color: #4F3FD6; } .occupee { background: #FCE9E0; color: #b2441b; }
 
   .feuille { position: absolute; left: 0; right: 0; bottom: 0; height: 900px; background: #fff; border-radius: 42px 42px 0 0; box-shadow: 0 -20px 50px rgba(0,0,0,.18); padding: 18px 30px 0; z-index: 20; }
   .poignee { width: 70px; height: 7px; border-radius: 4px; background: #d7d7d7; margin: 0 auto 18px; }
@@ -111,10 +111,10 @@
   .succes { position: absolute; inset: 0; background: var(--vert-fonce); color: #fff; z-index: 30; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 40px; }
   .succes .cercle { width: 210px; height: 210px; border-radius: 50%; background: var(--lime); display: flex; align-items: center; justify-content: center; }
   .succes .t1 { font-size: 44px; font-weight: 800; margin-top: 40px; }
-  .succes .t2 { font-size: 30px; color: #cfe3d6; margin-top: 10px; }
-  .succes .recu { margin-top: 44px; background: rgba(255,255,255,.08); border-radius: 22px; padding: 20px 26px; font-size: 22px; color: #e6f2ea; text-align: left; width: 100%; }
+  .succes .t2 { font-size: 30px; color: #DDD8FA; margin-top: 10px; }
+  .succes .recu { margin-top: 44px; background: rgba(255,255,255,.08); border-radius: 22px; padding: 20px 26px; font-size: 22px; color: #EEEBFF; text-align: left; width: 100%; }
 
-  .tap { position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: rgba(255,255,255,.55); border: 4px solid rgba(255,255,255,.9); box-shadow: 0 0 0 0 rgba(126,200,69,.6); z-index: 44; opacity: 0; mix-blend-mode: normal; }
+  .tap { position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; background: rgba(255,255,255,.55); border: 4px solid rgba(255,255,255,.9); box-shadow: 0 0 0 0 rgba(169,157,255,.6); z-index: 44; opacity: 0; mix-blend-mode: normal; }
 
   /* Appareil photo + reçu */
   .camera { position: absolute; inset: 0; background: #1b1b1b; z-index: 32; }
@@ -139,24 +139,24 @@
   .carte-mode .icone { width: 96px; height: 96px; border-radius: 26px; display: flex; align-items: center; justify-content: center; }
   .carte-mode .type { font-size: 24px; color: var(--muted); font-weight: 600; margin-top: 26px; text-transform: uppercase; letter-spacing: .06em; }
   .carte-mode .nom { font-size: 40px; font-weight: 800; margin-top: 6px; }
-  .carte-mode .prix { white-space: nowrap; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 58px; color: var(--vert-fonce); margin-top: 18px; letter-spacing: -0.02em; }
+  .carte-mode .prix { white-space: nowrap; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 58px; color: var(--vert-fonce); margin-top: 18px; letter-spacing: -0.02em; }
   .carte-mode .prix small { font-size: 21px; color: var(--muted); font-family: 'Inter'; font-weight: 600; letter-spacing: 0; }
   .carte-mode .bas { margin-top: 24px; padding-top: 22px; border-top: 2px solid #eee; font-size: 25px; display: flex; justify-content: space-between; align-items: center; }
-  .tampon { font-weight: 800; color: #2f7a12; background: #E3F4DA; border-radius: 16px; padding: 8px 16px; font-size: 25px; }
+  .tampon { font-weight: 800; color: #4F3FD6; background: #EEEBFF; border-radius: 16px; padding: 8px 16px; font-size: 25px; }
 
   /* Tableau de bord */
-  .tdb { position: absolute; inset: 0; background: #0b2316; color: #fff; padding: 108px 26px 0; }
-  .tdb .mois { font-size: 21px; color: #9fc3ad; } .tdb h4 { font-size: 36px; font-weight: 800; }
+  .tdb { position: absolute; inset: 0; background: #140F33; color: #fff; padding: 108px 26px 0; }
+  .tdb .mois { font-size: 21px; color: #B9B2E6; } .tdb h4 { font-size: 36px; font-weight: 800; }
   .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
   .kpi { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); border-radius: 24px; padding: 18px; }
-  .kpi .lab { font-size: 18px; color: #9fc3ad; } .kpi .val { font-size: 36px; font-weight: 800; margin-top: 4px; letter-spacing: -0.01em; }
-  .kpi .val small { font-size: 18px; color: #9fc3ad; font-weight: 600; }
-  .kpi.grand { grid-column: span 2; background: linear-gradient(135deg, rgba(126,200,69,.22), rgba(126,200,69,.06)); border-color: rgba(126,200,69,.35); }
+  .kpi .lab { font-size: 18px; color: #B9B2E6; } .kpi .val { font-size: 36px; font-weight: 800; margin-top: 4px; letter-spacing: -0.01em; }
+  .kpi .val small { font-size: 18px; color: #B9B2E6; font-weight: 600; }
+  .kpi.grand { grid-column: span 2; background: linear-gradient(135deg, rgba(169,157,255,.22), rgba(169,157,255,.06)); border-color: rgba(169,157,255,.35); }
   .kpi.grand .val { font-size: 52px; color: var(--lime); }
   .grille { margin-top: 18px; background: rgba(255,255,255,.04); border-radius: 24px; padding: 16px; }
-  .grille .t { font-size: 18px; color: #9fc3ad; margin-bottom: 10px; display: flex; justify-content: space-between; }
+  .grille .t { font-size: 18px; color: #B9B2E6; margin-bottom: 10px; display: flex; justify-content: space-between; }
   .cases { display: grid; grid-template-columns: 70px repeat(12, 1fr); gap: 5px; align-items: center; }
-  .cases .v { font-size: 15px; color: #9fc3ad; font-weight: 600; }
+  .cases .v { font-size: 15px; color: #B9B2E6; font-weight: 600; }
   .cases .c { height: 26px; border-radius: 6px; background: rgba(255,255,255,.07); }
   .cases .c.p { background: var(--lime); }
 
@@ -168,11 +168,11 @@
 </head>
 <body>
 <div id="stage">
-  <div class="blob" id="blob1" style="width:700px;height:700px;left:-200px;top:200px;background:#2c8a57"></div>
-  <div class="blob" id="blob2" style="width:600px;height:600px;right:-180px;top:1200px;background:#7EC845;opacity:.18"></div>
+  <div class="blob" id="blob1" style="width:700px;height:700px;left:-200px;top:200px;background:#4B3BC9"></div>
+  <div class="blob" id="blob2" style="width:600px;height:600px;right:-180px;top:1200px;background:#A99DFF;opacity:.18"></div>
 
   <!-- Marque persistante -->
-  <div id="bug" class="marque"><span class="badge" style="width:62px;height:62px"><svg width="40" height="40" viewBox="0 0 40 40"><path d="M20 6 L34 17 V33 a2 2 0 0 1 -2 2 H8 a2 2 0 0 1 -2 -2 V17 Z" fill="#0D2B1A"/><circle cx="20" cy="22" r="4.2" fill="#7EC845"/><rect x="18.4" y="24" width="3.2" height="7" rx="1.2" fill="#7EC845"/></svg></span>Loka</div>
+  <div id="bug" class="marque"><span class="badge" style="width:62px;height:62px"><svg width="40" height="40" viewBox="4 5 40 40"><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#1E1650"/><circle cx="27.6" cy="29.5" r="1.7" fill="#A99DFF"/></svg></span>Loka</div>
 
   <!-- ================= SCÈNE 1 : le désordre ================= -->
   <div class="scene" id="s1">
@@ -210,9 +210,9 @@
 
   <!-- ================= SCÈNE 2 : bascule + logo ================= -->
   <div class="scene" id="s2" style="opacity:0">
-    <div id="vague" style="position:absolute;left:540px;top:960px;width:10px;height:10px;margin:-5px;border-radius:50%;background:var(--lime)"></div>
-    <div id="logoCentre" class="marque" style="position:absolute;left:0;right:0;top:820px;justify-content:center;font-size:190px;color:var(--vert-fonce)">
-      <span class="badge" id="logoBadge" style="width:230px;height:230px;background:var(--vert-fonce)"><svg width="150" height="150" viewBox="0 0 40 40"><path d="M20 6 L34 17 V33 a2 2 0 0 1 -2 2 H8 a2 2 0 0 1 -2 -2 V17 Z" fill="#7EC845"/><circle cx="20" cy="22" r="4.2" fill="#0D2B1A"/><rect x="18.4" y="24" width="3.2" height="7" rx="1.2" fill="#0D2B1A"/></svg></span><span id="logoMot">Loka</span>
+    <div id="vague" style="position:absolute;left:540px;top:960px;width:10px;height:10px;margin:-5px;border-radius:50%;background:#6D5DF5"></div>
+    <div id="logoCentre" class="marque" style="position:absolute;left:0;right:0;top:820px;justify-content:center;font-size:190px;color:#fff">
+      <span class="badge" id="logoBadge" style="width:230px;height:230px;background:#fff"><svg width="150" height="150" viewBox="4 5 40 40"><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg></span><span id="logoMot">Loka</span>
     </div>
   </div>
 
@@ -239,7 +239,7 @@
           <div class="entete">
             <div class="petit">Bonjour Ali 👋</div>
             <div class="gros">Site Ouaga 2000</div>
-            <div class="puces"><span class="puce" style="background:rgba(126,200,69,.2);color:#b6e98e">4 libres</span><span class="puce" style="background:rgba(255,255,255,.1);color:#fff">6 occupées</span><span class="puce" style="background:rgba(255,255,255,.1);color:#fff">Ven. 24 oct.</span></div>
+            <div class="puces"><span class="puce" style="background:rgba(169,157,255,.22);color:#D9D3FF">4 libres</span><span class="puce" style="background:rgba(255,255,255,.1);color:#fff">6 occupées</span><span class="puce" style="background:rgba(255,255,255,.1);color:#fff">Ven. 24 oct.</span></div>
           </div>
           <div class="liste">
             <div class="carte-villa" id="cvB1"><div class="vign">VILLA1</div><div><div class="nom">Villa B1</div><div class="det">2 chambres · Standing</div><div class="prix">25 000 FCFA / nuit</div></div><span class="puce etat occupee">Occupée</span></div>
@@ -268,7 +268,7 @@
 
         <!-- Succès -->
         <div class="succes" id="succes">
-          <div class="cercle" id="succesCercle"><svg width="130" height="130" viewBox="0 0 130 130"><path id="coche" d="M30 68 L55 92 L102 40" stroke="#0D2B1A" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="cercle" id="succesCercle"><svg width="130" height="130" viewBox="0 0 130 130"><path id="coche" d="M30 68 L55 92 L102 40" stroke="#1E1650" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="t1">Paiement reçu</div>
           <div class="t2">54 000 FCFA · Orange Money</div>
           <div class="recu">🧾 Reçu n° 0482 · Villa B2<br><span style="color:var(--lime);font-weight:700">Envoyé à M. Kaboré par WhatsApp ✓</span></div>
@@ -299,7 +299,7 @@
           <div class="champ"><div class="lab">Villa</div><div class="val">Villa B2 · Ouaga 2000</div></div>
           <div class="champ piece"><div class="mini"><i style="width:70%"></i><i></i><i style="width:50%"></i><i></i><i style="width:80%"></i><i style="width:40%"></i></div><div><div class="lab">Justificatif</div><div class="val" style="font-size:22px">Photo du reçu jointe ✓</div></div></div>
           <div class="cta" id="ctaDep">Envoyer au promoteur</div>
-          <div id="depOk" style="margin-top:18px;text-align:center;font-size:24px;font-weight:800;color:#2f7a12;opacity:0">✓ Envoyée · en attente d'accord</div>
+          <div id="depOk" style="margin-top:18px;text-align:center;font-size:24px;font-weight:800;color:#4F3FD6;opacity:0">✓ Envoyée · en attente d'accord</div>
         </div>
 
         <div class="notif petite" id="nRecu" style="top:-200px">
@@ -325,7 +325,7 @@
       <div class="bas"><span>2 nuits · 54 000</span><span class="tampon">Payé ✓</span></div>
     </div>
     <div class="carte-mode" id="cMois" style="left:520px;top:1080px">
-      <div class="icone" style="background:var(--vert-clair)"><svg width="56" height="56" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3" fill="none" stroke="#1D6A45" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#1D6A45" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="15" r="2.2" fill="#7EC845"/></svg></div>
+      <div class="icone" style="background:var(--vert-clair)"><svg width="56" height="56" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3" fill="none" stroke="#5443D8" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="#5443D8" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="15" r="2.2" fill="#A99DFF"/></svg></div>
       <div class="type">Location au mois</div>
       <div class="nom">Appartement C4</div>
       <div class="prix">150 000 <small>FCFA / mois</small></div>
@@ -341,7 +341,7 @@
       <div class="bouton" style="left:-6px;top:340px;height:110px"></div>
       <div class="bouton" style="left:-6px;top:470px;height:110px"></div>
       <div class="bouton" style="right:-6px;top:380px;height:170px"></div>
-      <div class="bezel"><div class="ecran" style="background:#0b2316;color:#fff">
+      <div class="bezel"><div class="ecran" style="background:#140F33;color:#fff">
         <div class="ile"></div>
         <div class="statut" style="color:#fff"><span>9:41</span><span class="icones">
           <svg width="34" height="22" viewBox="0 0 34 22"><rect x="0" y="14" width="6" height="8" rx="1.5" fill="currentColor"/><rect x="9" y="10" width="6" height="12" rx="1.5" fill="currentColor"/><rect x="18" y="5" width="6" height="17" rx="1.5" fill="currentColor"/><rect x="27" y="0" width="6" height="22" rx="1.5" fill="currentColor"/></svg>
@@ -361,7 +361,7 @@
           <div class="grille"><div class="t"><span>Villas × jours</span><span style="color:var(--lime)">■ payé</span></div><div class="cases" id="cases"></div></div>
         </div>
         <div class="notif petite" id="nDep" style="top:-200px">
-          <div class="ico" style="background:var(--lime)"><svg width="34" height="34" viewBox="0 0 40 40"><path d="M20 6 L34 17 V33 a2 2 0 0 1 -2 2 H8 a2 2 0 0 1 -2 -2 V17 Z" fill="#0D2B1A"/></svg></div>
+          <div class="ico" style="background:var(--lime)"><svg width="34" height="34" viewBox="4 5 40 40"><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#1E1650"/></svg></div>
           <div class="txt"><div class="haut"><span class="app">Loka</span><span class="quand">maintenant</span></div><div class="msg">Ali : dépense « Recharge gaz » 7 500 F à accepter</div></div>
         </div>
         <div class="barre-accueil" style="background:#fff"></div>
@@ -373,14 +373,15 @@
   <!-- ================= SCÈNE 7 : fin ================= -->
   <div class="scene" id="fin" style="opacity:0">
     <div id="finLogo" class="marque" style="position:absolute;left:0;right:0;top:470px;justify-content:center;font-size:170px;color:#fff">
-      <span class="badge" style="width:200px;height:200px"><svg width="130" height="130" viewBox="0 0 40 40"><path d="M20 6 L34 17 V33 a2 2 0 0 1 -2 2 H8 a2 2 0 0 1 -2 -2 V17 Z" fill="#0D2B1A"/><circle cx="20" cy="22" r="4.2" fill="#7EC845"/><rect x="18.4" y="24" width="3.2" height="7" rx="1.2" fill="#7EC845"/></svg></span>Loka
+      <span class="badge" style="width:200px;height:200px"><svg width="130" height="130" viewBox="4 5 40 40"><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#1E1650"/><circle cx="27.6" cy="29.5" r="1.7" fill="#A99DFF"/></svg></span>Loka
     </div>
-    <div id="finSlogan" style="position:absolute;left:0;right:0;top:760px;font-size:50px;color:#cfe3d6;font-weight:500">Vos biens, vos loyers, vos chiffres.</div>
-    <div id="finPar" style="position:absolute;left:0;right:0;top:850px;font-size:36px;color:#9fc3ad">par <span style="font-family:'Syne';font-weight:700;color:#fff">e<span class="lime">Ya</span>mTech</span></div>
-    <div id="finCta" style="position:absolute;left:90px;right:90px;top:1060px;background:var(--lime);color:var(--vert-fonce);border-radius:40px;padding:34px 0;font-family:'Bricolage Grotesque';font-weight:800;font-size:84px;letter-spacing:-0.03em;white-space:nowrap;letter-spacing:-0.02em">Contactez-nous&nbsp;!</div>
-    <div id="finContacts" style="position:absolute;left:0;right:0;top:1310px">
+    <div id="finSlogan" style="position:absolute;left:0;right:0;top:760px;font-size:50px;color:#DDD8FA;font-weight:500">Vos biens, vos loyers, vos chiffres.</div>
+    <div id="finPar" style="position:absolute;left:0;right:0;top:850px;font-size:36px;color:#B9B2E6">par <span style="font-family:'Sora';font-weight:700;color:#fff">eYamTech</span></div>
+    <div id="finCta" style="position:absolute;left:90px;right:90px;top:1060px;background:var(--lime);color:var(--vert-fonce);border-radius:40px;padding:34px 0;font-family:'Sora';font-weight:800;font-size:84px;letter-spacing:-0.03em;white-space:nowrap;letter-spacing:-0.02em">Contactez-nous&nbsp;!</div>
+    <div id="finContacts" style="position:absolute;left:0;right:0;top:1260px">
+      <div class="contact" id="ct0" style="font-size:54px;font-weight:800;font-family:'Sora';letter-spacing:-0.02em"><span class="ic" style="background:#fff"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#5443D8" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>loka.eyamtech.com</div>
       <div class="contact" id="ct1"><span class="ic" style="background:#25D366"><svg width="50" height="50" viewBox="0 0 24 24"><path d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.2-2.1c.9.2 1.8.3 2.8.3 5 0 9-3.6 9-8.1S17 3 12 3z" fill="#fff"/></svg></span>+226 62 82 67 02</div>
-      <div class="contact" id="ct2"><span class="ic" style="background:rgba(255,255,255,.12)"><svg width="48" height="48" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="#7EC845" stroke-width="2"/><path d="M4 7l8 6 8-6" stroke="#7EC845" stroke-width="2" fill="none" stroke-linecap="round"/></svg></span>contact@eyamtech.com</div>
+      <div class="contact" id="ct2"><span class="ic" style="background:rgba(255,255,255,.12)"><svg width="48" height="48" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="#A99DFF" stroke-width="2"/><path d="M4 7l8 6 8-6" stroke="#A99DFF" stroke-width="2" fill="none" stroke-linecap="round"/></svg></span>contact@eyamtech.com</div>
     </div>
   </div>
 
@@ -464,7 +465,7 @@ const taper = (x, y, t) => tl.fromTo('#tap', { left: x, top: y, scale: 0.4, opac
 taper(300, 480, 7.0);
 tl.to('#cvB2', { scale: 0.97, duration: 0.1, yoyo: true, repeat: 1 }, 7.0)
   .to('#feuille', { yPercent: 0, duration: 0.5, ease: E }, 7.25)
-  .fromTo('#ligRemise', { backgroundColor: 'rgba(126,200,69,0)' }, { backgroundColor: 'rgba(126,200,69,.25)', duration: 0.3, yoyo: true, repeat: 1 }, 7.85);
+  .fromTo('#ligRemise', { backgroundColor: 'rgba(169,157,255,0)' }, { backgroundColor: 'rgba(169,157,255,.25)', duration: 0.3, yoyo: true, repeat: 1 }, 7.85);
 taper(290, 1010, 8.55);
 tl.to('#moyenOM', { borderColor: '#FF7900', backgroundColor: '#FFF3E8', duration: 0.15 }, 8.6);
 taper(290, 1150, 9.0);
@@ -487,7 +488,7 @@ tl.to('#camera', { opacity: 1, duration: 0.25 }, 11.2)
   .to('#depense', { opacity: 1, duration: 0.01 }, 12.0)
   .from('#depense .champ, #ctaDep', { y: 50, opacity: 0, duration: 0.35, stagger: 0.06, ease: E }, 12.0);
 taper(290, 1080, 12.75);
-tl.to('#ctaDep', { backgroundColor: '#2f7a12', duration: 0.15 }, 12.8)
+tl.to('#ctaDep', { backgroundColor: '#4F3FD6', duration: 0.15 }, 12.8)
   .to('#depOk', { opacity: 1, duration: 0.25 }, 12.9);
 
 // ---------- S5 : nuit / mois 13.7 → 15.9 ----------
@@ -518,7 +519,7 @@ compteur('#kNuits', 214, 16.6, 2.0);
 compteur('#kOcc', 69, 16.7, 1.9);
 compteur('#kRed', 292000, 16.8, 1.8);
 compteur('#kLoy', 12, 16.9, 1.7);
-tl.to(etat, { backgroundColor: '#7EC845', duration: 0.12, stagger: 0.022, ease: 'none' }, 16.6)
+tl.to(etat, { backgroundColor: '#A99DFF', duration: 0.12, stagger: 0.022, ease: 'none' }, 16.6)
   .fromTo('#nDep', { y: 0 }, { y: 240, duration: 0.5, ease: 'back.out(1.3)' }, 18.75)
   .to('#nDep', { y: 0, duration: 0.35, ease: 'power2.in' }, 19.75);
 
@@ -531,8 +532,9 @@ tl.to('#telP', { scale: 0.7, opacity: 0, y: 300, duration: 0.45, ease: 'power3.i
   .from('#finSlogan', { y: 40, opacity: 0, duration: 0.5, ease: E }, 20.9)
   .from('#finPar', { y: 30, opacity: 0, duration: 0.5, ease: E }, 21.2)
   .from('#finCta', { scale: 0.5, opacity: 0, duration: 0.55, ease: 'back.out(1.8)' }, 21.9)
-  .from('#ct1', { x: -120, opacity: 0, duration: 0.5, ease: E }, 22.3)
-  .from('#ct2', { x: 120, opacity: 0, duration: 0.5, ease: E }, 22.5)
+  .from('#ct0', { y: 40, opacity: 0, duration: 0.5, ease: E }, 22.2)
+  .from('#ct1', { x: -120, opacity: 0, duration: 0.5, ease: E }, 22.45)
+  .from('#ct2', { x: 120, opacity: 0, duration: 0.5, ease: E }, 22.65)
   .to('#finCta', { scale: 1.04, duration: 0.5, yoyo: true, repeat: 3, ease: 'sine.inOut' }, 23.0)
   .to({}, { duration: 0.1 }, 25.4);
 

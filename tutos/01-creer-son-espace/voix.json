@@ -1,0 +1,21 @@
+{
+ "taux": 24000,
+ "durees": [
+  3.78,
+  5.9,
+  3.44,
+  5.36,
+  2.7,
+  3.1,
+  5.1
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 1 : Créer son espace.",
+  "Pour commencer, ouvrez loka.eyamtech.com sur votre téléphone, puis appuyez sur « Créer mon espace ».",
+  "Indiquez votre nom, le nom de votre entreprise et votre ville.",
+  "Ajoutez votre numéro de téléphone, qui vous servira à vous connecter, votre e-mail et un mot de passe.",
+  "Loka vous envoie aussitôt un code à six chiffres par e-mail.",
+  "Saisissez ce code, puis appuyez sur « Ouvrir mon espace ».",
+  "Votre espace est prêt, avec quatorze jours d’essai gratuit. Il ne reste qu’à suivre les étapes, une par une."
+ ]
+}

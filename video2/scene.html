@@ -172,14 +172,15 @@
 
   <!-- ============ S7 : fin ============ -->
   <div class="scene" id="s7" style="opacity:0">
-    <div class="centre" style="margin:-380px 0 0 -800px;width:1600px;text-align:center">
+    <div class="centre" style="margin:-440px 0 0 -800px;width:1600px;text-align:center">
       <div id="finLogo" style="display:inline-flex;align-items:center;gap:30px"><svg width="170" height="170" viewBox="0 0 48 48" style="filter:drop-shadow(0 20px 40px rgba(20,10,80,.5))"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg><span style="font:800 170px 'Sora';letter-spacing:-0.05em;text-shadow:0 10px 0 #3B2DB0">Loka</span></div>
       <div id="finSlogan" style="font:700 46px 'Inter';color:#E4E0FF;margin-top:10px">Vos biens, vos loyers, vos chiffres.</div>
       <div id="finCta" style="margin-top:54px"><span class="bouton-cta"><svg width="56" height="56" viewBox="0 0 24 24"><path d="M12 3C7 3 3 6.6 3 11c0 2.2 1 4.2 2.7 5.6L5 21l4.2-2.1c.9.2 1.8.3 2.8.3 5 0 9-3.6 9-8.1S17 3 12 3z" fill="#25D366"/></svg>Contactez-nous !</span></div>
-      <div id="finContacts" style="margin-top:46px;display:flex;justify-content:center;gap:60px;font:700 42px 'Inter'">
+      <div id="finLien" style="margin-top:44px;display:inline-flex;align-items:center;gap:20px;font:800 64px 'Sora';letter-spacing:-0.02em"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>loka.eyamtech.com</div>
+      <div id="finContacts" style="margin-top:22px;display:flex;justify-content:center;gap:50px;font:600 36px 'Inter';color:#E4E0FF">
         <span>+226 62 82 67 02</span><span style="opacity:.5">·</span><span>contact@eyamtech.com</span>
       </div>
-      <div id="finDispo" style="margin-top:22px;font:600 30px 'Inter';color:#D9D3FF">Sur Android et sur le web · une application éditée par eYamTech</div>
+      <div id="finDispo" style="margin-top:22px;font:600 30px 'Inter';color:#D9D3FF">Créez votre espace en ligne · 14 jours gratuits · par eYamTech</div>
     </div>
   </div>
 
@@ -290,7 +291,8 @@ tl.set('#s7', { opacity: 1 }, 24.8)
   .from('#finLogo', { scale: .4, opacity: 0, duration: .6, ease: 'back.out(1.7)' }, 24.85)
   .from('#finSlogan', { y: 40, opacity: 0, duration: .5, ease: E }, 25.3)
   .from('#finCta', { scale: 0, duration: .55, ease: 'back.out(2.2)' }, 25.6)
-  .from('#finContacts', { y: 40, opacity: 0, duration: .5, ease: E }, 26.1)
+  .from('#finLien', { y: 40, opacity: 0, duration: .5, ease: E }, 26.0)
+  .from('#finContacts', { y: 40, opacity: 0, duration: .5, ease: E }, 26.25)
   .from('#finDispo', { opacity: 0, duration: .5 }, 26.5)
   .to('#finCta', { scale: 1.06, duration: .45, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 26.6)
   .to({}, { duration: .1 }, DUREE - .1);

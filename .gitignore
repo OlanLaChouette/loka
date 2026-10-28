@@ -11,3 +11,7 @@ frontend/.env.production
 .navigateurs/
 video2/out/
 video2/affiches/rendu/
+tutos/*/rendu/
+tutos/*/apercus/
+tutos/*/voix/prise.wav
+tutos/_brouillon/

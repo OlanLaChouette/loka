@@ -1,0 +1,52 @@
+{
+  "id": "01-creer-son-espace",
+  "numero": 1,
+  "titre": "Créer son espace",
+  "etapes": [
+    {
+      "image": "01.png",
+      "texte": "Pour commencer, ouvrez loka.eyamtech.com sur votre téléphone, puis appuyez sur « Créer mon espace ».",
+      "tap": {
+        "x": 195,
+        "y": 414.796875,
+        "w": 358,
+        "h": 52
+      }
+    },
+    {
+      "image": "02.png",
+      "texte": "Indiquez votre nom, le nom de votre entreprise et votre ville.",
+      "tap": null
+    },
+    {
+      "image": "03.png",
+      "texte": "Ajoutez votre numéro de téléphone, qui vous servira à vous connecter, votre e-mail et un mot de passe.",
+      "tap": {
+        "x": 195,
+        "y": 730.90625,
+        "w": 332,
+        "h": 48
+      }
+    },
+    {
+      "image": "04.png",
+      "texte": "Loka vous envoie aussitôt un code à six chiffres par e-mail.",
+      "tap": null
+    },
+    {
+      "image": "05.png",
+      "texte": "Saisissez ce code, puis appuyez sur « Ouvrir mon espace ».",
+      "tap": {
+        "x": 195,
+        "y": 599.234375,
+        "w": 332,
+        "h": 48
+      }
+    },
+    {
+      "image": "06.png",
+      "texte": "Votre espace est prêt, avec quatorze jours d’essai gratuit. Il ne reste qu’à suivre les étapes, une par une.",
+      "tap": null
+    }
+  ]
+}
