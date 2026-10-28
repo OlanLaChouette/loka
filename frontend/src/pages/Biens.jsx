@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Trash2 } from 'lucide-react';
+import { Camera, Plus, Trash2 } from 'lucide-react';
 import { api, messageErreur } from '../lib/api';
 import { useSession } from '../lib/session';
 import { fcfa, TYPES_BIEN } from '../lib/format';
 import { Chargement, Champ, Erreur, Modale, Puce, Vide } from '../composants/Ui';
 import { useBiens, useSites } from '../composants/Formulaires';
+import { PhotosBien } from '../composants/Photos';
 
 function FormulaireBien({ bien, sites, onFermer }) {
   const client = useQueryClient();
@@ -69,7 +70,7 @@ function FormulaireLot({ sites, onFermer }) {
       <div className="grille-form">
         <Champ label="Site" plein><select value={f.site_id} onChange={maj('site_id')}>{sites.map(x => <option key={x.id} value={x.id}>{x.nom}</option>)}</select></Champ>
         <Champ label="Lettre ou préfixe"><input value={f.prefixe} onChange={maj('prefixe')} placeholder="V, A, Appt " /></Champ>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10 }}>
           <Champ label="De"><input value={f.debut} onChange={maj('debut')} inputMode="numeric" /></Champ>
           <Champ label="À"><input value={f.fin} onChange={maj('fin')} inputMode="numeric" /></Champ>
         </div>
@@ -108,6 +109,7 @@ export default function Biens() {
   const [edition, setEdition] = useState(null);
   const [nouveauSite, setNouveauSite] = useState(false);
   const [lot, setLot] = useState(false);
+  const [photos, setPhotos] = useState(null);
   const [params, setParams] = useSearchParams();
   const supprimerSite = useMutation({ mutationFn: (id) => api.delete('/sites/' + id), onSuccess: () => client.invalidateQueries() });
   useEffect(() => {
@@ -156,6 +158,7 @@ export default function Biens() {
                         <td className="nombre">{b.mode === 'nuit' ? fcfa(b.prix_nuit) + ' / nuit' : fcfa(b.prix_mois) + ' / mois'}</td>
                         <td><Puce statut={b.etat} /></td>
                         <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                          <button className="bouton discret" onClick={() => setPhotos(b.id)} aria-label={`Photos de ${b.reference}`}><Camera size={15} />{b.photos?.length || (role === 'comptable' ? 0 : '+')}</button>
                           {proprio && <button className="bouton discret" onClick={() => setEdition(b)}>Modifier</button>}
                           {role === 'gerant' && b.etat !== 'retire' && (
                             <button className="bouton discret" onClick={() => etat.mutate({ id: b.id, etat: b.etat === 'travaux' ? 'disponible' : 'travaux' })}>
@@ -175,6 +178,7 @@ export default function Biens() {
       {edition && <FormulaireBien bien={edition === 'nouveau' ? null : edition} sites={sites} onFermer={() => setEdition(null)} />}
       {nouveauSite && <FormulaireSite onFermer={() => setNouveauSite(false)} />}
       {lot && <FormulaireLot sites={sites} onFermer={() => setLot(false)} />}
+      {photos && <PhotosBien bienId={photos} onFermer={() => setPhotos(null)} />}
     </main>
   );
 }

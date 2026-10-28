@@ -280,5 +280,40 @@ test('mot de passe oublié : code par e-mail, sans révéler si l’adresse exis
   assert.equal((await appel('POST', '/api/comptes/mot-de-passe/reinitialiser', { corps: { id: demande.corps.id, code, mot_de_passe: 'court' } })).statut, 400);
   const ok = await appel('POST', '/api/comptes/mot-de-passe/reinitialiser', { corps: { id: demande.corps.id, code, mot_de_passe: 'nouveau-secret' } });
   assert.equal(ok.statut, 200);
-  assert.ok((await appel('POST', '/api/auth/connexion', { corps: { identifiant: '70111111', mot_de_passe: 'nouveau-secret' } })).corps.jeton);
+  const issa = (await appel('POST', '/api/auth/connexion', { corps: { identifiant: '70111111', mot_de_passe: 'nouveau-secret' } })).corps;
+  assert.ok(issa.jeton);
+  // On remet le mot de passe de démonstration pour les tests suivants.
+  assert.equal((await appel('PATCH', '/api/auth/moi/mot-de-passe', { jeton: issa.jeton, corps: { actuel: 'nouveau-secret', nouveau: MOT_DE_PASSE } })).statut, 200);
+});
+
+test('photos d’un bien : gérant du site, 6 au plus, protégées par espace et par site', async () => {
+  const issa = await connecter('70111111');
+  const ali = await connecter('70222222');
+  const mariam = await connecter('70333333');
+  const paul = await connecter('70555555');
+  const esp = issa.espaces[0].id;
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+  const b2 = (await appel('GET', '/api/biens', { jeton: ali.jeton, espace: esp })).corps.find(b => b.reference === 'B2');
+  assert.deepEqual(b2.photos, []);
+  const ajouter = (qui, espace = esp) => {
+    const f = new FormData();
+    f.append('photo', new Blob([png], { type: 'image/png' }), 'villa.png');
+    return fetch(`${base}/api/biens/${b2.id}/photos`, { method: 'POST', headers: { Authorization: 'Bearer ' + qui.jeton, 'X-Espace': espace }, body: f });
+  };
+  const lire = (qui, photo, espace = esp) => fetch(`${base}/api/fichiers/photo/${b2.id}/${photo}`, { headers: { Authorization: 'Bearer ' + qui.jeton, 'X-Espace': espace } });
+  for (let i = 0; i < 6; i++) assert.equal((await ajouter(ali)).status, 201);
+  assert.equal((await ajouter(ali)).status, 409);
+  const photos = (await appel('GET', '/api/biens', { jeton: issa.jeton, espace: esp })).corps.find(b => b.id === b2.id).photos;
+  assert.equal(photos.length, 6);
+  assert.equal((await lire(issa, photos[0])).headers.get('content-type'), 'image/png');
+  // Mariam gère d'autres sites de ce bailleur, Paul est un autre bailleur : ni l'un ni l'autre ne voit ces photos.
+  assert.equal((await lire(mariam, photos[0], mariam.espaces.find(e => e.id === esp).id)).status, 404);
+  assert.equal((await ajouter(mariam)).status, 404);
+  assert.equal((await lire(paul, photos[0], paul.espaces[0].id)).status, 404);
+  // Couverture et suppression.
+  const c = await appel('POST', `/api/biens/${b2.id}/photos/${photos[3]}/couverture`, { jeton: issa.jeton, espace: esp });
+  assert.equal(c.corps.photos[0], photos[3]);
+  const s = await appel('DELETE', `/api/biens/${b2.id}/photos/${photos[3]}`, { jeton: ali.jeton, espace: esp });
+  assert.equal(s.corps.photos.length, 5);
+  assert.equal((await lire(issa, photos[3])).status, 404);
 });

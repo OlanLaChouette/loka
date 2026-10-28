@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Illustrations de villas (démo)</title>
+<style>
+  * { margin: 0; box-sizing: border-box; }
+  body { background: #222; }
+  svg { display: block; width: 1200px; height: 900px; }
+</style></head>
+<body>
+<!-- Façade -->
+<svg id="facade" viewBox="0 0 1200 900">
+  <defs>
+    <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FA8E8"/><stop offset=".7" stop-color="#BFE0F7"/><stop offset="1" stop-color="#F6E3C4"/></linearGradient>
+    <linearGradient id="mur" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBF7F0"/><stop offset="1" stop-color="#E8DDCB"/></linearGradient>
+    <linearGradient id="ocre" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D89A5B"/><stop offset="1" stop-color="#B9773E"/></linearGradient>
+    <linearGradient id="eau" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5ED0E6"/><stop offset="1" stop-color="#1E9CC0"/></linearGradient>
+    <linearGradient id="vitre" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9BC9E8"/><stop offset=".55" stop-color="#5A86A8"/><stop offset="1" stop-color="#36597A"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#ciel)"/>
+  <circle cx="980" cy="160" r="70" fill="#FFE6A8" opacity=".8"/>
+  <rect y="640" width="1200" height="260" fill="#C9A77A"/>
+  <rect y="610" width="1200" height="40" fill="#7FA45A"/>
+  <!-- maison -->
+  <rect x="170" y="330" width="560" height="300" fill="url(#mur)"/>
+  <rect x="150" y="310" width="600" height="28" rx="4" fill="#3A3A40"/>
+  <rect x="650" y="210" width="380" height="420" fill="url(#ocre)"/>
+  <rect x="630" y="190" width="420" height="26" rx="4" fill="#3A3A40"/>
+  <rect x="220" y="380" width="200" height="190" fill="url(#vitre)"/><rect x="316" y="380" width="8" height="190" fill="#2E2E33"/>
+  <rect x="470" y="380" width="200" height="250" fill="url(#vitre)"/><rect x="566" y="380" width="8" height="250" fill="#2E2E33"/>
+  <rect x="700" y="270" width="280" height="130" fill="url(#vitre)"/>
+  <rect x="740" y="450" width="100" height="180" rx="4" fill="#6B4228"/><circle cx="825" cy="545" r="5" fill="#E9C66A"/>
+  <rect x="870" y="450" width="120" height="110" fill="url(#vitre)"/>
+  <!-- piscine -->
+  <path d="M120 690 L620 690 L700 800 L60 800 Z" fill="#EDE6D8"/>
+  <path d="M150 705 L600 705 L660 785 L100 785 Z" fill="url(#eau)"/>
+  <path d="M190 730 q30 -10 60 0 t60 0 M330 750 q30 -10 60 0 t60 0 M200 765 q30 -10 60 0" stroke="#fff" stroke-width="4" fill="none" opacity=".55"/>
+  <!-- palmiers -->
+  <g transform="translate(1080 640)"><path d="M0 0 C -10 -120, 10 -260, 30 -330" stroke="#7A5634" stroke-width="20" fill="none"/>
+    <g transform="translate(30 -330)" fill="#2F8A4C"><path d="M0 0 C -60 -40 -130 -20 -170 30 C -110 0 -60 10 0 0Z"/><path d="M0 0 C 60 -50 140 -40 180 10 C 110 -10 60 -5 0 0Z"/><path d="M0 0 C -20 -70 -70 -110 -120 -120 C -60 -80 -30 -50 0 0Z"/><path d="M0 0 C 30 -70 80 -100 130 -100 C 70 -70 40 -40 0 0Z"/><path d="M0 0 C -40 20 -70 70 -80 120 C -50 70 -30 40 0 0Z"/></g></g>
+  <g transform="translate(90 640) scale(.8)"><path d="M0 0 C 10 -120, -10 -260, -30 -330" stroke="#7A5634" stroke-width="20" fill="none"/>
+    <g transform="translate(-30 -330)" fill="#3A9A55"><path d="M0 0 C -60 -40 -130 -20 -170 30 C -110 0 -60 10 0 0Z"/><path d="M0 0 C 60 -50 140 -40 180 10 C 110 -10 60 -5 0 0Z"/><path d="M0 0 C -20 -70 -70 -110 -120 -120 C -60 -80 -30 -50 0 0Z"/><path d="M0 0 C 30 -70 80 -100 130 -100 C 70 -70 40 -40 0 0Z"/></g></g>
+  <circle cx="960" cy="625" r="38" fill="#D94F8C"/><circle cx="1000" cy="630" r="30" fill="#E86FA3"/>
+</svg>
+
+<!-- Salon -->
+<svg id="salon" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#F3EDE3"/>
+  <rect y="660" width="1200" height="240" fill="#C8A47C"/>
+  <path d="M0 660 L1200 660" stroke="#B48F66" stroke-width="6"/>
+  <rect x="640" y="120" width="440" height="420" fill="#8FC4E6"/><rect x="640" y="120" width="440" height="420" fill="none" stroke="#3A3A40" stroke-width="14"/>
+  <path d="M860 120 V540 M640 330 H1080" stroke="#3A3A40" stroke-width="8"/>
+  <path d="M700 540 C 720 470 760 440 820 430" stroke="#2F8A4C" stroke-width="10" fill="none"/>
+  <rect x="610" y="100" width="60" height="460" fill="#D9B98F" opacity=".9"/><rect x="1050" y="100" width="60" height="460" fill="#D9B98F" opacity=".9"/>
+  <rect x="120" y="200" width="300" height="200" rx="8" fill="#E8B04B"/><rect x="140" y="220" width="260" height="160" fill="#F5D489"/>
+  <path d="M170 360 L240 270 L290 330 L330 290 L380 360Z" fill="#D07A3A"/>
+  <!-- canapé -->
+  <rect x="90" y="470" width="560" height="190" rx="40" fill="#5B5FA8"/>
+  <rect x="120" y="420" width="500" height="120" rx="40" fill="#6D72C0"/>
+  <rect x="150" y="440" width="110" height="80" rx="20" fill="#F2C94C"/><rect x="480" y="440" width="110" height="80" rx="20" fill="#EB6F92"/>
+  <rect x="110" y="650" width="22" height="40" fill="#3A3A40"/><rect x="610" y="650" width="22" height="40" fill="#3A3A40"/>
+  <!-- table basse et tapis -->
+  <ellipse cx="420" cy="790" rx="380" ry="70" fill="#E9DCC6"/>
+  <rect x="280" y="700" width="300" height="30" rx="10" fill="#7A5634"/><rect x="300" y="730" width="18" height="60" fill="#5C3F25"/><rect x="545" y="730" width="18" height="60" fill="#5C3F25"/>
+  <circle cx="360" cy="690" r="16" fill="#fff"/><rect x="460" y="672" width="70" height="28" rx="6" fill="#2F8A4C"/>
+  <!-- plante -->
+  <rect x="980" y="600" width="90" height="90" rx="10" fill="#C9744A"/>
+  <path d="M1025 600 C 990 520 960 490 920 480 M1025 600 C 1040 510 1080 470 1120 470 M1025 600 C 1020 520 1030 470 1045 430" stroke="#2F8A4C" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <rect x="760" y="610" width="160" height="80" rx="8" fill="#3A3A40"/><rect x="772" y="560" width="136" height="54" rx="4" fill="#16161D"/>
+</svg>
+
+<!-- Chambre -->
+<svg id="chambre" viewBox="0 0 1200 900">
+  <rect width="1200" height="900" fill="#EFE7F5"/>
+  <rect y="680" width="1200" height="220" fill="#CDB394"/>
+  <rect x="820" y="150" width="280" height="330" fill="#9FD0EE"/><rect x="820" y="150" width="280" height="330" fill="none" stroke="#fff" stroke-width="16"/>
+  <path d="M960 150 V480" stroke="#fff" stroke-width="10"/>
+  <rect x="200" y="300" width="560" height="200" rx="20" fill="#7A5634"/>
+  <rect x="160" y="480" width="640" height="200" rx="24" fill="#FFFFFF"/>
+  <rect x="160" y="560" width="640" height="120" rx="20" fill="#6D5DF5" opacity=".85"/>
+  <rect x="220" y="430" width="170" height="90" rx="26" fill="#F7F3EA"/><rect x="420" y="430" width="170" height="90" rx="26" fill="#F7F3EA"/>
+  <rect x="170" y="680" width="24" height="40" fill="#5C3F25"/><rect x="770" y="680" width="24" height="40" fill="#5C3F25"/>
+  <rect x="40" y="520" width="110" height="160" rx="10" fill="#C79A6A"/><rect x="60" y="440" width="70" height="80" fill="#F2C94C" opacity=".9"/><rect x="85" y="420" width="20" height="20" fill="#3A3A40"/>
+  <rect x="860" y="560" width="240" height="120" rx="10" fill="#C79A6A"/><circle cx="980" cy="620" r="10" fill="#7A5634"/>
+  <rect x="300" y="160" width="320" height="110" rx="6" fill="#F2C94C" opacity=".35"/>
+</svg>
+
+<!-- Piscine -->
+<svg id="piscine" viewBox="0 0 1200 900">
+  <defs>
+    <linearGradient id="ciel2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4E9BE0"/><stop offset="1" stop-color="#CDE8F8"/></linearGradient>
+    <linearGradient id="eau2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6FE0F0"/><stop offset="1" stop-color="#1690B8"/></linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#ciel2)"/>
+  <rect y="380" width="1200" height="520" fill="#EFE6D6"/>
+  <rect x="0" y="330" width="1200" height="60" fill="#7FA45A"/>
+  <path d="M120 470 L1080 470 L1180 820 L20 820 Z" fill="url(#eau2)"/>
+  <path d="M120 470 L1080 470" stroke="#fff" stroke-width="10"/>
+  <g stroke="#fff" stroke-width="5" fill="none" opacity=".5"><path d="M220 560 q40 -14 80 0 t80 0 t80 0"/><path d="M560 620 q40 -14 80 0 t80 0 t80 0"/><path d="M300 720 q40 -14 80 0 t80 0"/><path d="M780 740 q40 -14 80 0 t80 0"/></g>
+  <!-- transats -->
+  <g transform="translate(830 380)"><path d="M0 70 L190 70 L240 0" stroke="#fff" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M10 80 V110 M180 80 V110" stroke="#9A9AA6" stroke-width="10"/></g>
+  <g transform="translate(560 380)"><path d="M0 70 L190 70 L240 0" stroke="#fff" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M10 80 V110 M180 80 V110" stroke="#9A9AA6" stroke-width="10"/></g>
+  <circle cx="420" cy="300" r="120" fill="#F2C94C"/><path d="M420 300 V440" stroke="#7A5634" stroke-width="12"/>
+  <g transform="translate(120 340)"><path d="M0 0 C -10 -100, 10 -200, 30 -260" stroke="#7A5634" stroke-width="18" fill="none"/>
+    <g transform="translate(30 -260)" fill="#2F8A4C"><path d="M0 0 C -60 -40 -130 -20 -170 30 C -110 0 -60 10 0 0Z"/><path d="M0 0 C 60 -50 140 -40 180 10 C 110 -10 60 -5 0 0Z"/><path d="M0 0 C -20 -70 -70 -110 -120 -120 C -60 -80 -30 -50 0 0Z"/><path d="M0 0 C 30 -70 80 -100 130 -100 C 70 -70 40 -40 0 0Z"/></g></g>
+</svg>
+</body></html>

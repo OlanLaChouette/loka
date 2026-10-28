@@ -49,3 +49,11 @@ test('montants en lettres', () => {
   assert.equal(enLettres(1000), 'mille');
   assert.equal(enLettres(6128000), 'six millions cent vingt-huit mille');
 });
+
+test('premier loyer dû à la première échéance après le début du bail', () => {
+  const { loyerDu } = require('../src/services/calculs');
+  assert.equal(loyerDu({ debut: '2026-10-28', jour_echeance: 5 }, '2026-10'), false);
+  assert.equal(loyerDu({ debut: '2026-10-28', jour_echeance: 5 }, '2026-11'), true);
+  assert.equal(loyerDu({ debut: '2026-10-03', jour_echeance: 5 }, '2026-10'), true);
+  assert.equal(loyerDu({ debut: '2026-01-01', jour_echeance: 5 }, '2026-10'), true);
+});

@@ -84,6 +84,8 @@ const Bien = sequelize.define('Bien', {
   etat: { type: DataTypes.ENUM('disponible', 'travaux', 'retire'), defaultValue: 'disponible' },
   compteur_electrique: DataTypes.STRING(60),
   description: DataTypes.TEXT,
+  // Photos du bien (identifiants de Fichier, dans l'ordre d'affichage ; la première sert de couverture).
+  photos: { type: DataTypes.ARRAY(DataTypes.UUID), allowNull: false, defaultValue: [] },
 }, { tableName: 'biens', indexes: [{ unique: true, fields: ['bailleur_id', 'site_id', 'reference'] }] });
 
 // ---------- Clients, séjours et baux ----------

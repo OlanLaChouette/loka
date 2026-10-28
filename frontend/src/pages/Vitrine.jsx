@@ -7,7 +7,7 @@ import '../styles/vitrine.css';
 const FONCTIONS = [
   { icone: CalendarCheck, titre: 'Réservations sans doublon', texte: 'Un planning par site. Loka refuse de louer deux fois la même nuit.' },
   { icone: Wallet, titre: 'Encaissements tracés', texte: 'Espèces, Mobile Money ou virement : chaque franc a son reçu numéroté.' },
-  { icone: MessageCircle, titre: 'Reçus par WhatsApp', texte: 'Le reçu PDF à votre logo part au client en un geste.' },
+  { icone: MessageCircle, titre: 'Photos et reçus par WhatsApp', texte: 'Les photos de la villa avant de réserver, puis le reçu PDF à votre logo : en un geste.' },
   { icone: Camera, titre: 'Dépenses avec photo', texte: 'Le gérant photographie le reçu ; vous acceptez ou refusez.' },
   { icone: BarChart3, titre: 'Bénéfice réel', texte: 'Encaissé, charges fixes, dépenses : votre bénéfice du mois, site par site.' },
   { icone: FileText, titre: 'Baux et loyers', texte: 'Contrats PDF, loyers en retard signalés, relance WhatsApp prête.' },

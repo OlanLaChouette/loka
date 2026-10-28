@@ -56,4 +56,9 @@ const numeroRecu = (n) => 'R-' + String(n).padStart(5, '0');
 const JOURS_ESSAI = 14;
 const finEssai = (depuis = new Date()) => new Date(depuis.getTime() + JOURS_ESSAI * 86400000).toISOString().slice(0, 10);
 
-module.exports = { JOURS_ESSAI, finEssai, nuitsEntre, prixSejour, besoinValidation, nuitsDansMois, joursDuMois, chargeMensuelle, abonnementMensuel, numeroRecu, versTexte };
+// Le loyer d'un mois n'est dû que si son échéance tombe après le début du bail :
+// un bail signé le 28 avec une échéance le 5 paie son premier loyer le 5 du mois suivant.
+const echeanceDuMois = (bail, mois) => `${mois}-${String(bail.jour_echeance).padStart(2, '0')}`;
+const loyerDu = (bail, mois) => bail.debut <= echeanceDuMois(bail, mois);
+
+module.exports = { loyerDu, JOURS_ESSAI, finEssai, nuitsEntre, prixSejour, besoinValidation, nuitsDansMois, joursDuMois, chargeMensuelle, abonnementMensuel, numeroRecu, versTexte };

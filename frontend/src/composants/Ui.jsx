@@ -5,13 +5,17 @@ import { initiales } from '../lib/format';
 
 export function Modale({ titre, onFermer, children, actions }) {
   const ref = useRef(null);
+  // onFermer change à chaque rendu du parent : on le lit par référence, sinon l'effet se relancerait
+  // à chaque frappe et remettrait le curseur dans le premier champ.
+  const fermer = useRef(onFermer);
+  fermer.current = onFermer;
   useEffect(() => {
     const precedent = document.activeElement;
     ref.current?.querySelector('input, select, textarea, button')?.focus();
-    const touche = (e) => { if (e.key === 'Escape') onFermer(); };
+    const touche = (e) => { if (e.key === 'Escape') fermer.current(); };
     document.addEventListener('keydown', touche);
     return () => { document.removeEventListener('keydown', touche); precedent?.focus?.(); };
-  }, [onFermer]);
+  }, []);
   return (
     <div className="voile" onMouseDown={(e) => e.target === e.currentTarget && onFermer()}>
       <div className="modale" role="dialog" aria-modal="true" aria-label={titre} ref={ref}>

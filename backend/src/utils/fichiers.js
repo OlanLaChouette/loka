@@ -12,6 +12,7 @@ const reception = (types, maxOctets) => multer({
 const IMAGES = ['image/png', 'image/jpeg', 'image/webp'];
 const recevoirLogo = reception(IMAGES, 1024 * 1024).single('logo');
 const recevoirJustificatif = reception([...IMAGES, 'application/pdf'], 3 * 1024 * 1024).single('justificatif');
+const recevoirPhoto = reception(IMAGES, 2 * 1024 * 1024).single('photo');
 
 async function enregistrer(file, bailleurId) {
   if (!file) return null;
@@ -26,4 +27,4 @@ function envoyer(res, fichier) {
   res.end(fichier.donnees);
 }
 
-module.exports = { recevoirLogo, recevoirJustificatif, enregistrer, envoyer };
+module.exports = { recevoirLogo, recevoirJustificatif, recevoirPhoto, enregistrer, envoyer };

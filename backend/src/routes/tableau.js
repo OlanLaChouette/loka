@@ -5,11 +5,11 @@ const { Bien, Site, Reservation, Bail, Paiement, Depense, ChargeFixe, Journal, U
 const { authentifier, espace, portee } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
-const { nuitsDansMois, joursDuMois, chargeMensuelle, versTexte } = require('../services/calculs');
+const { nuitsDansMois, joursDuMois, chargeMensuelle, versTexte, loyerDu } = require('../services/calculs');
 const { envoyer } = require('../utils/fichiers');
 
 const LIBELLES = {
-  reservation_creee: 'a enregistré une réservation', reduction_a_valider: 'demande une réduction hors limite', reduction_validee: 'a validé une réduction',
+  reservation_creee: 'a enregistré une réservation', photo_ajoutee: 'a ajouté une photo', reduction_a_valider: 'demande une réduction hors limite', reduction_validee: 'a validé une réduction',
   reservation_annulee: 'a annulé une réservation', paiement_encaisse: 'a encaissé un paiement', depense_saisie: 'a noté une dépense',
   depense_acceptee: 'a accepté une dépense', depense_refusee: 'a refusé une dépense', bail_cree: 'a créé un bail', bail_termine: 'a terminé un bail',
   prix_modifie: 'a modifié un prix', etat_modifie: 'a changé l’état d’un bien', bien_ajoute: 'a ajouté un bien', charge_ajoutee: 'a ajouté une charge fixe',
@@ -54,7 +54,7 @@ router.get('/tableau-de-bord', authentifier, espace, route(async (req, res) => {
   for (const b of baux) {
     const paye = b.Paiements.filter(p => p.periode === mois).reduce((s, p) => s + p.montant, 0);
     if (paye >= b.loyer) loyersPayes++;
-    else if (jourCourant >= b.jour_echeance && b.debut <= fin) impayes.push({ type: 'loyer', id: b.id, bien_id: b.bien_id, reference: b.Bien?.reference, client: b.Client?.nom, telephone: b.Client?.telephone, mois, echeance: b.jour_echeance, montant: b.loyer - paye });
+    else if (jourCourant >= b.jour_echeance && loyerDu(b, mois)) impayes.push({ type: 'loyer', id: b.id, bien_id: b.bien_id, reference: b.Bien?.reference, client: b.Client?.nom, telephone: b.Client?.telephone, mois, echeance: b.jour_echeance, montant: b.loyer - paye });
   }
 
   const parSite = sites.map(s => {

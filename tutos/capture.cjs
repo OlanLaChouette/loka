@@ -29,6 +29,10 @@ class Tuto {
   async ouvrir() {
     this.page = await this.navigateur.newPage();
     await this.page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+    // Pas de défilement horizontal de la page entière (scrollIntoView le provoque parfois).
+    await this.page.evaluateOnNewDocument(() => document.addEventListener('DOMContentLoaded', () => { const st = document.createElement('style'); st.textContent = 'html,body{overflow-x:clip}'; document.head.appendChild(st); }));
+    this.page.on('pageerror', e => console.log(`  [${this.id}] erreur page :`, e.message));
+    this.page.on('response', r => { if (r.status() >= 400 && r.url().includes('/api/')) console.log(`  [${this.id}] ${r.status()} ${r.request().method()} ${r.url().replace(SITE, '')}`); });
     await this.page.goto(SITE + '/connexion', { waitUntil: 'networkidle0' });
     await this.page.evaluate(() => { localStorage.clear(); localStorage.setItem('loka-theme', 'clair'); });
   }
@@ -60,12 +64,18 @@ class Tuto {
       return tous.filter(e => net(e) === t)[c.n || 0] || tous.filter(e => net(e).startsWith(t))[c.n || 0] || null;
     }, typeof cible === 'string' ? { texte: cible } : cible);
     const e = h.asElement();
-    if (!e) throw new Error(`[${this.id}] élément introuvable : ${JSON.stringify(cible)}`);
+    if (!e) {
+      await this.page.screenshot({ path: path.join(__dirname, 'echec.png') });
+      const libelles = await this.page.evaluate(() => [...document.querySelectorAll('label.champ, button')].map(x => x.textContent.trim().slice(0, 30)).join(' | '));
+      throw new Error(`[${this.id}] élément introuvable : ${JSON.stringify(cible)} (écran : tutos/echec.png ; présents : ${libelles.slice(0, 600)})`);
+    }
     return e;
   }
 
   async saisir(champ, valeur) {
     const e = await this.element({ champ });
+    await e.evaluate(x => x.scrollIntoView({ block: 'center' }));
+    await pause(150);
     const tag = await e.evaluate(x => x.tagName);
     if (tag === 'SELECT') {
       await e.evaluate((x, v) => {
@@ -86,7 +96,9 @@ class Tuto {
   }
 
   async fichier(cible, chemin) {
-    const [choix] = await Promise.all([this.page.waitForFileChooser(), (await this.element(cible)).click()]);
+    const e = await this.element(cible);
+    await e.evaluate(x => x.scrollIntoView({ block: 'center' }));
+    const [choix] = await Promise.all([this.page.waitForFileChooser(), e.click()]);
     await choix.accept([chemin]);
     await pause(1500);
   }
@@ -180,10 +192,13 @@ if (require.main === module) {
         if (t.id !== '_brouillon') t.enregistrer(s.titre, s.numero);
         await t.page.close();
       }
+    } catch (e) {
+      console.error('ÉCHEC :', e.message);
+      process.exitCode = 1;
     } finally {
       await navigateur.close();
       serveur.close();
-      process.exit(0);
+      process.exit(process.exitCode || 0);
     }
   })().catch(e => { console.error(e); process.exit(1); });
 }

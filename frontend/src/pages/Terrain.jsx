@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Receipt } from 'lucide-react';
+import { Camera, Receipt } from 'lucide-react';
 import { api } from '../lib/api';
 import { useSession } from '../lib/session';
 import { ajouterJours, aujourdhui, fcfa, dateLongue } from '../lib/format';
 import { Chargement, Modale, Puce, Vide } from '../composants/Ui';
 import { Encaisser, NouvelleDepense, NouvelleReservation, useBiens, useSites } from '../composants/Formulaires';
+import { PhotosBien } from '../composants/Photos';
 
 export default function Terrain() {
   const { utilisateur, role } = useSession();
   const auj = aujourdhui();
   const [fenetre, setFenetre] = useState(null);
   const [aEncaisser, setAEncaisser] = useState(null);
+  const [photos, setPhotos] = useState(null);
   const { data: biens = [], isLoading } = useBiens();
   const { data: sites = [] } = useSites();
   const { data: resas = [] } = useQuery({ queryKey: ['reservations', 'terrain'], queryFn: () => api.get('/reservations', { params: { du: ajouterJours(auj, -60), au: ajouterJours(auj, 2) } }).then(r => r.data) });
@@ -83,6 +85,7 @@ export default function Terrain() {
                 <span className="chiffre" style={{ width: 46, fontSize: 20 }}>{b.reference}</span>
                 <span style={{ flex: 1 }}><b style={{ fontWeight: 600 }}>{b.standing || b.type}{b.pieces ? ` · ${b.pieces} ch.` : ''}</b><div className="petit muet">{b.mode === 'nuit' ? fcfa(b.prix_nuit) + ' / nuit' : fcfa(b.prix_mois) + ' / mois'}</div></span>
                 {b.etat !== 'disponible' ? <Puce statut={b.etat} /> : b.mode === 'mois' ? <Puce>Au mois</Puce> : r ? <Puce>Occupé</Puce> : <Puce ton="violet">Libre</Puce>}
+                <button type="button" className="bouton-rond" onClick={() => setPhotos(b.id)} aria-label={`Photos de ${b.reference}`} title="Photos"><Camera size={17} />{b.photos?.length > 0 && <span className="photo-nombre">{b.photos.length}</span>}</button>
               </div>
             );
           })}
@@ -104,6 +107,7 @@ export default function Terrain() {
           ) : <Vide>Aucun séjour à encaisser. Créez d’abord une réservation.</Vide>}
         </Modale>
       )}
+      {photos && <PhotosBien bienId={photos} onFermer={() => setPhotos(null)} />}
       {aEncaisser && <Encaisser reservation={aEncaisser} reste={aEncaisser.total - aEncaisser.paye} onFermer={() => setAEncaisser(null)} />}
     </main>
   );

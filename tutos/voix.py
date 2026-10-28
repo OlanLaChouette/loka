@@ -15,7 +15,7 @@ CONSIGNE = ''
 
 
 def dire(t):
-    t = t.replace('loka.eyamtech.com', 'loka point eyamtech point com').replace('«', '').replace('»', '').replace('’', "'")
+    t = t.replace('loka.eyamtech.com', 'loka point é-yam-tèk point com').replace('«', '').replace('»', '').replace('’', "'")
     return re.sub(r'\s+', ' ', t).strip()
 
 

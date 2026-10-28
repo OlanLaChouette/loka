@@ -13,6 +13,28 @@ async function partagerNatif(blob, nom, texte) {
   await Share.share({ title: nom, text: texte, files: [uri], dialogTitle: 'Envoyer le document' });
 }
 
+// Plusieurs images (photos d'une villa) : partage du téléphone, sinon partage du navigateur, sinon téléchargement.
+export async function partagerImages(fichiers, texte) {
+  if (natif()) {
+    const [{ Filesystem, Directory }, { Share }] = await Promise.all([import('@capacitor/filesystem'), import('@capacitor/share')]);
+    const uris = [];
+    for (const f of fichiers) {
+      const base64 = await new Promise((ok, ko) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = ko; r.readAsDataURL(f); });
+      uris.push((await Filesystem.writeFile({ path: f.name, data: base64, directory: Directory.Cache })).uri);
+    }
+    await Share.share({ text: texte, files: uris, dialogTitle: 'Envoyer les photos' });
+    return 'partage';
+  }
+  if (navigator.canShare?.({ files: fichiers })) {
+    try { await navigator.share({ files: fichiers, text: texte }); return 'partage'; } catch (e) { if (e.name === 'AbortError') return 'annule'; }
+  }
+  for (const f of fichiers) {
+    const url = URL.createObjectURL(f); const a = document.createElement('a');
+    a.href = url; a.download = f.name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }
+  return 'telecharge';
+}
+
 // Numéro au format international pour WhatsApp (Burkina par défaut si 8 chiffres).
 export function numeroWhatsApp(telephone, indicatif = '226') {
   const chiffres = String(telephone || '').replace(/\D/g, '').replace(/^00/, '');

@@ -2,7 +2,7 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const { sequelize, Bailleur, Utilisateur, Membre, Site, Bien, ChargeFixe, Fichier, Reservation, Bail, Depense } = require('../models');
-const { recevoirLogo, enregistrer } = require('../utils/fichiers');
+const { recevoirLogo, recevoirPhoto, enregistrer, envoyer } = require('../utils/fichiers');
 const { authentifier, espace, autoriser, ecriture, portee, verifierSite } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
@@ -136,6 +136,7 @@ router.delete('/biens/:id', proprietaire, route(async (req, res) => {
   const utilise = await Reservation.count({ where: { bien_id: bien.id } }) + await Bail.count({ where: { bien_id: bien.id } }) + await Depense.count({ where: { bien_id: bien.id } });
   if (utilise) throw new Erreur(409, 'Ce bien a déjà un historique : passez son état à « Retiré de la location »');
   await bien.destroy();
+  if (bien.photos.length) await Fichier.destroy({ where: { id: bien.photos, bailleur_id: req.espace.id } });
   await noter(req, 'bien_supprime', 'bien', bien.id, { reference: bien.reference });
   res.json({ ok: true });
 }));
@@ -170,6 +171,43 @@ router.patch('/biens/:id', ecriture, route(async (req, res) => {
   if (avant.prix_nuit !== bien.prix_nuit || avant.prix_mois !== bien.prix_mois) await noter(req, 'prix_modifie', 'bien', bien.id, { avant, apres: { prix_nuit: bien.prix_nuit, prix_mois: bien.prix_mois } });
   if (avant.etat !== bien.etat) await noter(req, 'etat_modifie', 'bien', bien.id, { avant: avant.etat, apres: bien.etat });
   res.json(bien);
+}));
+
+// ---------- Photos d'un bien (propriétaire et gérants du site ; 6 au plus) ----------
+const PHOTOS_MAX = 6;
+const bienAccessible = async (req) => {
+  const bien = await Bien.findOne({ where: portee(req, { id: req.params.id }) });
+  if (!bien) throw new Erreur(404, 'Bien introuvable');
+  return bien;
+};
+router.post('/biens/:id/photos', ecriture, lier(recevoirPhoto), route(async (req, res) => {
+  const bien = await bienAccessible(req);
+  if (!req.file) throw new Erreur(400, 'Photo manquante (PNG, JPEG ou WebP, 2 Mo au plus)');
+  if (bien.photos.length >= PHOTOS_MAX) throw new Erreur(409, `${PHOTOS_MAX} photos au plus par bien : supprimez-en une d’abord`);
+  const id = await enregistrer(req.file, req.espace.id);
+  await bien.update({ photos: [...bien.photos, id] });
+  await noter(req, 'photo_ajoutee', 'bien', bien.id, { reference: bien.reference });
+  res.status(201).json(bien);
+}));
+// Met une photo en couverture (première position).
+router.post('/biens/:id/photos/:photo/couverture', ecriture, route(async (req, res) => {
+  const bien = await bienAccessible(req);
+  if (!bien.photos.includes(req.params.photo)) throw new Erreur(404, 'Photo introuvable');
+  await bien.update({ photos: [req.params.photo, ...bien.photos.filter(p => p !== req.params.photo)] });
+  res.json(bien);
+}));
+router.delete('/biens/:id/photos/:photo', ecriture, route(async (req, res) => {
+  const bien = await bienAccessible(req);
+  if (!bien.photos.includes(req.params.photo)) throw new Erreur(404, 'Photo introuvable');
+  await bien.update({ photos: bien.photos.filter(p => p !== req.params.photo) });
+  await Fichier.destroy({ where: { id: req.params.photo, bailleur_id: req.espace.id } });
+  res.json(bien);
+}));
+router.get('/fichiers/photo/:id/:photo', route(async (req, res) => {
+  const bien = await bienAccessible(req);
+  const f = bien.photos.includes(req.params.photo) && await Fichier.findOne({ where: { id: req.params.photo, bailleur_id: req.espace.id } });
+  if (!f) throw new Erreur(404, 'Photo introuvable');
+  envoyer(res, f);
 }));
 
 // ---------- Charges fixes (liste libre, modifiable par le propriétaire) ----------
