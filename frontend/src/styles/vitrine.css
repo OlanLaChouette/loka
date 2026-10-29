@@ -136,6 +136,16 @@
   .vt-duo { gap: 44px; }
 }
 
+/* Menu replié jusqu'à la tablette (le menu complet ne tient pas sur une ligne) */
+@media (max-width: 1000px) {
+  .vt-burger { display: inline-flex; }
+  .vt-nav { display: none; position: absolute; left: 0; right: 0; top: calc(64px + var(--haut-sur, 0px)); flex-direction: column; align-items: stretch; gap: 0; background: #fff; border-bottom: 1px solid var(--vb); padding: 8px 16px 16px; box-shadow: 0 20px 40px rgba(30, 20, 90, .1); }
+  .vt-nav.ouvert { display: flex; }
+  .vt-nav a { padding: 14px 4px; border-bottom: 1px solid var(--vb); font-size: 16px; }
+  .vt-nav a:last-child { border-bottom: 0; }
+  .masquer-petit { display: none; }
+}
+
 /* Téléphone */
 @media (max-width: 760px) {
   .vt-burger { display: inline-flex; }

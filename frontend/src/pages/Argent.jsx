@@ -63,9 +63,11 @@ function Depenses() {
               <div key={d.id} style={{ flexWrap: 'wrap' }}>
                 <span style={{ flex: 1, minWidth: 200 }}><b>{d.categorie} · {d.Bien?.reference || d.Site?.nom}</b><div className="petit muet">{d.auteur?.nom} · {dateCourte(d.date_depense)}{d.note ? ' · ' + d.note : ''}</div></span>
                 <b className="chiffre">{fcfa(d.montant)}</b>
-                {d.justificatif ? <button className="bouton" onClick={() => voir(d)}>Justificatif</button> : <span className="puce alerte">Sans justificatif</span>}
-                <button className="bouton" onClick={() => { const motif = window.prompt('Motif du refus ?'); if (motif !== null) decision.mutate({ id: d.id, d: 'refuser', motif }); }}>Refuser</button>
-                <button className="bouton principal" onClick={() => decision.mutate({ id: d.id, d: 'accepter' })}>Accepter</button>
+                <span className="actions-ligne">
+                  {d.justificatif ? <button className="bouton" onClick={() => voir(d)}>Justificatif</button> : <span className="puce alerte">Sans justificatif</span>}
+                  <button className="bouton" onClick={() => { const motif = window.prompt('Motif du refus ?'); if (motif !== null) decision.mutate({ id: d.id, d: 'refuser', motif }); }}>Refuser</button>
+                  <button className="bouton principal" onClick={() => decision.mutate({ id: d.id, d: 'accepter' })}>Accepter</button>
+                </span>
               </div>
             ))}
           </div>

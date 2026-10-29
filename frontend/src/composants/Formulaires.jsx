@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Camera } from 'lucide-react';
 import { api, messageErreur } from '../lib/api';
 import { ajouterJours, aujourdhui, fcfa, MOYENS } from '../lib/format';
 import { Champ, Erreur, Modale } from './Ui';
@@ -196,7 +197,12 @@ export function NouvelleDepense({ onFermer }) {
         <Champ label="Catégorie"><select value={f.categorie} onChange={e => setF({ ...f, categorie: e.target.value })}>{CATEGORIES.map(c => <option key={c}>{c}</option>)}</select></Champ>
         <Champ label="Montant (FCFA)"><input value={f.montant} onChange={e => setF({ ...f, montant: e.target.value.replace(/\D/g, '') })} inputMode="numeric" /></Champ>
         <Champ label="Date"><input type="date" value={f.date_depense} onChange={e => setF({ ...f, date_depense: e.target.value })} /></Champ>
-        <Champ label="Photo du reçu"><input type="file" accept="image/*,application/pdf" capture="environment" onChange={async e => setFichier(await compresserImage(e.target.files[0] || null))} /></Champ>
+        <div className="champ"><span>Photo du reçu</span>
+          <div className="champ-fichier">
+            <label className="bouton"><Camera size={16} />{fichier ? 'Changer la photo' : 'Prendre ou choisir une photo'}<input type="file" accept="image/*,application/pdf" capture="environment" hidden onChange={async e => setFichier(await compresserImage(e.target.files[0] || null))} /></label>
+            {fichier && <span className="nom-fichier">{fichier.name}</span>}
+          </div>
+        </div>
         {apercu && <img src={apercu} alt="Aperçu du justificatif" className="plein" style={{ maxHeight: 180, objectFit: 'contain', borderRadius: 12, background: 'var(--champ)' }} />}
         <Champ label="Note" plein><input value={f.note} onChange={e => setF({ ...f, note: e.target.value })} /></Champ>
       </div>
