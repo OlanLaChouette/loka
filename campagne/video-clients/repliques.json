@@ -1,0 +1,25 @@
+{
+ "voix": "Aoede",
+ "lignes": [
+  "Ce week-end… une mission, la famille qui débarque ?",
+  "Où allez-vous dormir ?",
+  "Avec Loka Villas, trouvez les villas meublées vraiment libres, près de chez vous.",
+  "Photos, prix, avis vérifiés : choisissez, puis envoyez votre demande.",
+  "Le gérant confirme sur WhatsApp, et vous payez sur place.",
+  "Loka Villas. La villa libre qu'il vous faut."
+ ],
+ "apres": [
+  0.25,
+  0.45,
+  0.5,
+  0.7,
+  0.6,
+  0
+ ],
+ "fin": 2.4,
+ "pops": {
+  "3": [
+   4.2
+  ]
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "voix": "Charon",
+ "lignes": [
+  "Vos villas méritent d'être pleines.",
+  "Avec Loka, des clients trouvent vos villas, et vous envoient leurs demandes.",
+  "Vous acceptez : l'acompte arrive par Mobile Money, les clés sont remises au bon moment.",
+  "Réservations, dépenses, gérants : tout est suivi, sans cahier.",
+  "Et votre bénéfice du mois, en direct.",
+  "Vos avis cinq étoiles vous font monter dans les résultats.",
+  "Essayez Loka gratuitement pendant quatorze jours, sur loka.eyamtech.com."
+ ],
+ "apres": [
+  0.25,
+  0.35,
+  0.35,
+  0.35,
+  0.3,
+  0.35,
+  0
+ ],
+ "fin": 2.2,
+ "pops": {
+  "2": [
+   1.2
+  ]
+ }
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Affiche Loka</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../commun.css">
+<style>
+  /* Affiche paramétrée par la requête : ?<campagne>-<format>, ex. ?clients-statut. Largeur fixe 1080 px. */
+  html, body { background: #0E0B1F; }
+  #stage { width: 1080px; }
+  .fond { position: absolute; inset: 0; background-size: cover; background-position: center 30%; }
+  .voile { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,8,30,.82) 0%, rgba(10,8,30,.35) 34%, rgba(10,8,30,.15) 55%, rgba(40,28,140,.75) 85%, rgba(62,47,184,1) 100%); }
+  .titre { left: 64px; right: 64px; }
+  .sous { left: 64px; max-width: 560px; text-shadow: 0 4px 20px rgba(0,0,0,.5); }
+  .tel { z-index: 5; transform: rotate(5deg); }
+  .tel .ecran img { opacity: 1; }
+  .puce { z-index: 6; left: 64px; }
+  .bande { position: absolute; left: 0; right: 0; bottom: 0; z-index: 10; display: flex; align-items: center; gap: 30px; padding: 0 64px;
+    background: linear-gradient(165deg, #7566F7 0%, #5A49E6 45%, #3E2FB8 100%); box-shadow: 0 -30px 60px rgba(10,5,40,.35); }
+  .bande .marque span { color: #FFE7A3; }
+  .bande .info { flex: 1; }
+  .bande .url { display: inline-block; margin-top: 16px; background: #fff; color: #4B3BC9; border-radius: 999px; padding: 12px 28px; font: 800 34px 'Sora'; letter-spacing: -0.02em; }
+  .bande .offre { font: 700 28px 'Inter'; color: #EDEBFF; margin-top: 12px; }
+  .bande .offre b { color: #FFE7A3; font-size: 1.25em; }
+  .bande .qr { padding: 14px; border-radius: 22px; box-shadow: none; }
+  .bande .qr small { display: block; text-align: center; font: 800 18px 'Inter'; color: #4B3BC9; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+const [campagne, format] = location.search.slice(1).split('-');
+const F = {
+  statut: { H: 1920, titre: [130, 112], sous: 40, tel: [560, 720, 440], puces: [860, 118, 34], bande: 290, qr: 200, marque: 64 },
+  fil:    { H: 1350, titre: [86, 92], sous: 34, tel: [640, 440, 350], puces: [560, 100, 30], bande: 230, qr: 160, marque: 54 },
+  carre:  { H: 1080, titre: [64, 78], sous: 30, tel: [700, 330, 290], puces: [470, 88, 27], bande: 200, qr: 140, marque: 48 },
+  a3:     { H: 1527, titre: [110, 104], sous: 38, tel: [600, 560, 400], puces: [700, 110, 32], bande: 270, qr: 200, marque: 60 },
+}[format];
+const C = {
+  clients: {
+    photo: '07-villa-nuit.jpg', ecran: 'client-resultats.png',
+    titre: 'Trouvez la<br>villa <em>libre</em><br>qu’il vous faut.',
+    sous: 'Les villas meublées vraiment libres, près de chez vous.',
+    puces: [['', '<span class="etoile">★</span> Avis vérifiés'], ['jaune', '✓ Confirmé sur WhatsApp'], ['violette', '💵 Paiement sur place']],
+    marque: 'Loka <span>Villas</span>', url: 'loka.eyamtech.com/villas', offre: 'Recherche gratuite, sans compte', qr: 'qr-villas.svg',
+  },
+  bailleurs: {
+    photo: '05-villa-crepuscule.jpg', ecran: 'bailleur-apercu.png',
+    titre: 'Vos villas<br>méritent d’être<br><em>pleines.</em>',
+    sous: 'Demandes de clients, acomptes, gérants et bénéfice : tout dans Loka.',
+    puces: [['', '📩 Demandes de clients'], ['jaune', '📲 Acompte Mobile Money'], ['violette', '📈 Bénéfice en direct']],
+    marque: 'Loka', url: 'loka.eyamtech.com', offre: '<b>14 jours gratuits</b> · sans engagement', qr: 'qr-loka.svg',
+  },
+}[campagne];
+
+const st = document.getElementById('stage');
+st.style.height = F.H + 'px';
+document.documentElement.style.height = document.body.style.height = F.H + 'px';
+const [tt, ts] = F.titre, [tx, ty, tw] = F.tel, [pt, pg, ps] = F.puces;
+const logo = (n) => `<svg width="${n}" height="${n}" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>`;
+st.innerHTML = `
+  <div class="fond" style="background-image:url(../photos/${C.photo})"></div><div class="voile"></div>
+  <div class="titre" style="top:${tt}px;font-size:${ts}px">${C.titre}</div>
+  <div class="sous" style="top:${tt + ts * 3.1 + 10}px;font-size:${F.sous}px">${C.sous}</div>
+  <div class="tel" style="left:${tx}px;top:${ty}px;width:${tw}px;height:${tw * 2.164}px"><div class="bezel"><div class="ecran"><img src="../ecrans/${C.ecran}"><div class="ile"></div></div></div><div class="reflet"></div></div>
+  ${C.puces.map(([c, t], k) => `<div class="puce ${c}" style="top:${pt + k * pg}px;font-size:${ps}px;transform:rotate(${[-3, 2, -2][k]}deg)">${t}</div>`).join('')}
+  <div class="bande" style="height:${F.bande}px">
+    <div class="info"><div class="marque" style="font-size:${F.marque}px;gap:16px">${logo(F.marque * 1.1)}<div>${C.marque}</div></div>
+      <div class="url" style="font-size:${F.marque * .58}px">${C.url}</div>
+      ${format === 'carre' ? '' : `<div class="offre">${C.offre}</div>`}</div>
+    <div class="qr" style="width:${F.qr}px"><img src="../${C.qr}">${format === 'carre' ? '' : '<small>Scannez</small>'}</div>
+  </div>
+  <div class="grain"></div>`;
+window.TAILLE = { largeur: 1080, hauteur: F.H };
+</script>
+</body>
+</html>

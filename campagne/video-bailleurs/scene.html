@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka · campagne bailleurs</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../commun.css">
+<script src="../../video/node_modules/gsap/dist/gsap.min.js"></script>
+<script src="donnees.js"></script>
+<style>
+  html, body, #stage { width: 1080px; height: 1920px; }
+  .tel { width: 620px; height: 1340px; }
+  #s0 .titre { left: 70px; right: 70px; bottom: 300px; font-size: 128px; }
+  #s1 .titre, #s2 .titre, #s3 .titre, #s5 .titre { left: 70px; right: 70px; top: 120px; font-size: 100px; }
+  #s1 .tel { left: 230px; top: 560px; }
+  #s1 .notif { left: 60px; right: 60px; }
+  #s2 .tel { left: 230px; top: 500px; }
+  #s3 .tel { left: 230px; top: 500px; }
+  #s4 .titre { left: 70px; right: 70px; top: 140px; font-size: 104px; }
+  #s4 .bilan { position: absolute; left: 70px; right: 70px; top: 1180px; background: #fff; color: #16161D; border-radius: 40px; padding: 44px 50px; box-shadow: 0 40px 90px rgba(5,3,30,.55); opacity: 0; }
+  #s4 .bilan small { font: 700 32px 'Inter'; color: #5E5E74; }
+  #s4 .bilan .montant { font: 800 112px/1.1 'Sora'; letter-spacing: -0.045em; color: #4B3BC9; margin-top: 6px; }
+  #s4 .bilan .montant span { font-size: 46px; color: #5E5E74; letter-spacing: 0; margin-left: 10px; }
+  #s4 .bilan .barres { display: flex; align-items: flex-end; gap: 16px; height: 120px; margin-top: 26px; }
+  #s4 .bilan .barres i { flex: 1; background: #E4E0FF; border-radius: 10px 10px 4px 4px; transform-origin: bottom; }
+  #s4 .bilan .barres i:last-child { background: #6D5DF5; }
+  #s4 .bilan .direct { position: absolute; right: 44px; top: 44px; font: 800 26px 'Inter'; color: #19B26B; display: flex; align-items: center; gap: 10px; }
+  #s4 .bilan .direct::before { content: ''; width: 16px; height: 16px; border-radius: 50%; background: #19B26B; box-shadow: 0 0 0 6px rgba(25,178,107,.25); }
+  #s5 .tel { left: 230px; top: 520px; }
+  #s5 .etoiles { position: absolute; left: 0; right: 0; top: 410px; text-align: center; font-size: 96px; color: #FFC93C; letter-spacing: 10px; z-index: 30; text-shadow: 0 10px 30px rgba(0,0,0,.4); }
+  #s5 .etoiles span { display: inline-block; opacity: 0; }
+  #s6 { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #s6 .marque { font-size: 120px; }
+  #s6 .offre { margin-top: 50px; font: 800 150px/0.95 'Sora'; letter-spacing: -0.05em; }
+  #s6 .offre em { font-style: normal; color: #FFE7A3; display: block; font-size: 92px; letter-spacing: -0.04em; margin-top: 10px; }
+  #s6 .pilule { margin-top: 64px; }
+  #s6 .bas { display: flex; align-items: center; gap: 40px; margin-top: 80px; }
+  #s6 .qr { width: 270px; }
+  #s6 .bas p { font: 700 38px/1.35 'Inter'; text-align: left; color: #EDEBFF; }
+  #s6 .bas b { display: block; font: 800 50px 'Sora'; color: #fff; letter-spacing: -0.02em; }
+  .titre, .puce, .notif, .bilan { opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1. Accroche -->
+  <div class="scene" id="s0">
+    <div class="plein" style="background-image:url(../photos/05-villa-crepuscule.jpg)"></div>
+    <div class="voile-bas"></div>
+    <div class="titre"><span class="ligne"><span>Vos villas</span></span><span class="ligne"><span>méritent d’être</span></span><span class="ligne"><span><em>pleines.</em></span></span></div>
+  </div>
+
+  <!-- 2. Les demandes arrivent -->
+  <div class="scene nuit" id="s1">
+    <div class="anneau" style="width:1200px;height:1200px;left:-700px;top:800px"></div>
+    <div class="titre"><span class="ligne"><span>Les clients</span></span><span class="ligne"><span><em>viennent à vous.</em></span></span></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/client-resultats.png"><img src="../ecrans/gerant-demande.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="notif" style="top:600px"><div class="app" style="background:#6D5DF5"><svg width="50" height="50" viewBox="0 0 48 48"><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#fff"/></svg></div><div style="flex:1"><small>maintenant</small><b>Nouvelle demande · Villa C1</b><p>Rasmata O. · 7 → 9 nov. · 2 nuits · 90 000 F</p></div></div>
+    <div class="notif" style="top:830px"><div class="app" style="background:#6D5DF5"><svg width="50" height="50" viewBox="0 0 48 48"><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#fff"/></svg></div><div style="flex:1"><small>il y a 2 min</small><b>Nouvelle demande · Villa B2</b><p>Moussa K. · 14 → 17 nov. · 3 nuits · 135 000 F</p></div></div>
+    <div class="notif" style="top:1060px"><div class="app" style="background:#6D5DF5"><svg width="50" height="50" viewBox="0 0 48 48"><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#fff"/></svg></div><div style="flex:1"><small>il y a 5 min</small><b>Nouvelle demande · Villa K1</b><p>Famille Yaméogo · week-end · 6 pers.</p></div></div>
+  </div>
+
+  <!-- 3. Accepter, acompte, clés -->
+  <div class="scene violet" id="s2">
+    <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:900px"></div>
+    <div class="anneau" style="width:1000px;height:1000px;right:-560px;top:-200px"></div>
+    <div class="titre"><span class="ligne"><span>Un appui.</span></span><span class="ligne"><span><em>L’acompte arrive.</em></span></span></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/gerant-demande.png"><img src="../ecrans/gerant-acompte.png"><img src="../ecrans/bailleur-sejour.png"><div class="ile"></div>
+      <div class="onde"></div>
+      <svg class="doigt" viewBox="0 0 24 24"><path d="M10 9.5V4a2 2 0 0 0-4 0v10l-1.6-1.6a2 2 0 0 0-2.83 2.83l3.6 3.6C6.66 20.32 8.4 22 12 22h2a8 8 0 0 0 8-8v-3a2 2 0 0 0-4 0v-1a2 2 0 0 0-4 0v-.5a2 2 0 0 0-4 0z" fill="#fff" stroke="#16161D" stroke-width="1.1" stroke-linejoin="round"/><path d="M14 9.5V12M18 10.5V12M10 9.5V12" stroke="#16161D" stroke-width="1.1" stroke-linecap="round"/></svg>
+    </div></div><div class="reflet"></div></div>
+    <div class="notif" style="left:60px;right:60px;top:1000px"><div class="app" style="background:#FF7900"><svg width="44" height="44" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2.5" fill="#fff"/><circle cx="12" cy="12" r="2.6" fill="#FF7900"/></svg></div><div style="flex:1"><small>maintenant</small><b>Acompte reçu · 45 000 F</b><p>Mobile Money · réf. PP241105.1532 · 50 % du séjour</p></div></div>
+    <div class="puce jaune" data-r="-3" style="left:60px;top:1560px">🔑 Clés au bon moment</div>
+  </div>
+
+  <!-- 4. Tout est suivi -->
+  <div class="scene nuit" id="s3">
+    <div class="anneau" style="width:1200px;height:1200px;right:-700px;top:700px"></div>
+    <div class="titre"><span class="ligne"><span>Tout est suivi.</span></span><span class="ligne"><span><em>Sans cahier.</em></span></span></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/bailleur-reservations.png"><img src="../ecrans/bailleur-clients.png"><img src="../ecrans/gerant-terrain.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="puce" data-r="-4" style="left:40px;top:760px">✓ Réservations</div>
+    <div class="puce" data-r="3" style="right:40px;top:1060px">✓ Dépenses</div>
+    <div class="puce violette" data-r="-3" style="left:40px;top:1360px">✓ Gérants</div>
+  </div>
+
+  <!-- 5. Le bénéfice -->
+  <div class="scene" id="s4">
+    <div class="plein" style="background-image:url(../photos/16-homme-affaires-ordinateur.jpg)"></div>
+    <div class="voile-haut"></div>
+    <div class="titre"><span class="ligne"><span>Votre bénéfice,</span></span><span class="ligne"><span><em>en direct.</em></span></span></div>
+    <div class="bilan"><div class="direct">En direct</div><small>Bénéfice d’octobre</small><div class="montant"><b id="compteur">0</b><span>FCFA</span></div>
+      <div class="barres"><i style="height:38%"></i><i style="height:52%"></i><i style="height:45%"></i><i style="height:64%"></i><i style="height:58%"></i><i style="height:76%"></i><i style="height:100%"></i></div></div>
+  </div>
+
+  <!-- 6. Réputation -->
+  <div class="scene violet" id="s5">
+    <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:900px"></div>
+    <div class="titre" style="text-align:center"><span class="ligne"><span>Vos avis vous font</span></span><span class="ligne"><span><em>monter.</em></span></span></div>
+    <div class="etoiles"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/residence.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="puce" data-r="-4" style="left:40px;top:1180px">⬆ En tête des résultats</div>
+  </div>
+
+  <!-- 7. Offre -->
+  <div class="scene violet" id="s6">
+    <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:1000px"></div>
+    <div class="anneau" style="width:1000px;height:1000px;right:-560px;top:-260px"></div>
+    <div class="marque"><svg width="160" height="160" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>Loka</div>
+    <div class="offre">14 jours<em>gratuits</em></div>
+    <div class="pilule">loka.eyamtech.com</div>
+    <div class="bas"><div class="qr"><img src="../qr-loka.svg"></div><p>Sans engagement<b>Android<br>et web</b></p></div>
+  </div>
+
+  <div class="grain"></div>
+</div>
+<script src="../moteur.js"></script>
+<script>
+// 1
+let s = scene(0, $('#s0'));
+camera($('#s0 .plein'), 0, s.duree + .4, { s: 1.2, x: -2 }, { s: 1.04, x: 1 });
+lignes($('#s0 .titre'), .25, .3, .6);
+// 2
+s = scene(1, $('#s1'));
+lignes($('#s1 .titre'), s.debut + .1);
+tl.fromTo('#s1 .tel', { y: 600, rotation: -6 }, { y: 0, rotation: 2, duration: 1, ease: 'power4.out' }, s.debut);
+ecran($('#s1 .tel'), 0, s.debut);
+ecran($('#s1 .tel'), 1, s.voix + 2.2);
+$$('#s1 .notif').forEach((n, k) => surgir(n, s.voix + .7 + k * .45, { y: -140, scale: .92 }, .6));
+tl.to('#s1 .notif', { opacity: 0, y: -60, duration: .4, stagger: .08, ease: 'power2.in' }, s.voix + 2.2);
+// 3
+s = scene(2, $('#s2'));
+lignes($('#s2 .titre'), s.debut + .1, .5);
+tl.fromTo('#s2 .tel', { scale: .85, rotation: -4 }, { scale: 1, rotation: 0, duration: .9, ease: E }, s.debut - .1);
+const tap = s.debut + T.pops['2'][0];
+ecran($('#s2 .tel'), 0, s.debut);
+appui($('#s2 .tel'), 81, 50, tap);
+ecran($('#s2 .tel'), 1, tap + .4);
+surgir($('#s2 .notif'), tap + .9, { y: -140, scale: .92 }, .6);
+ecran($('#s2 .tel'), 2, s.voix + 3.1);
+surgir($('#s2 .puce'), s.voix + 3.3);
+// 4
+s = scene(3, $('#s3'));
+lignes($('#s3 .titre'), s.debut + .1, .4);
+ecran($('#s3 .tel'), 0, s.debut);
+ecran($('#s3 .tel'), 1, s.debut + 1.7);
+ecran($('#s3 .tel'), 2, s.debut + 3.2);
+$$('#s3 .puce').forEach((c, k) => surgir(c, s.voix + .1 + k * .75));
+// 5
+s = scene(4, $('#s4'));
+camera($('#s4 .plein'), s.debut - .2, s.duree + .6, { s: 1.12, x: 1 }, { s: 1.0, x: -1 });
+lignes($('#s4 .titre'), s.debut + .1);
+surgir($('#s4 .bilan'), s.debut + .3, { y: 140, scale: .9 }, .7);
+tl.fromTo('#s4 .barres i', { scaleY: 0 }, { scaleY: 1, duration: .6, stagger: .07, ease: E }, s.debut + .6);
+const n = { v: 0 }, cpt = $('#compteur');
+tl.fromTo(n, { v: 0 }, { v: 1256000, duration: 1.6, ease: 'power2.out', onUpdate: () => { cpt.textContent = Math.round(n.v / 1000 * 1) .toLocaleString('fr-FR').replace(/ | /g, ' ') + ' 000'; } }, s.debut + .6);
+// 6
+s = scene(5, $('#s5'));
+lignes($('#s5 .titre'), s.debut + .1);
+ecran($('#s5 .tel'), 0, s.debut);
+tl.fromTo('#s5 .tel', { y: 500 }, { y: 0, duration: .9, ease: 'power4.out' }, s.debut);
+$$('#s5 .etoiles span').forEach((e, k) => tl.fromTo(e, { opacity: 0, scale: 0, rotation: -90 }, { opacity: 1, scale: 1, rotation: 0, duration: .45, ease: 'back.out(2.2)' }, s.voix + .3 + k * .12));
+surgir($('#s5 .puce'), s.voix + 1.4);
+// 7
+s = scene(6, $('#s6'));
+tl.fromTo('#s6 .marque', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .8, ease: 'back.out(1.7)' }, s.debut + .1);
+tl.fromTo('#s6 .offre', { opacity: 0, y: 50, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .7, ease: 'back.out(1.5)' }, s.voix + .4);
+tl.fromTo('#s6 .pilule', { opacity: 0, y: 40, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'back.out(1.6)' }, s.voix + 3.0);
+tl.fromTo('#s6 .bas', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .6, ease: E }, s.voix + 3.7);
+tl.to('#s6 .pilule', { scale: 1.05, duration: .35, yoyo: true, repeat: 5, ease: 'sine.inOut' }, s.voix + 4.6);
+finir();
+</script>
+</body>
+</html>

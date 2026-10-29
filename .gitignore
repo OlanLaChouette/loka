@@ -17,3 +17,8 @@ tutos/*/voix/prise.wav
 tutos/_brouillon/
 outils/audit/
 campagne/televersement/
+campagne/*/apercu/
+campagne/*/voix/prise.wav
+campagne/*/muet.mp4
+campagne/*/mix.wav
+campagne/affiches/planche.png

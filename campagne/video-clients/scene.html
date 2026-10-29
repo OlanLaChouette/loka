@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka Villas · campagne clients</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../commun.css">
+<script src="../../video/node_modules/gsap/dist/gsap.min.js"></script>
+<script src="donnees.js"></script>
+<style>
+  html, body, #stage { width: 1080px; height: 1920px; }
+  .tel { width: 620px; height: 1340px; }
+  #s0 .titre { left: 70px; right: 70px; bottom: 300px; font-size: 124px; }
+  #s0 .titre .ligne { opacity: 1; }
+  #s1 .titre { left: 0; right: 0; top: 760px; text-align: center; font-size: 190px; }
+  #s2 .titre { left: 70px; right: 70px; top: 130px; font-size: 100px; }
+  #s2 .tel { left: 230px; top: 520px; }
+  #s3 .titre { left: 70px; right: 70px; top: 120px; font-size: 100px; }
+  #s3 .tel { left: 230px; top: 470px; }
+  #s4 .titre { left: 70px; right: 70px; top: 150px; font-size: 104px; }
+  #s5 { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #s5 .marque { font-size: 110px; }
+  #s5 .marque span { color: #FFE7A3; }
+  #s5 h2 { font: 800 76px/1.08 'Sora'; letter-spacing: -0.04em; margin-top: 46px; }
+  #s5 .pilule { margin-top: 64px; }
+  #s5 .bas { display: flex; align-items: center; gap: 40px; margin-top: 90px; }
+  #s5 .qr { width: 280px; }
+  #s5 .bas p { font: 700 40px/1.3 'Inter'; text-align: left; color: #EDEBFF; }
+  #s5 .bas b { display: block; font: 800 52px 'Sora'; color: #fff; letter-spacing: -0.02em; }
+  .titre, .puce, .carte-photo, .notif, .epingle { opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1. Le besoin -->
+  <div class="scene" id="s0">
+    <div class="plein" style="background-image:url(../photos/07-villa-nuit.jpg)"></div>
+    <div class="voile-bas"></div>
+    <div class="titre"><span class="ligne"><span>Ce week-end.</span></span><span class="ligne"><span>Une mission.</span></span><span class="ligne"><span>La <em>famille</em></span></span><span class="ligne"><span>qui débarque&nbsp;?</span></span></div>
+  </div>
+
+  <!-- 2. La question -->
+  <div class="scene" id="s1">
+    <div class="plein" style="background-image:url(../photos/13-femme-telephone.jpg)"></div>
+    <div class="voile-bas" style="background:rgba(14,11,31,.55)"></div>
+    <div class="titre"><span class="ligne"><span>Où</span></span><span class="ligne"><span><em>dormir&nbsp;?</em></span></span></div>
+  </div>
+
+  <!-- 3. La recherche -->
+  <div class="scene violet" id="s2">
+    <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:900px"></div>
+    <div class="anneau" style="width:1000px;height:1000px;right:-560px;top:-200px"></div>
+    <div class="titre"><span class="ligne"><span>Les villas vraiment</span></span><span class="ligne"><span><em>libres.</em> Près de</span></span><span class="ligne"><span>chez vous.</span></span></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/client-accueil.png"><img src="../ecrans/client-resultats.png"><img src="../ecrans/client-resultats-2.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="carte-photo" data-r="-6" style="width:330px;height:300px;left:-10px;top:1020px"><div class="img" style="background-image:url(../photos/04-villa-blanche-piscine.jpg)"></div><span class="badge-libre">● Libre</span><div class="bas">Villa · Piscine<span>Ouaga 2000</span></div></div>
+    <div class="carte-photo" data-r="5" style="width:330px;height:300px;right:-10px;top:1350px"><div class="img" style="background-image:url(../photos/03-villa-palmiers.jpg)"></div><span class="badge-libre">● Libre</span><div class="bas">Villa · Jardin<span>Kossodo</span></div></div>
+    <svg class="epingle" style="left:830px;top:880px" viewBox="0 0 24 32"><path d="M12 31s10-11 10-19A10 10 0 0 0 2 12c0 8 10 19 10 19z" fill="#FFE7A3"/><circle cx="12" cy="12" r="4.2" fill="#4B3BC9"/></svg>
+    <svg class="epingle" style="left:120px;top:1660px;width:56px;height:76px" viewBox="0 0 24 32"><path d="M12 31s10-11 10-19A10 10 0 0 0 2 12c0 8 10 19 10 19z" fill="#fff"/><circle cx="12" cy="12" r="4.2" fill="#6D5DF5"/></svg>
+  </div>
+
+  <!-- 4. Choisir et demander -->
+  <div class="scene nuit" id="s3">
+    <div class="anneau" style="width:1200px;height:1200px;right:-700px;top:700px"></div>
+    <div class="titre"><span class="ligne"><span>Choisissez.</span></span><span class="ligne"><span><em>Demandez.</em></span></span></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/client-villa.png"><img src="../ecrans/client-villa-avis.png"><img src="../ecrans/client-demande.png"><img src="../ecrans/client-envoyee.png"><div class="ile"></div>
+      <div class="onde"></div>
+      <svg class="doigt" viewBox="0 0 24 24"><path d="M10 9.5V4a2 2 0 0 0-4 0v10l-1.6-1.6a2 2 0 0 0-2.830 2.83l3.6 3.6C6.66 20.32 8.4 22 12 22h2a8 8 0 0 0 8-8v-3a2 2 0 0 0-4 0v-1a2 2 0 0 0-4 0v-.5a2 2 0 0 0-4 0z" fill="#fff" stroke="#16161D" stroke-width="1.1" stroke-linejoin="round"/><path d="M14 9.5V12M18 10.5V12M10 9.5V12" stroke="#16161D" stroke-width="1.1" stroke-linecap="round"/></svg>
+    </div></div><div class="reflet"></div></div>
+    <div class="puce jaune" data-r="-4" style="left:40px;top:760px">📸 Vraies photos</div>
+    <div class="puce" data-r="3" style="right:30px;top:980px">45 000 F <span style="font-weight:600;color:#5E5E74">/ nuit</span></div>
+    <div class="puce" data-r="-3" style="left:30px;top:1240px"><span class="etoile">★</span> 4,8 · avis vérifiés</div>
+  </div>
+
+  <!-- 5. Confirmation -->
+  <div class="scene" id="s4">
+    <div class="plein" style="background-image:url(../photos/17-jeune-homme-telephone.jpg)"></div>
+    <div class="voile-haut"></div>
+    <div class="titre"><span class="ligne"><span>Confirmé par</span></span><span class="ligne"><span>le <em>gérant.</em></span></span></div>
+    <div class="notif" style="left:70px;right:70px;top:430px">
+      <div class="app" style="background:#25D366"><svg width="44" height="44" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z" fill="#fff"/><path d="M8.6 7.6c.2-.4.5-.4.8-.4h.6c.2 0 .4.1.5.4l.8 1.9c.1.2 0 .5-.1.6l-.5.6c-.1.1-.2.3 0 .5.6 1 1.5 1.9 2.6 2.5.2.1.4.1.5-.1l.6-.7c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.3.3.5-.1.9-.9 1.7-1.8 1.8-1.4.2-3.3-.5-5-2.2s-2.4-3.6-2.1-5c.1-.4.2-.9.4-1.2z" fill="#25D366"/></svg></div>
+      <div style="flex:1"><small>maintenant</small><b>Résidences Kaboré</b><p>Bonjour Rasmata, votre demande pour la <b style="display:inline;font-size:26px">Villa · Piscine</b> du 7 au 9 nov. est acceptée ✅</p></div>
+    </div>
+    <div class="puce violette" data-r="-3" style="left:70px;top:1420px">💵 Paiement sur place</div>
+    <div class="puce" data-r="2" style="right:70px;top:1560px">✓ Code de suivi</div>
+  </div>
+
+  <!-- 6. Signature -->
+  <div class="scene violet" id="s5">
+    <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:1000px"></div>
+    <div class="anneau" style="width:1000px;height:1000px;right:-560px;top:-260px"></div>
+    <div class="marque"><svg width="150" height="150" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg><div>Loka <span>Villas</span></div></div>
+    <h2>La villa libre<br>qu’il vous faut.</h2>
+    <div class="pilule">loka.eyamtech.com/villas</div>
+    <div class="bas"><div class="qr"><img src="../qr-villas.svg"></div><p>Scannez et cherchez<b>Gratuit pour<br>les clients</b></p></div>
+  </div>
+
+  <div class="grain"></div>
+</div>
+<script src="../moteur.js"></script>
+<script>
+// 1
+let s = scene(0, $('#s0'));
+camera($('#s0 .plein'), 0, s.duree + .4, { s: 1.18, y: 2 }, { s: 1.02, y: -1 });
+$$('#s0 .ligne > span').forEach((sp, k) => tl.fromTo(sp, { yPercent: 115 }, { yPercent: 0, duration: .6, ease: 'power4.out' }, [.3, 1.25, 2.05, 2.5][k]));
+tl.set('#s0 .titre', { opacity: 1 }, .3);
+// 2
+s = scene(1, $('#s1'));
+camera($('#s1 .plein'), s.debut - .2, s.duree + .6, { s: 1.12, x: 2 }, { s: 1.0, x: -1 });
+lignes($('#s1 .titre'), s.voix - .1, .18, .55);
+tl.fromTo('#s1 .titre', { scale: 1.15 }, { scale: 1, duration: 1.6, ease: 'power2.out' }, s.voix - .1);
+// 3
+s = scene(2, $('#s2'));
+lignes($('#s2 .titre'), s.debut + .1);
+tl.fromTo('#s2 .tel', { y: 700, rotation: 8 }, { y: 0, rotation: -3, duration: 1, ease: 'power4.out' }, s.debut);
+ecran($('#s2 .tel'), 0, s.debut);
+ecran($('#s2 .tel'), 1, s.debut + 1.4);
+ecran($('#s2 .tel'), 2, s.debut + 3.1);
+$$('#s2 .carte-photo').forEach((c, k) => surgir(c, s.debut + 1.9 + k * .45, { y: 120, scale: .7, rotation: 0 }));
+$$('#s2 .epingle').forEach((c, k) => surgir(c, s.debut + 1.2 + k * .5, { y: -120, scale: .6 }));
+tl.to('#s2 .carte-photo', { y: '-=40', duration: 3, ease: 'none' }, s.debut + 2.5);
+// 4
+s = scene(3, $('#s3'));
+lignes($('#s3 .titre'), s.debut + .1, .35);
+tl.fromTo('#s3 .tel', { scale: .85, rotation: 4 }, { scale: 1, rotation: 0, duration: .9, ease: E }, s.debut - .1);
+const tap = s.debut + T.pops['3'][0];
+ecran($('#s3 .tel'), 0, s.debut);
+ecran($('#s3 .tel'), 1, s.debut + 1.5);
+ecran($('#s3 .tel'), 2, s.debut + 2.8);
+appui($('#s3 .tel'), 50, 83, tap);
+ecran($('#s3 .tel'), 3, tap + .3);
+$$('#s3 .puce').forEach((c, k) => surgir(c, s.debut + .5 + k * .5));
+tl.to('#s3 .puce', { opacity: 0, scale: .9, duration: .3 }, tap - .5);
+// 5
+s = scene(4, $('#s4'));
+camera($('#s4 .plein'), s.debut - .2, s.duree + .6, { s: 1.0, y: 1 }, { s: 1.12, y: -1 });
+lignes($('#s4 .titre'), s.debut + .1);
+surgir($('#s4 .notif'), s.debut + .5, { y: -160, scale: .95 }, .7);
+$$('#s4 .puce').forEach((c, k) => surgir(c, s.voix + 1.6 + k * .4));
+// 6
+s = scene(5, $('#s5'));
+tl.fromTo('#s5 .marque', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .8, ease: 'back.out(1.7)' }, s.debut + .1);
+tl.fromTo('#s5 h2', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .6, ease: E }, s.voix + 1.0);
+tl.fromTo('#s5 .pilule', { opacity: 0, y: 40, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'back.out(1.6)' }, s.voix + 1.6);
+tl.fromTo('#s5 .bas', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .6, ease: E }, s.voix + 2.2);
+tl.to('#s5 .pilule', { scale: 1.05, duration: .35, yoyo: true, repeat: 3, ease: 'sine.inOut' }, s.voix + 3);
+finir();
+</script>
+</body>
+</html>

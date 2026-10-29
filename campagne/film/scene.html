@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka · film de marque</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../commun.css">
+<script src="../../video/node_modules/gsap/dist/gsap.min.js"></script>
+<script src="donnees.js"></script>
+<script>window.TAILLE = { largeur: 1920, hauteur: 1080 };</script>
+<style>
+  html, body, #stage { width: 1920px; height: 1080px; }
+  .tel { width: 400px; height: 864px; }
+  .titre { font-size: 104px; }
+  .bande { position: absolute; top: 0; bottom: 0; overflow: hidden; }
+  .bande .plein { inset: 0 -8%; }
+  .etiquette { position: absolute; display: inline-flex; align-items: center; gap: 14px; font: 800 28px 'Inter'; letter-spacing: .14em; text-transform: uppercase; background: rgba(255,255,255,.16); border: 1.5px solid rgba(255,255,255,.35); border-radius: 999px; padding: 12px 26px; }
+  #s0 .titre, #s1 .titre { left: 90px; bottom: 110px; }
+  #s2 { display: flex; align-items: center; justify-content: center; }
+  #s2 .marque { font-size: 190px; gap: 40px; }
+  #s3 .titre, #s4 .titre { left: 110px; top: 330px; font-size: 92px; }
+  #s3 .etiquette, #s4 .etiquette { left: 110px; top: 220px; }
+  #s3 .liste, #s4 .liste { position: absolute; left: 110px; top: 610px; display: flex; flex-direction: column; gap: 18px; }
+  .liste div { font: 700 38px 'Inter'; color: #EDEBFF; display: flex; align-items: center; gap: 18px; opacity: 0; }
+  .liste div::before { content: '✓'; width: 50px; height: 50px; border-radius: 50%; background: #FFE7A3; color: #2A1F7A; font: 800 28px 'Inter'; display: flex; align-items: center; justify-content: center; }
+  #s3 .t1, #s4 .t1 { left: 1020px; top: 150px; }
+  #s3 .t2, #s4 .t2 { left: 1420px; top: 110px; }
+  #s5 .titre { left: 0; right: 0; top: 130px; text-align: center; font-size: 96px; }
+  #s5 .regles { position: absolute; left: 160px; right: 160px; top: 420px; display: flex; gap: 40px; }
+  #s5 .regle { flex: 1; background: rgba(255,255,255,.96); color: #16161D; border-radius: 40px; padding: 50px 40px; text-align: center; box-shadow: 0 40px 90px rgba(5,3,30,.5); opacity: 0; }
+  #s5 .regle b { display: block; font: 800 104px/1 'Sora'; letter-spacing: -0.05em; color: #4B3BC9; }
+  #s5 .regle span { display: block; font: 700 36px/1.3 'Inter'; margin-top: 20px; color: #33334A; }
+  #s6 .titre { left: 110px; bottom: 120px; font-size: 120px; }
+  #s7 { display: flex; align-items: center; justify-content: center; gap: 120px; }
+  #s7 .gauche { display: flex; flex-direction: column; align-items: flex-start; }
+  #s7 .marque { font-size: 130px; }
+  #s7 h2 { font: 800 64px/1.1 'Sora'; letter-spacing: -0.04em; margin-top: 30px; }
+  #s7 .pilule { margin-top: 50px; }
+  #s7 .offres { display: flex; gap: 24px; margin-top: 50px; }
+  #s7 .offres div { background: rgba(255,255,255,.14); border: 1.5px solid rgba(255,255,255,.3); border-radius: 28px; padding: 22px 30px; font: 600 28px/1.35 'Inter'; color: #EDEBFF; }
+  #s7 .offres b { display: block; font: 800 36px 'Sora'; color: #fff; }
+  #s7 .qr { width: 380px; }
+  #s7 .droite { text-align: center; font: 700 32px 'Inter'; color: #EDEBFF; }
+  #s7 .droite p { margin-top: 26px; }
+  .titre, .puce, .etiquette { opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1. Des villas qui attendent : triptyque -->
+  <div class="scene" id="s0">
+    <div class="bande" style="left:0;width:640px"><div class="plein" style="background-image:url(../photos/05-villa-crepuscule.jpg)"></div></div>
+    <div class="bande" style="left:640px;width:640px"><div class="plein" style="background-image:url(../photos/04-villa-blanche-piscine.jpg)"></div></div>
+    <div class="bande" style="left:1280px;width:640px"><div class="plein" style="background-image:url(../photos/11-chambre-chaude.jpg)"></div></div>
+    <div class="voile-bas"></div>
+    <div class="titre"><span class="ligne"><span>Des villas</span></span><span class="ligne"><span>qui <em>attendent.</em></span></span></div>
+  </div>
+
+  <!-- 2. Des clients qui cherchent -->
+  <div class="scene" id="s1">
+    <div class="bande" style="left:0;width:960px"><div class="plein" style="background-image:url(../photos/14-femme-telephone-2.jpg)"></div></div>
+    <div class="bande" style="left:960px;width:960px"><div class="plein" style="background-image:url(../photos/15-homme-affaires-telephone.jpg)"></div></div>
+    <div class="voile-bas"></div>
+    <div class="titre"><span class="ligne"><span>Des clients</span></span><span class="ligne"><span>qui <em>cherchent.</em></span></span></div>
+  </div>
+
+  <!-- 3. Loka les réunit -->
+  <div class="scene violet" id="s2">
+    <div class="anneau" style="width:1400px;height:1400px;left:-500px;top:-200px"></div>
+    <div class="anneau" style="width:1100px;height:1100px;right:-400px;top:200px"></div>
+    <div class="marque"><svg width="230" height="230" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg><div>Loka</div></div>
+  </div>
+
+  <!-- 4. Côté clients -->
+  <div class="scene nuit" id="s3">
+    <div class="anneau" style="width:1200px;height:1200px;right:-300px;top:-300px"></div>
+    <div class="etiquette">Pour les clients</div>
+    <div class="titre"><span class="ligne"><span>Loka <em>Villas</em></span></span><span class="ligne"><span>Les villas libres.</span></span></div>
+    <div class="liste"><div>Vraies photos et prix clairs</div><div>Avis vérifiés</div><div>Confirmé sur WhatsApp, payé sur place</div></div>
+    <div class="tel t1" data-r="-4"><div class="bezel"><div class="ecran"><img src="../ecrans/client-resultats.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="tel t2" data-r="4"><div class="bezel"><div class="ecran"><img src="../ecrans/client-villa.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="puce" style="left:1240px;top:900px"><span class="etoile">★</span> 4,8 · 4 avis</div>
+  </div>
+
+  <!-- 5. Côté bailleurs -->
+  <div class="scene violet" id="s4">
+    <div class="anneau" style="width:1300px;height:1300px;left:-600px;top:400px"></div>
+    <div class="etiquette">Pour les bailleurs</div>
+    <div class="titre"><span class="ligne"><span>Tout suivi,</span></span><span class="ligne"><span><em>en direct.</em></span></span></div>
+    <div class="liste"><div>Réservations et acomptes</div><div>Gérants et dépenses</div><div>Bénéfice du mois</div></div>
+    <div class="tel t1" data-r="-4"><div class="bezel"><div class="ecran"><img src="../ecrans/bailleur-apercu.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="tel t2" data-r="4"><div class="bezel"><div class="ecran"><img src="../ecrans/gerant-terrain.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="puce jaune" style="left:1180px;top:900px">Bénéfice · 1 256 000 F</div>
+  </div>
+
+  <!-- 6. Des règles claires -->
+  <div class="scene" id="s5">
+    <div class="plein" style="background-image:url(../photos/19-famille.jpg)"></div>
+    <div class="voile-bas" style="background:rgba(14,11,31,.62)"></div>
+    <div class="titre"><span class="ligne"><span>Des règles <em>claires</em> pour tous.</span></span></div>
+    <div class="regles">
+      <div class="regle"><b>15 h</b><span>Arrivée<br>dès 15 heures</span></div>
+      <div class="regle"><b>12 h</b><span>Départ<br>avant midi</span></div>
+      <div class="regle"><b>50 %</b><span>D’acompte<br>avant les clés</span></div>
+    </div>
+  </div>
+
+  <!-- 7. Signature -->
+  <div class="scene" id="s6">
+    <div class="plein" style="background-image:url(../photos/09-villa-piscine-jour.jpg)"></div>
+    <div class="voile-bas"></div>
+    <div class="titre"><span class="ligne"><span>La location meublée,</span></span><span class="ligne"><span><em>enfin simple.</em></span></span></div>
+  </div>
+
+  <!-- 8. Fin -->
+  <div class="scene violet" id="s7">
+    <div class="anneau" style="width:1400px;height:1400px;left:-600px;top:300px"></div>
+    <div class="anneau" style="width:1000px;height:1000px;right:-400px;top:-500px"></div>
+    <div class="gauche">
+      <div class="marque"><svg width="140" height="140" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>Loka</div>
+      <h2>La location meublée, enfin simple.</h2>
+      <div class="pilule">loka.eyamtech.com</div>
+      <div class="offres"><div><b>Clients</b>Recherche gratuite</div><div><b>Bailleurs</b>14 jours offerts</div></div>
+    </div>
+    <div class="droite"><div class="qr"><img src="../qr-loka.svg"></div><p>Scannez pour commencer</p></div>
+  </div>
+
+  <div class="grain"></div>
+</div>
+<script src="../moteur.js"></script>
+<script>
+// 1
+let s = scene(0, $('#s0'));
+$$('#s0 .bande').forEach((b, k) => {
+  tl.fromTo(b, { yPercent: k % 2 ? -100 : 100 }, { yPercent: 0, duration: .9, ease: 'power4.out' }, k * .15);
+  camera($('.plein', b), 0, s.duree + .4, { s: 1.15 }, { s: 1.02 });
+});
+lignes($('#s0 .titre'), s.voix + 1.3, .2);
+// 2
+s = scene(1, $('#s1'));
+$$('#s1 .bande').forEach((b, k) => {
+  tl.fromTo(b, { xPercent: k ? 100 : -100 }, { xPercent: 0, duration: .8, ease: 'power4.out' }, s.debut - .2);
+  camera($('.plein', b), s.debut - .2, s.duree + .5, { s: 1.12 }, { s: 1.0 });
+});
+lignes($('#s1 .titre'), s.voix + .6, .2);
+// 3
+s = scene(2, $('#s2'));
+tl.fromTo('#s2 .marque svg', { scale: 0, rotation: -120 }, { scale: 1, rotation: 0, duration: .9, ease: 'back.out(1.8)' }, s.debut + .05);
+tl.fromTo('#s2 .marque div', { opacity: 0, x: -80 }, { opacity: 1, x: 0, duration: .7, ease: E }, s.debut + .45);
+tl.fromTo('#s2 .anneau', { scale: .6 }, { scale: 1.1, duration: s.duree + .4, ease: 'power2.out' }, s.debut);
+// 4 et 5 : même mise en page
+for (const [i, id] of [[3, '#s3'], [4, '#s4']]) {
+  s = scene(i, $(id));
+  tl.fromTo(id + ' .etiquette', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .5 }, s.debut + .1);
+  lignes($(id + ' .titre'), s.debut + .2, .15);
+  $$(id + ' .liste div').forEach((d, k) => tl.fromTo(d, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .5, ease: E }, s.voix + 1.6 + k * .9));
+  $$(id + ' .tel').forEach((t, k) => {
+    ecran(t, 0, s.debut);
+    tl.fromTo(t, { y: 900, rotation: 0 }, { y: 0, rotation: k ? 4 : -4, duration: 1.1, ease: 'power4.out' }, s.debut + k * .2);
+    tl.to(t, { y: k ? -30 : 30, duration: s.duree, ease: 'none' }, s.debut + 1.2);
+  });
+  surgir($(id + ' .puce'), s.voix + 2.4);
+}
+// 6
+s = scene(5, $('#s5'));
+camera($('#s5 .plein'), s.debut - .2, s.duree + .5, { s: 1.1 }, { s: 1.0 });
+lignes($('#s5 .titre'), s.debut + .1);
+$$('#s5 .regle').forEach((r, k) => surgir(r, s.voix + [1.6, 2.6, 3.8][k], { y: 80, scale: .85 }, .6));
+// 7
+s = scene(6, $('#s6'));
+camera($('#s6 .plein'), s.debut - .2, s.duree + .5, { s: 1.0, x: -1 }, { s: 1.1, x: 1 });
+lignes($('#s6 .titre'), s.voix + .4, .2);
+// 8
+s = scene(7, $('#s7'));
+tl.fromTo('#s7 .marque', { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: .7, ease: 'back.out(1.7)' }, s.debut + .1);
+tl.fromTo('#s7 h2', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5 }, s.debut + .4);
+tl.fromTo('#s7 .pilule', { opacity: 0, y: 30, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'back.out(1.6)' }, s.voix + .6);
+tl.fromTo('#s7 .offres', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5 }, s.voix + 1.6);
+tl.fromTo('#s7 .droite', { opacity: 0, scale: .8 }, { opacity: 1, scale: 1, duration: .7, ease: 'back.out(1.6)' }, s.voix + 1.2);
+tl.to('#s7 .pilule', { scale: 1.05, duration: .35, yoyo: true, repeat: 3, ease: 'sine.inOut' }, s.voix + 3);
+finir();
+</script>
+</body>
+</html>

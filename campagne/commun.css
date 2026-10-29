@@ -1,0 +1,55 @@
+/* Éléments communs des vidéos de campagne Loka (1080 × 1920 ou 1920 × 1080). */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { overflow: hidden; background: #000; }
+#stage { position: relative; overflow: hidden; font-family: 'Inter', sans-serif; color: #fff; background: #0E0B1F; }
+.scene { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+.grain { position: absolute; inset: 0; pointer-events: none; opacity: .06; mix-blend-mode: overlay; z-index: 90;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+/* Photo plein cadre (mouvement de caméra animé par la timeline) */
+.plein { position: absolute; inset: -4%; background-size: cover; background-position: center; will-change: transform; }
+.voile-bas { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,8,30,.15) 0%, rgba(10,8,30,0) 35%, rgba(10,8,30,.55) 70%, rgba(10,8,30,.92) 100%); }
+.voile-haut { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,8,30,.85) 0%, rgba(10,8,30,.2) 40%, rgba(10,8,30,0) 60%, rgba(10,8,30,.6) 100%); }
+.violet { background: radial-gradient(1100px 900px at 80% 10%, rgba(255,255,255,.16), transparent 60%), radial-gradient(900px 900px at 0% 100%, rgba(30,20,110,.6), transparent 60%), linear-gradient(165deg, #7566F7 0%, #5A49E6 45%, #3E2FB8 100%); }
+.nuit { background: radial-gradient(900px 800px at 85% 15%, rgba(109,93,245,.55), transparent 60%), radial-gradient(800px 800px at 0% 100%, rgba(109,93,245,.35), transparent 60%), #0E0B1F; }
+.anneau { position: absolute; border-radius: 50%; border: 2px solid rgba(255,255,255,.14); }
+
+/* Titres */
+.titre { position: absolute; font: 800 112px/1.0 'Sora', sans-serif; letter-spacing: -0.045em; text-shadow: 0 8px 40px rgba(0,0,0,.35); }
+.titre .ligne { display: block; overflow: hidden; padding-bottom: .08em; }
+.titre .ligne > span { display: inline-block; }
+.titre em { font-style: normal; color: #FFE7A3; }
+.sous { position: absolute; font: 600 40px/1.35 'Inter', sans-serif; color: #EDEBFF; }
+
+/* Téléphone */
+.tel { position: absolute; border-radius: 15.5% / 7.2%; padding: 2.2%;
+  background: linear-gradient(140deg, #8A8E95 0%, #2E3136 20%, #55595F 42%, #1D1F22 64%, #6A6E74 86%, #2A2C2F 100%);
+  box-shadow: 0 60px 120px rgba(5,3,30,.6), inset 0 0 0 2px rgba(255,255,255,.25); }
+.tel .bezel { width: 100%; height: 100%; border-radius: 13.5% / 6.3%; background: #000; padding: 1.8%; }
+.tel .ecran { position: relative; width: 100%; height: 100%; border-radius: 12% / 5.6%; overflow: hidden; background: #fff; }
+.tel .ecran img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; }
+.tel .ile { position: absolute; top: 1.5%; left: 50%; width: 30%; height: 3.4%; transform: translateX(-50%); background: #000; border-radius: 30px; z-index: 5; }
+.tel .reflet { position: absolute; inset: 0; z-index: 6; border-radius: inherit; background: linear-gradient(118deg, rgba(255,255,255,.18), rgba(255,255,255,.02) 30%, transparent 45%); pointer-events: none; }
+
+/* Cartes, puces, notifications */
+.carte-photo { position: absolute; border-radius: 26px; overflow: hidden; background: #fff; box-shadow: 0 40px 80px rgba(5,3,30,.5); }
+.carte-photo .img { width: 100%; height: 72%; background-size: cover; background-position: center; }
+.carte-photo .bas { padding: 14px 18px; color: #16161D; font: 700 26px 'Sora'; }
+.carte-photo .bas span { display: block; font: 600 20px 'Inter'; color: #5E5E74; margin-top: 2px; }
+.badge-libre { position: absolute; left: 14px; top: 14px; background: #19B26B; color: #fff; font: 800 20px 'Inter'; padding: 8px 14px; border-radius: 999px; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+.puce { position: absolute; display: inline-flex; align-items: center; gap: 12px; background: #fff; color: #16161D; border-radius: 999px; padding: 16px 26px; font: 800 32px 'Sora'; letter-spacing: -0.01em; box-shadow: 0 24px 60px rgba(5,3,30,.45); white-space: nowrap; }
+.puce .etoile { color: #F2B01E; }
+.puce.violette { background: #6D5DF5; color: #fff; }
+.puce.jaune { background: #FFE7A3; color: #2A1F7A; }
+.notif { position: absolute; display: flex; gap: 20px; align-items: flex-start; background: rgba(250,250,252,.96); color: #16161D; border-radius: 34px; padding: 24px 28px; box-shadow: 0 30px 70px rgba(0,0,0,.45); }
+.notif .app { width: 70px; height: 70px; border-radius: 18px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
+.notif b { display: block; font: 800 28px 'Inter'; }
+.notif p { font: 500 26px/1.35 'Inter'; color: #33334A; margin-top: 4px; }
+.notif small { font: 600 20px 'Inter'; color: #8A8A99; float: right; margin-left: 12px; }
+.epingle { position: absolute; width: 74px; height: 100px; }
+.doigt { position: absolute; width: 150px; height: 150px; z-index: 40; opacity: 0; filter: drop-shadow(0 14px 18px rgba(10,5,40,.45)); }
+.onde { position: absolute; width: 130px; height: 130px; margin: -65px 0 0 -65px; border-radius: 50%; border: 8px solid #fff; z-index: 39; opacity: 0; box-shadow: 0 0 0 6px rgba(109,93,245,.55); }
+.marque { display: flex; align-items: center; gap: 22px; font: 800 96px 'Sora'; letter-spacing: -0.04em; }
+.qr { background: #fff; border-radius: 28px; padding: 22px; box-shadow: 0 30px 70px rgba(5,3,30,.5); }
+.qr img { display: block; width: 100%; }
+.pilule { display: inline-flex; align-items: center; gap: 16px; background: #fff; color: #4B3BC9; border-radius: 999px; padding: 26px 44px; font: 800 50px 'Sora'; letter-spacing: -0.02em; box-shadow: 0 14px 0 #B9AEFF, 0 36px 70px rgba(20,10,80,.45); white-space: nowrap; }
