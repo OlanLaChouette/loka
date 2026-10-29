@@ -2,48 +2,48 @@
  "scenes": [
   {
    "debut": 0.0,
-   "duree": 2.63,
+   "duree": 2.65,
    "voix": 0.3,
-   "dureeVoix": 2.08
-  },
-  {
-   "debut": 2.63,
-   "duree": 4.33,
-   "voix": 2.93,
-   "dureeVoix": 3.68
-  },
-  {
-   "debut": 6.96,
-   "duree": 5.29,
-   "voix": 7.26,
-   "dureeVoix": 4.64
-  },
-  {
-   "debut": 12.25,
-   "duree": 4.81,
-   "voix": 12.55,
-   "dureeVoix": 4.16
-  },
-  {
-   "debut": 17.06,
-   "duree": 2.7,
-   "voix": 17.36,
    "dureeVoix": 2.1
   },
   {
-   "debut": 19.76,
-   "duree": 3.27,
-   "voix": 20.06,
-   "dureeVoix": 2.62
+   "debut": 2.65,
+   "duree": 4.59,
+   "voix": 2.95,
+   "dureeVoix": 3.94
   },
   {
-   "debut": 23.03,
-   "duree": 8.4,
-   "voix": 23.33,
-   "dureeVoix": 5.9
+   "debut": 7.24,
+   "duree": 5.47,
+   "voix": 7.54,
+   "dureeVoix": 4.82
+  },
+  {
+   "debut": 12.71,
+   "duree": 4.91,
+   "voix": 13.01,
+   "dureeVoix": 4.26
+  },
+  {
+   "debut": 17.62,
+   "duree": 2.82,
+   "voix": 17.92,
+   "dureeVoix": 2.22
+  },
+  {
+   "debut": 20.44,
+   "duree": 3.69,
+   "voix": 20.74,
+   "dureeVoix": 3.04
+  },
+  {
+   "debut": 24.13,
+   "duree": 7.88,
+   "voix": 24.43,
+   "dureeVoix": 5.38
   }
  ],
- "duree": 31.43,
+ "duree": 32.01,
  "pops": {
   "2": [
    1.2

@@ -20,7 +20,8 @@ src = src[src.index('def lire('):src.index("prise = os.path.join")]
 outils = {'np': np, 'wave': wave, 'os': os}
 exec(src, outils)
 lire, ecrire, segments, couper = outils['lire'], outils['ecrire'], outils['segments'], outils['couper']
-dire = lambda t: t.replace('loka.eyamtech.com', 'loka point é-yam-tèk point com').replace('«', '').replace('»', '')
+# Écriture phonétique pour la synthèse : « iyamtek », et « Loka Villa » (le s final se lisait « Villasses »).
+dire = lambda t: t.replace('loka.eyamtech.com', 'loka point iyamtek point com').replace('Loka Villas', 'Loka Villa').replace('«', '').replace('»', '')
 
 prise = os.path.join(D, 'voix', 'prise.wav')
 if '--reprendre' not in sys.argv or not os.path.exists(prise):

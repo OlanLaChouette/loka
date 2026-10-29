@@ -2,42 +2,42 @@
  "scenes": [
   {
    "debut": 0.0,
-   "duree": 4.09,
+   "duree": 4.47,
    "voix": 0.3,
-   "dureeVoix": 3.54
+   "dureeVoix": 3.92
   },
   {
-   "debut": 4.09,
-   "duree": 1.91,
-   "voix": 4.39,
-   "dureeVoix": 1.16
+   "debut": 4.47,
+   "duree": 1.99,
+   "voix": 4.77,
+   "dureeVoix": 1.24
   },
   {
-   "debut": 6.0,
-   "duree": 5.52,
-   "voix": 6.3,
-   "dureeVoix": 4.72
+   "debut": 6.46,
+   "duree": 5.58,
+   "voix": 6.76,
+   "dureeVoix": 4.78
   },
   {
-   "debut": 11.52,
-   "duree": 6.34,
-   "voix": 11.82,
-   "dureeVoix": 5.34
+   "debut": 12.04,
+   "duree": 6.78,
+   "voix": 12.34,
+   "dureeVoix": 5.78
   },
   {
-   "debut": 17.86,
-   "duree": 4.0,
-   "voix": 18.16,
-   "dureeVoix": 3.1
+   "debut": 18.82,
+   "duree": 4.52,
+   "voix": 19.12,
+   "dureeVoix": 3.62
   },
   {
-   "debut": 21.86,
-   "duree": 5.54,
-   "voix": 22.16,
-   "dureeVoix": 2.84
+   "debut": 23.34,
+   "duree": 5.6,
+   "voix": 23.64,
+   "dureeVoix": 2.9
   }
  ],
- "duree": 27.4,
+ "duree": 28.94,
  "pops": {
   "3": [
    4.2
