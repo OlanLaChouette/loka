@@ -39,7 +39,8 @@
 .mc-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
 .mc-carte { display: flex; flex-direction: column; text-align: left; background: #fff; border: 1px solid var(--mb); border-radius: 18px; overflow: hidden; padding: 0; cursor: pointer; color: inherit; font: inherit; box-shadow: 0 6px 20px rgba(20,10,80,.06); }
 .mc-photo { position: relative; width: 100%; aspect-ratio: 4 / 3; background: var(--mvd); display: flex; align-items: center; justify-content: center; }
-.mc-photo img { width: 100%; height: 100%; object-fit: cover; }
+.mc-photo { overflow: hidden; }
+.mc-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .mc-sans-photo { color: var(--mvt); font-weight: 600; font-size: 13px; }
 .mc-sans-photo.grande { aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; background: var(--mvd); border-radius: 16px; width: 100%; }
 .mc-distance { position: absolute; left: 10px; top: 10px; display: inline-flex; align-items: center; gap: 4px; background: rgba(22,22,29,.75); color: #fff; font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 999px; }
@@ -57,8 +58,8 @@
 .mc-vide { text-align: center; color: var(--mm); padding: 40px 16px; background: #fff; border-radius: 18px; border: 1px dashed var(--mb); }
 
 .mc-retour { display: inline-flex; align-items: center; gap: 6px; color: var(--mvt); font-weight: 600; text-decoration: none; margin-bottom: 12px; }
-.mc-galerie { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; border-radius: 18px; margin-bottom: 14px; }
-.mc-galerie img { flex: 0 0 88%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; scroll-snap-align: start; }
+.mc-galerie { display: flex; align-items: flex-start; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; border-radius: 18px; margin-bottom: 14px; }
+.mc-galerie img { flex: 0 0 88%; width: 88%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; scroll-snap-align: start; }
 .mc-galerie img:only-child { flex-basis: 100%; }
 .mc-titre { font-size: 26px; line-height: 1.15; }
 .mc-description { color: #3A3A4A; }
