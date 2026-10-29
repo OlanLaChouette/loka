@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, messageErreur } from '../lib/api';
 import { useSession } from '../lib/session';
+import { DemandesEnAttente } from '../composants/Demandes';
 import { ajouterJours, aujourdhui, dateCourte, fcfa } from '../lib/format';
 import { Chargement, Erreur, Modale, Puce, Vide } from '../composants/Ui';
 import { Encaisser, NouvelleReservation, useBiens, useSites } from '../composants/Formulaires';
@@ -63,6 +64,7 @@ export default function Reservations() {
         {role !== 'comptable' && <button className="bouton principal" onClick={() => setNouvelle(true)}>+ Nouvelle réservation</button>}
       </div>
 
+      <DemandesEnAttente />
       {enAttente.length > 0 && (
         <section className="carte" style={{ borderColor: 'var(--alerte)' }}>
           <h2>Réductions à valider</h2>

@@ -7,6 +7,7 @@ import { ajouterJours, aujourdhui, fcfa, dateLongue } from '../lib/format';
 import { Chargement, Modale, Puce, Vide } from '../composants/Ui';
 import { Encaisser, NouvelleDepense, NouvelleReservation, useBiens, useSites } from '../composants/Formulaires';
 import { PhotosBien } from '../composants/Photos';
+import { DemandesEnAttente } from '../composants/Demandes';
 
 export default function Terrain() {
   const { utilisateur, role } = useSession();
@@ -46,6 +47,8 @@ export default function Terrain() {
           </div>
         )}
       </div>
+
+      <DemandesEnAttente />
 
       {nonSoldes.length > 0 && (
         <section className="carte">

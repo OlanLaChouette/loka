@@ -1,7 +1,7 @@
 // Chiffres du tableau de bord d'un espace, pour un mois donné (AAAA-MM).
 const router = require('express').Router();
 const { Op, fn, col, literal } = require('sequelize');
-const { Bien, Site, Reservation, Bail, Paiement, Depense, ChargeFixe, Journal, Utilisateur, Bailleur, Client, Fichier } = require('../models');
+const { Bien, Site, Reservation, Bail, Paiement, Depense, ChargeFixe, Journal, Utilisateur, Bailleur, Client, Fichier, Demande } = require('../models');
 const { authentifier, espace, portee } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
@@ -13,7 +13,7 @@ const LIBELLES = {
   reservation_annulee: 'a annulé une réservation', paiement_encaisse: 'a encaissé un paiement', depense_saisie: 'a noté une dépense',
   depense_acceptee: 'a accepté une dépense', depense_refusee: 'a refusé une dépense', bail_cree: 'a créé un bail', bail_termine: 'a terminé un bail',
   prix_modifie: 'a modifié un prix', etat_modifie: 'a changé l’état d’un bien', bien_ajoute: 'a ajouté un bien', charge_ajoutee: 'a ajouté une charge fixe',
-  charge_modifiee: 'a modifié une charge fixe', bien_supprime: 'a supprimé un bien', mot_de_passe_reinitialise: 'a réinitialisé un mot de passe', charge_retiree: 'a retiré une charge fixe', membre_ajoute: 'a ajouté un membre', membre_modifie: 'a modifié un membre', profil_modifie: 'a modifié l’entreprise', client_signale: 'a signalé un client à éviter', client_retabli: 'a levé un signalement de client',
+  charge_modifiee: 'a modifié une charge fixe', bien_supprime: 'a supprimé un bien', mot_de_passe_reinitialise: 'a réinitialisé un mot de passe', charge_retiree: 'a retiré une charge fixe', membre_ajoute: 'a ajouté un membre', membre_modifie: 'a modifié un membre', profil_modifie: 'a modifié l’entreprise', client_signale: 'a signalé un client à éviter', demande_acceptee: 'a accepté une demande de la place de marché', demande_refusee: 'a refusé une demande de la place de marché', client_retabli: 'a levé un signalement de client',
 };
 
 router.get('/tableau-de-bord', authentifier, espace, route(async (req, res) => {
@@ -95,6 +95,7 @@ router.get('/tableau-de-bord', authentifier, espace, route(async (req, res) => {
     a_traiter: {
       depenses: await Depense.count({ where: portee(req, { statut: 'en_attente' }) }),
       reductions: await Reservation.count({ where: portee(req, { statut: 'attente_validation' }) }),
+      demandes: await Demande.count({ where: portee(req, { statut: 'en_attente' }) }),
     },
     biens: { total: biens.length, libres_ce_soir: biensNuit.filter(b => !confirmees.some(r => r.bien_id === b.id && r.arrivee <= aujourdhui && r.depart > aujourdhui)).length },
     sites: parSite, evolution,

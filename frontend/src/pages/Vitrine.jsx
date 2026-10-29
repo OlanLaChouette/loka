@@ -44,6 +44,7 @@ export default function Vitrine() {
             <a href="#comment" onClick={() => setMenu(false)}>Comment ça marche</a>
             <a href="#tarif" onClick={() => setMenu(false)}>Tarif</a>
             <a href="#questions" onClick={() => setMenu(false)}>Questions</a>
+            <Link to="/villas" onClick={() => setMenu(false)}>Trouver une villa</Link>
             <Link to="/connexion" className="vt-nav-connexion">Se connecter</Link>
           </nav>
           <Link to="/inscription" className="vt-bouton petit masquer-petit">Essai gratuit</Link>
@@ -61,6 +62,7 @@ export default function Vitrine() {
               <div className="vt-actions">
                 <Link to="/inscription" className="vt-bouton">Créer mon espace · 14 jours gratuits</Link>
                 <Link to="/connexion" className="vt-bouton clair">J’ai déjà un compte</Link>
+                <Link to="/villas" className="vt-bouton clair">Je cherche une villa</Link>
               </div>
               <ul className="vt-garanties">
                 <li><Check size={16} />Sans engagement</li>

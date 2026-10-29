@@ -4,18 +4,19 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Camera, Plus, Trash2 } from 'lucide-react';
 import { api, messageErreur } from '../lib/api';
 import { useSession } from '../lib/session';
-import { fcfa, TYPES_BIEN } from '../lib/format';
+import { EQUIPEMENTS, fcfa, TYPES_BIEN } from '../lib/format';
 import { Chargement, Champ, Erreur, Modale, Puce, Vide } from '../composants/Ui';
 import { useBiens, useSites } from '../composants/Formulaires';
 import { PhotosBien } from '../composants/Photos';
 
 function FormulaireBien({ bien, sites, onFermer }) {
   const client = useQueryClient();
-  const [f, setF] = useState(bien || { site_id: sites[0]?.id || '', reference: '', type: 'villa', mode: 'nuit', standing: '', pieces: '', prix_nuit: '', prix_mois: '', etat: 'disponible', compteur_electrique: '' });
+  const [f, setF] = useState({ equipements: [], publie: false, capacite: '', description: '', ...(bien || { site_id: sites[0]?.id || '', reference: '', type: 'villa', mode: 'nuit', standing: '', pieces: '', prix_nuit: '', prix_mois: '', etat: 'disponible', compteur_electrique: '' }) });
+  const basculer = (e) => setF({ ...f, equipements: f.equipements.includes(e) ? f.equipements.filter(x => x !== e) : [...f.equipements, e] });
   const maj = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const envoi = useMutation({
     mutationFn: () => {
-      const corps = { ...f, pieces: f.pieces === '' ? null : Number(f.pieces), prix_nuit: f.prix_nuit === '' ? null : Number(f.prix_nuit), prix_mois: f.prix_mois === '' ? null : Number(f.prix_mois) };
+      const corps = { ...f, capacite: f.capacite === '' || f.capacite == null ? null : Number(f.capacite), pieces: f.pieces === '' ? null : Number(f.pieces), prix_nuit: f.prix_nuit === '' ? null : Number(f.prix_nuit), prix_mois: f.prix_mois === '' ? null : Number(f.prix_mois) };
       return bien ? api.patch('/biens/' + bien.id, corps) : api.post('/biens', corps);
     },
     onSuccess: () => { client.invalidateQueries(); onFermer(); },
@@ -40,6 +41,20 @@ function FormulaireBien({ bien, sites, onFermer }) {
         <Champ label="Chambres"><input value={f.pieces ?? ''} onChange={maj('pieces')} inputMode="numeric" /></Champ>
         <Champ label="N° de compteur électrique"><input value={f.compteur_electrique || ''} onChange={maj('compteur_electrique')} /></Champ>
         <Champ label="État"><select value={f.etat} onChange={maj('etat')}><option value="disponible">Disponible</option><option value="travaux">En travaux</option><option value="retire">Retiré de la location</option></select></Champ>
+        {f.mode === 'nuit' && <>
+          <div className="plein publication">
+            <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700, color: 'var(--texte)' }}>
+              <input type="checkbox" checked={!!f.publie} onChange={e => setF({ ...f, publie: e.target.checked })} />
+              Publier sur la place de marché Loka
+            </label>
+            <span className="petit muet">Les clients la trouvent sur loka.eyamtech.com/villas avec ses photos, son prix et ses dates libres, puis vous envoient une demande à accepter.</span>
+          </div>
+          <Champ label="Personnes (capacité)"><input value={f.capacite ?? ''} onChange={maj('capacite')} inputMode="numeric" placeholder="4" /></Champ>
+          <Champ label="Description pour les clients" plein><textarea rows={2} value={f.description || ''} onChange={maj('description')} placeholder="Villa meublée, climatisée, à 5 min du centre…" /></Champ>
+          <div className="plein"><span className="petit muet" style={{ fontWeight: 600 }}>Équipements</span>
+            <div className="choix-equipements">{Object.entries(EQUIPEMENTS).map(([k, v]) => <button key={k} type="button" className={f.equipements.includes(k) ? 'actif' : ''} onClick={() => basculer(k)}>{v}</button>)}</div>
+          </div>
+        </>}
       </div>
       <p className="petit muet" style={{ margin: 0 }}>Le prix est libre : le standing et le nombre de chambres servent seulement à décrire le bien.</p>
     </Modale>
@@ -85,17 +100,37 @@ function FormulaireLot({ sites, onFermer }) {
   );
 }
 
-function FormulaireSite({ onFermer }) {
+function FormulaireSite({ site, onFermer }) {
   const client = useQueryClient();
-  const [f, setF] = useState({ nom: '', ville: '', adresse: '' });
-  const envoi = useMutation({ mutationFn: () => api.post('/sites', f), onSuccess: () => { client.invalidateQueries(); onFermer(); } });
+  const [f, setF] = useState({ nom: site?.nom || '', ville: site?.ville || '', adresse: site?.adresse || '', quartier: site?.quartier || '', latitude: site?.latitude ?? '', longitude: site?.longitude ?? '' });
+  const [position, setPosition] = useState('');
+  const maj = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  const envoi = useMutation({
+    mutationFn: () => { const corps = { ...f, latitude: f.latitude === '' ? null : Number(f.latitude), longitude: f.longitude === '' ? null : Number(f.longitude) }; return site ? api.patch('/sites/' + site.id, corps) : api.post('/sites', corps); },
+    onSuccess: () => { client.invalidateQueries(); onFermer(); },
+  });
+  // Position du téléphone, à prendre sur place : sert à la recherche « autour de moi » des clients.
+  function ici() {
+    if (!navigator.geolocation) return setPosition('Position indisponible sur cet appareil.');
+    setPosition('Recherche de la position…');
+    navigator.geolocation.getCurrentPosition((p) => { setF({ ...f, latitude: p.coords.latitude.toFixed(6), longitude: p.coords.longitude.toFixed(6) }); setPosition('Position enregistrée.'); }, () => setPosition('Position refusée par le téléphone.'), { enableHighAccuracy: true, timeout: 15000 });
+  }
   return (
-    <Modale titre="Ajouter un site" onFermer={onFermer} actions={<><button className="bouton" onClick={onFermer}>Annuler</button><button className="bouton principal" disabled={!f.nom} onClick={() => envoi.mutate()}>Ajouter</button></>}>
+    <Modale titre={site ? `Modifier ${site.nom}` : 'Ajouter un site'} onFermer={onFermer} actions={<><button className="bouton" onClick={onFermer}>Annuler</button><button className="bouton principal" disabled={!f.nom || envoi.isPending} onClick={() => envoi.mutate()}>{site ? 'Enregistrer' : 'Ajouter'}</button></>}>
       <Erreur message={envoi.error && messageErreur(envoi.error)} />
       <div className="grille-form">
-        <Champ label="Nom du site" plein><input value={f.nom} onChange={e => setF({ ...f, nom: e.target.value })} /></Champ>
-        <Champ label="Ville"><input value={f.ville} onChange={e => setF({ ...f, ville: e.target.value })} /></Champ>
-        <Champ label="Adresse"><input value={f.adresse} onChange={e => setF({ ...f, adresse: e.target.value })} /></Champ>
+        <Champ label="Nom du site" plein><input value={f.nom} onChange={maj('nom')} /></Champ>
+        <Champ label="Ville"><input value={f.ville} onChange={maj('ville')} /></Champ>
+        <Champ label="Quartier"><input value={f.quartier} onChange={maj('quartier')} placeholder="Ouaga 2000, Koulouba…" /></Champ>
+        <Champ label="Adresse" plein><input value={f.adresse} onChange={maj('adresse')} /></Champ>
+        <div className="plein" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <span className="petit muet" style={{ fontWeight: 600 }}>Position (pour la place de marché)</span>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            <button type="button" className="bouton" onClick={ici}>Utiliser ma position actuelle</button>
+            <span className="petit muet">{f.latitude && f.longitude ? `${Number(f.latitude).toFixed(4)}, ${Number(f.longitude).toFixed(4)}` : 'Non renseignée'}</span>
+          </div>
+          {position && <span className="petit muet">{position}</span>}
+        </div>
       </div>
     </Modale>
   );
@@ -108,6 +143,7 @@ export default function Biens() {
   const { data: sites = [] } = useSites();
   const [edition, setEdition] = useState(null);
   const [nouveauSite, setNouveauSite] = useState(false);
+  const [siteEdite, setSiteEdite] = useState(null);
   const [lot, setLot] = useState(false);
   const [photos, setPhotos] = useState(null);
   const [params, setParams] = useSearchParams();
@@ -141,7 +177,8 @@ export default function Biens() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
               <h2>{s.nom}</h2>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span className="petit muet">{[s.ville, `${liste.length} bien${liste.length > 1 ? 's' : ''}`].filter(Boolean).join(' · ')}</span>
+                <span className="petit muet">{[s.quartier, s.ville, `${liste.length} bien${liste.length > 1 ? 's' : ''}`, liste.some(b => b.publie) ? `${liste.filter(b => b.publie).length} en ligne` : ''].filter(Boolean).join(' · ')}</span>
+                {proprio && <button className="bouton discret petit" onClick={() => setSiteEdite(s)}>Modifier</button>}
                 {proprio && !liste.length && <button className="bouton discret danger petit" onClick={() => window.confirm(`Supprimer le site ${s.nom} ?`) && supprimerSite.mutate(s.id)}>Supprimer</button>}
               </span>
             </div>
@@ -177,6 +214,7 @@ export default function Biens() {
       })}
       {edition && <FormulaireBien bien={edition === 'nouveau' ? null : edition} sites={sites} onFermer={() => setEdition(null)} />}
       {nouveauSite && <FormulaireSite onFermer={() => setNouveauSite(false)} />}
+      {siteEdite && <FormulaireSite site={siteEdite} onFermer={() => setSiteEdite(null)} />}
       {lot && <FormulaireLot sites={sites} onFermer={() => setLot(false)} />}
       {photos && <PhotosBien bienId={photos} onFermer={() => setPhotos(null)} />}
     </main>

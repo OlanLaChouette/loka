@@ -263,3 +263,9 @@ table.tableau { width: 100%; border-collapse: collapse; font-size: 14px; }
 .signalement { border: 1px solid var(--bord); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
 .signalement input[type=text], .signalement input:not([type]) { background: var(--champ); border: 1px solid var(--bord); border-radius: 10px; padding: 10px 12px; font-size: 15px; width: 100%; }
 .champ textarea { resize: vertical; }
+
+/* Place de marché dans la fiche d'un bien */
+.publication { background: var(--violet-doux); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.choix-equipements { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.choix-equipements button { border: 1px solid var(--bord); background: var(--surface); color: var(--muet); border-radius: 999px; padding: 6px 11px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.choix-equipements button.actif { background: var(--violet-doux); border-color: var(--violet); color: var(--violet-texte); }

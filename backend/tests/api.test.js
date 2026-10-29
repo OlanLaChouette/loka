@@ -356,3 +356,53 @@ test('fichier clients : reconnaissance par numéro, bilan, signalement réservé
   assert.equal((await appel('GET', '/api/clients/' + connu.id, { jeton: paul.jeton, espace: paul.espaces[0].id })).statut, 404);
   assert.equal((await appel('GET', '/api/clients/recherche?telephone=70123456', { jeton: paul.jeton, espace: paul.espaces[0].id })).corps, null);
 });
+
+test('place de marché : recherche publique tous bailleurs, disponibilité réelle, demande puis acceptation', async () => {
+  const pub = (chemin, corps) => appel(corps ? 'POST' : 'GET', '/api/public' + chemin, corps ? { corps } : {});
+  // Deux bailleurs publient : la recherche les mélange, sans compte.
+  const lieux = (await pub('/lieux')).corps;
+  assert.deepEqual(lieux.map(l => l.ville).sort(), ['Bobo-Dioulasso', 'Ouagadougou']);
+  const tous = (await pub('/recherche')).corps;
+  assert.ok(tous.some(v => v.lieu.ville === 'Bobo-Dioulasso') && tous.some(v => v.lieu.ville === 'Ouagadougou'));
+  assert.ok(!tous.some(v => v.lieu.site === 'Ouaga 2000' && v.prix_nuit === 25000 && v.equipements.length === 0), 'les villas non publiées restent cachées');
+  // Aucune donnée interne exposée.
+  assert.ok(tous.every(v => !('compteur_electrique' in v) && !('reference' in v) && !('bailleur_id' in v)));
+  // Critères du client : piscine et 6 personnes → C1 seulement ; autour de Ouaga 2000 → pas de Bobo.
+  const piscine = (await pub('/recherche?equipements=piscine&personnes=6')).corps;
+  assert.equal(piscine.length, 1);
+  assert.equal(piscine[0].chambres, 4);
+  const proches = (await pub('/recherche?lat=12.32&lng=-1.51&rayon=10')).corps;
+  assert.ok(proches.length && proches.every(v => v.lieu.ville === 'Ouagadougou' && v.distance_km <= 10));
+  assert.ok(proches[0].distance_km <= proches.at(-1).distance_km);
+  // Disponibilité : une villa déjà réservée sur ces dates disparaît des résultats.
+  const jour = (j) => new Date(Date.now() + j * 864e5).toISOString().slice(0, 10);
+  const c1 = piscine[0];
+  assert.ok((await pub(`/recherche?equipements=piscine&arrivee=${jour(40)}&depart=${jour(43)}`)).corps.some(v => v.id === c1.id));
+  // Le client demande C1 ; la demande arrive chez le bailleur, en attente.
+  const demande = await pub('/demandes', { bien_id: c1.id, arrivee: jour(40), depart: jour(43), nom: 'Client Place', telephone: '+226 76 54 32 10', message: 'Arrivée vers 18 h' });
+  assert.equal(demande.statut, 201);
+  assert.equal(demande.corps.total, 3 * 45000);
+  let suivi = (await pub('/demandes/' + demande.corps.code)).corps;
+  assert.equal(suivi.statut, 'en_attente');
+  assert.equal(suivi.contact, null);
+  const issa = await connecter('70111111');
+  const paul = await connecter('70555555');
+  const o = { jeton: issa.jeton, espace: issa.espaces[0].id };
+  const attente = (await appel('GET', '/api/demandes?statut=en_attente', o)).corps;
+  const d = attente.find(x => x.code === demande.corps.code);
+  assert.ok(d);
+  assert.equal((await appel('GET', '/api/demandes', { jeton: paul.jeton, espace: paul.espaces[0].id })).corps.length, 0);
+  // Acceptée : réservation confirmée, d'origine « place de marché » ; le client voit le contact.
+  const acc = await appel('POST', `/api/demandes/${d.id}/accepter`, o);
+  assert.equal(acc.statut, 200);
+  assert.equal(acc.corps.reservation.source, 'place_de_marche');
+  assert.equal((await appel('POST', `/api/demandes/${d.id}/accepter`, o)).statut, 409);
+  suivi = (await pub('/demandes/' + demande.corps.code)).corps;
+  assert.equal(suivi.statut, 'acceptee');
+  assert.ok(suivi.contact.telephone);
+  // Les dates sont maintenant prises : C1 n'apparaît plus, et une nouvelle demande est refusée d'emblée.
+  assert.ok(!(await pub(`/recherche?equipements=piscine&arrivee=${jour(41)}&depart=${jour(42)}`)).corps.some(v => v.id === c1.id));
+  assert.equal((await pub('/demandes', { bien_id: c1.id, arrivee: jour(41), depart: jour(42), nom: 'Autre', telephone: '70000001' })).statut, 409);
+  // Le client devient un client connu du bailleur.
+  assert.equal((await appel('GET', '/api/clients/recherche?telephone=76543210', o)).corps.nom, 'Client Place');
+});

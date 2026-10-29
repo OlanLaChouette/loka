@@ -1,7 +1,7 @@
 // Le quotidien : clients, réservations, baux, encaissements, dépenses.
 const router = require('express').Router();
 const { Op } = require('sequelize');
-const { sequelize, Bien, Site, Client, Reservation, Bail, Paiement, Depense, Utilisateur, Fichier } = require('../models');
+const { sequelize, Bien, Site, Client, Reservation, Bail, Paiement, Depense, Utilisateur, Fichier, Demande } = require('../models');
 const { authentifier, espace, autoriser, ecriture, portee, verifierSite } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
@@ -104,6 +104,40 @@ router.patch('/clients/:id', ecriture, route(async (req, res) => {
   await c.update(Object.fromEntries(champs.filter(k => req.body[k] !== undefined).map(k => [k, req.body[k]])));
   if (avant !== c.statut) await noter(req, c.statut === 'a_eviter' ? 'client_signale' : 'client_retabli', 'client', c.id, { nom: c.nom, motif: c.motif_alerte });
   res.json(c);
+}));
+
+// ---------- Demandes venues de la place de marché ----------
+router.get('/demandes', route(async (req, res) => {
+  const filtre = req.query.statut ? { statut: req.query.statut } : {};
+  res.json(await Demande.findAll({ where: portee(req, filtre), include: [{ model: Bien, attributes: ['id', 'reference', 'standing', 'pieces'] }, { model: Site, attributes: ['id', 'nom'] }], order: [['cree_le', 'DESC']], limit: 100 }));
+}));
+// Accepter : la demande devient une réservation confirmée (si les dates sont toujours libres).
+router.post('/demandes/:id/accepter', ecriture, route(async (req, res) => {
+  const resultat = await transaction(async (t) => {
+    const d = await Demande.findOne({ where: portee(req, { id: req.params.id }), transaction: t, lock: t.LOCK.UPDATE });
+    if (!d) throw new Erreur(404, 'Demande introuvable');
+    if (d.statut !== 'en_attente') throw new Erreur(409, 'Cette demande a déjà été traitée');
+    const conflit = await Reservation.findOne({ where: { bien_id: d.bien_id, statut: { [Op.ne]: 'annulee' }, arrivee: { [Op.lt]: d.depart }, depart: { [Op.gt]: d.arrivee } }, transaction: t, lock: t.LOCK.UPDATE });
+    if (conflit) throw new Erreur(409, `Ces dates ne sont plus libres (réservé du ${conflit.arrivee} au ${conflit.depart}) : refusez la demande ou proposez une autre villa au client.`);
+    const idClient = await clientPour(req, { client: { nom: d.nom, telephone: d.telephone } }, t);
+    const resa = await Reservation.create({
+      bailleur_id: req.espace.id, site_id: d.site_id, bien_id: d.bien_id, client_id: idClient, arrivee: d.arrivee, depart: d.depart, nuits: d.nuits,
+      prix_nuit: d.prix_nuit, prix_normal: d.total, reduction: 0, total: d.total, statut: 'confirmee', cree_par: req.utilisateur.id,
+      source: 'place_de_marche', demande_id: d.id,
+    }, { transaction: t });
+    await d.update({ statut: 'acceptee', reservation_id: resa.id, traitee_par: req.utilisateur.id, traitee_le: new Date() }, { transaction: t });
+    return { demande: d, reservation: resa };
+  });
+  await noter(req, 'demande_acceptee', 'reservation', resultat.reservation.id, { total: resultat.reservation.total });
+  res.json(resultat);
+}));
+router.post('/demandes/:id/refuser', ecriture, route(async (req, res) => {
+  const d = await Demande.findOne({ where: portee(req, { id: req.params.id }) });
+  if (!d) throw new Erreur(404, 'Demande introuvable');
+  if (d.statut !== 'en_attente') throw new Erreur(409, 'Cette demande a déjà été traitée');
+  await d.update({ statut: 'refusee', motif_refus: req.body?.motif ? String(req.body.motif).slice(0, 255) : null, traitee_par: req.utilisateur.id, traitee_le: new Date() });
+  await noter(req, 'demande_refusee', 'demande', d.id, { motif: d.motif_refus });
+  res.json(d);
 }));
 
 // ---------- Réservations (location à la nuit) ----------

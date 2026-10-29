@@ -69,6 +69,10 @@ const Site = sequelize.define('Site', {
   nom: { type: DataTypes.STRING(120), allowNull: false },
   ville: DataTypes.STRING(80),
   adresse: DataTypes.STRING(255),
+  // Pour la place de marché : quartier et position (recherche « autour de moi »).
+  quartier: DataTypes.STRING(80),
+  latitude: DataTypes.DECIMAL(9, 6),
+  longitude: DataTypes.DECIMAL(9, 6),
 }, { tableName: 'sites' });
 
 const Bien = sequelize.define('Bien', {
@@ -86,6 +90,10 @@ const Bien = sequelize.define('Bien', {
   description: DataTypes.TEXT,
   // Photos du bien (identifiants de Fichier, dans l'ordre d'affichage ; la première sert de couverture).
   photos: { type: DataTypes.ARRAY(DataTypes.UUID), allowNull: false, defaultValue: [] },
+  // Place de marché : le bailleur choisit les biens visibles des clients.
+  publie: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+  equipements: { type: DataTypes.ARRAY(DataTypes.STRING(30)), allowNull: false, defaultValue: [] },
+  capacite: DataTypes.INTEGER,
 }, { tableName: 'biens', indexes: [{ unique: true, fields: ['bailleur_id', 'site_id', 'reference'] }] });
 
 // ---------- Clients, séjours et baux ----------
@@ -117,7 +125,31 @@ const Reservation = sequelize.define('Reservation', {
   statut: { type: DataTypes.ENUM('attente_validation', 'confirmee', 'annulee'), defaultValue: 'confirmee' },
   cree_par: DataTypes.UUID,
   validee_par: DataTypes.UUID,
+  // Origine : saisie par l'équipe, ou demande venue de la place de marché (base d'une future commission).
+  source: { type: DataTypes.ENUM('interne', 'place_de_marche'), allowNull: false, defaultValue: 'interne' },
+  demande_id: DataTypes.UUID,
 }, { tableName: 'reservations' });
+
+// Demande de réservation envoyée par un client depuis la place de marché : le gérant l'accepte ou la refuse.
+const Demande = sequelize.define('Demande', {
+  id, ...lieAuBailleur,
+  site_id: { type: DataTypes.UUID, allowNull: false },
+  bien_id: { type: DataTypes.UUID, allowNull: false },
+  arrivee: { type: DataTypes.DATEONLY, allowNull: false },
+  depart: { type: DataTypes.DATEONLY, allowNull: false },
+  nuits: { type: DataTypes.INTEGER, allowNull: false },
+  prix_nuit: montant(),
+  total: montant(),
+  nom: { type: DataTypes.STRING(160), allowNull: false },
+  telephone: { type: DataTypes.STRING(30), allowNull: false },
+  message: DataTypes.STRING(500),
+  statut: { type: DataTypes.ENUM('en_attente', 'acceptee', 'refusee', 'annulee'), allowNull: false, defaultValue: 'en_attente' },
+  motif_refus: DataTypes.STRING(255),
+  code: { type: DataTypes.STRING(12), allowNull: false, unique: true },
+  reservation_id: DataTypes.UUID,
+  traitee_par: DataTypes.UUID,
+  traitee_le: DataTypes.DATE,
+}, { tableName: 'demandes' });
 
 const Bail = sequelize.define('Bail', {
   id, ...lieAuBailleur,
@@ -205,6 +237,9 @@ Bien.belongsTo(Site, { foreignKey: 'site_id' });
 Reservation.belongsTo(Bien, { foreignKey: 'bien_id' });
 Reservation.belongsTo(Client, { foreignKey: 'client_id' });
 Client.hasMany(Reservation, { foreignKey: 'client_id' });
+Bien.belongsTo(Bailleur, { foreignKey: 'bailleur_id' });
+Demande.belongsTo(Bien, { foreignKey: 'bien_id' });
+Demande.belongsTo(Site, { foreignKey: 'site_id' });
 Client.hasMany(Bail, { foreignKey: 'client_id' });
 Reservation.hasMany(Paiement, { foreignKey: 'reservation_id' });
 Bail.belongsTo(Bien, { foreignKey: 'bien_id' });
@@ -217,4 +252,4 @@ Depense.belongsTo(Site, { foreignKey: 'site_id' });
 Depense.belongsTo(Utilisateur, { foreignKey: 'saisie_par', as: 'auteur' });
 Journal.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
 
-module.exports = { sequelize, Utilisateur, Bailleur, Verification, Membre, Site, Bien, Client, Reservation, Bail, Paiement, ChargeFixe, Depense, Journal, Fichier };
+module.exports = { sequelize, Utilisateur, Bailleur, Verification, Demande, Membre, Site, Bien, Client, Reservation, Bail, Paiement, ChargeFixe, Depense, Journal, Fichier };

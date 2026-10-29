@@ -80,4 +80,15 @@ const courrielNouvelEspace = ({ bailleur, proprietaire, essaiFin }) => {
   };
 };
 
-module.exports = { envoyer, envoyes, courrielCode, courrielNouvelEspace };
+// Prévient le bailleur qu'un client demande une villa depuis la place de marché.
+const courrielDemande = ({ a, bailleur, demande, bien }) => {
+  const lignes = [
+    `<b>${echapper(demande.nom)}</b> (${echapper(demande.telephone)}) demande la villa <b>${echapper(bien.reference)}</b> · ${echapper(bien.Site?.nom || '')}.`,
+    `Du ${demande.arrivee} au ${demande.depart} · ${demande.nuits} nuit(s) · ${demande.total} FCFA.`,
+    demande.message ? `Message : « ${echapper(demande.message)} »` : '',
+    'Acceptez-la ou refusez-la dans Loka, page Réservations.',
+  ].filter(Boolean);
+  return { a, nom: bailleur, sujet: `Loka · Nouvelle demande : ${bien.reference}, ${demande.nuits} nuit(s)`, html: gabarit({ titre: 'Nouvelle demande de réservation', lignes }), texte: lignes.join('\n').replace(/<[^>]+>/g, '') };
+};
+
+module.exports = { envoyer, envoyes, courrielCode, courrielNouvelEspace, courrielDemande };

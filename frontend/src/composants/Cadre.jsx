@@ -170,7 +170,8 @@ export default function Cadre() {
   const lieu = useLocation();
   const sombre = utilisateur?.theme === 'sombre';
   const { data: tableau } = useQuery({ queryKey: ['tableau', 'alertes'], queryFn: () => api.get('/tableau-de-bord').then(r => r.data), enabled: role === 'proprietaire', refetchInterval: 60000 });
-  const aTraiter = tableau ? tableau.a_traiter.depenses + tableau.a_traiter.reductions : 0;
+  const aTraiter = tableau ? tableau.a_traiter.depenses + tableau.a_traiter.reductions + (tableau.a_traiter.demandes || 0) : 0;
+  const versTraiter = tableau?.a_traiter.demandes || tableau?.a_traiter.reductions ? '/reservations' : '/argent?onglet=depenses';
   const nav = useNavigate();
   useEffect(() => { setVolet(false); }, [lieu.pathname]);
   if (!pret) return <Chargement />;
@@ -191,7 +192,7 @@ export default function Cadre() {
           {sombre ? <Sun size={17} /> : <Moon size={17} />}
         </button>
         {role === 'proprietaire' && (
-          <button type="button" className="bouton-rond" aria-label={`${aTraiter} élément(s) à traiter`} onClick={() => nav('/argent?onglet=depenses')}>
+          <button type="button" className="bouton-rond" aria-label={`${aTraiter} élément(s) à traiter`} onClick={() => nav(versTraiter)}>
             <Bell size={17} />{aTraiter > 0 && <span className="pastille-alerte">{aTraiter}</span>}
           </button>
         )}

@@ -28,10 +28,10 @@ async function semer({ silencieux = false } = {}) {
   const kabore = await m.Bailleur.create({ nom: 'Résidences Kaboré', forme_juridique: 'SARL', rccm: 'BF-OUA-2019-B-1234', ifu: '00012345A', adresse: 'Ouaga 2000, avenue Pascal Zagré', ville: 'Ouagadougou', telephone: '+226 70 11 11 11', email: 'contact@kabore.test', statut: 'actif', limite_reduction_defaut: 10 });
   const wend = await m.Bailleur.create({ nom: 'SCI Wendpanga', ville: 'Bobo-Dioulasso', statut: 'essai', essai_fin: jour(20) });
 
-  const ouaga = await m.Site.create({ bailleur_id: kabore.id, nom: 'Ouaga 2000', ville: 'Ouagadougou' });
-  const kossodo = await m.Site.create({ bailleur_id: kabore.id, nom: 'Kossodo', ville: 'Ouagadougou' });
-  const zogona = await m.Site.create({ bailleur_id: kabore.id, nom: 'Immeuble Zogona', ville: 'Ouagadougou' });
-  const siteWend = await m.Site.create({ bailleur_id: wend.id, nom: 'Bobo centre', ville: 'Bobo-Dioulasso' });
+  const ouaga = await m.Site.create({ bailleur_id: kabore.id, nom: 'Ouaga 2000', ville: 'Ouagadougou', quartier: 'Ouaga 2000', latitude: 12.3217, longitude: -1.5101 });
+  const kossodo = await m.Site.create({ bailleur_id: kabore.id, nom: 'Kossodo', ville: 'Ouagadougou', quartier: 'Kossodo', latitude: 12.4142, longitude: -1.4748 });
+  const zogona = await m.Site.create({ bailleur_id: kabore.id, nom: 'Immeuble Zogona', ville: 'Ouagadougou', quartier: 'Zogona', latitude: 12.3801, longitude: -1.4982 });
+  const siteWend = await m.Site.create({ bailleur_id: wend.id, nom: 'Bobo centre', ville: 'Bobo-Dioulasso', quartier: 'Koko', latitude: 11.1771, longitude: -4.2979 });
 
   await m.Membre.bulkCreate([
     { bailleur_id: kabore.id, utilisateur_id: issa.id, role: 'proprietaire' },
@@ -43,13 +43,14 @@ async function semer({ silencieux = false } = {}) {
     { bailleur_id: wend.id, utilisateur_id: mariam.id, role: 'gerant' },
   ]);
 
-  const villa = (site, reference, prix, extra = {}) => m.Bien.create({ bailleur_id: kabore.id, site_id: site.id, reference, type: 'villa', mode: 'nuit', prix_nuit: prix, standing: 'Standing', pieces: 2, ...extra });
+  // Villas publiées sur la place de marché (sauf C2 et la K3, gardées en interne pour la démonstration).
+  const villa = (site, reference, prix, extra = {}) => m.Bien.create({ bailleur_id: kabore.id, site_id: site.id, reference, type: 'villa', mode: 'nuit', prix_nuit: prix, standing: 'Standing', pieces: 2, capacite: 4, publie: !['C2', 'K3'].includes(reference), equipements: ['clim', 'wifi', 'parking'], description: 'Villa meublée et climatisée, eau chaude, cuisine équipée.', ...extra });
   const b = {};
-  for (const [ref, prix, extra] of [['A1', 25000], ['A2', 25000], ['A3', 25000, { etat: 'travaux' }], ['B1', 25000], ['B2', 30000, { standing: 'Haut standing', pieces: 3 }], ['C1', 45000, { standing: 'Piscine', pieces: 4 }], ['C2', 25000], ['C3', 35000, { standing: 'Jardin', pieces: 3 }]]) b[ref] = await villa(ouaga, ref, prix, extra);
+  for (const [ref, prix, extra] of [['A1', 25000], ['A2', 25000], ['A3', 25000, { etat: 'travaux' }], ['B1', 25000], ['B2', 30000, { standing: 'Haut standing', pieces: 3, capacite: 6, equipements: ['clim', 'wifi', 'parking', 'cuisine', 'eau_chaude', 'tv'] }], ['C1', 45000, { standing: 'Piscine', pieces: 4, capacite: 8, equipements: ['piscine', 'clim', 'wifi', 'parking', 'cuisine', 'groupe', 'gardien', 'jardin'] }], ['C2', 25000], ['C3', 35000, { standing: 'Jardin', pieces: 3 }]]) b[ref] = await villa(ouaga, ref, prix, extra);
   for (const ref of ['K1', 'K2', 'K3']) b[ref] = await villa(kossodo, ref, 20000);
   const apparts = [];
   for (let i = 1; i <= 4; i++) apparts.push(await m.Bien.create({ bailleur_id: kabore.id, site_id: zogona.id, reference: 'Z' + i, type: 'appartement', mode: 'mois', prix_mois: i === 4 ? 150000 : 120000, pieces: 3 }));
-  await m.Bien.create({ bailleur_id: wend.id, site_id: siteWend.id, reference: 'W1', type: 'villa', mode: 'nuit', prix_nuit: 22000 });
+  await m.Bien.create({ bailleur_id: wend.id, site_id: siteWend.id, reference: 'W1', type: 'villa', mode: 'nuit', prix_nuit: 22000, pieces: 2, capacite: 4, publie: true, equipements: ['clim', 'parking'] });
 
   const clients = await m.Client.bulkCreate(['Issa Kaboré', 'Aminata Traoré', 'Seydou Ouédraogo', 'Fatou Sanou', 'Rasmané Compaoré', 'Famille Yaméogo', 'Koffi Bambara', 'Mission ONG Santé', 'Théo Nikiéma', 'Pauline Ilboudo']
     .map((nom, i) => ({ bailleur_id: kabore.id, nom, telephone: '+226 7' + String(1000000 + i * 137).slice(0, 7) })));

@@ -11,6 +11,9 @@ import { Chargement } from './composants/Ui';
 import { Capacitor } from '@capacitor/core';
 import Connexion from './pages/Connexion';
 import Vitrine from './pages/Vitrine';
+import Villas from './pages/Villas';
+import VillaDetail from './pages/VillaDetail';
+import SuiviDemande from './pages/SuiviDemande';
 import Inscription from './pages/Inscription';
 import MotDePasseOublie from './pages/MotDePasseOublie';
 import Apercu from './pages/Apercu';
@@ -51,6 +54,9 @@ function Application() {
     <Routes>
       <Route path="/connexion" element={pret && utilisateur ? <Navigate to="/" replace /> : <Connexion />} />
       <Route path="/bienvenue" element={<Vitrine />} />
+      <Route path="/villas" element={<Villas />} />
+      <Route path="/villas/:id" element={<VillaDetail />} />
+      <Route path="/demande/:code" element={<SuiviDemande />} />
       <Route path="/inscription" element={pret && utilisateur ? <Navigate to="/" replace /> : <Inscription />} />
       <Route path="/mot-de-passe-oublie" element={pret && utilisateur ? <Navigate to="/" replace /> : <MotDePasseOublie />} />
       <Route element={<Cadre />}>

@@ -79,13 +79,14 @@ router.get('/sites', route(async (req, res) => {
   if (req.sitesAutorises) filtre.id = req.sitesAutorises;
   res.json(await Site.findAll({ where: filtre, order: [['nom', 'ASC']] }));
 }));
+const CHAMPS_SITE = ['nom', 'ville', 'adresse', 'quartier', 'latitude', 'longitude'];
 router.post('/sites', proprietaire, route(async (req, res) => {
-  res.status(201).json(await Site.create({ ...garder(req.body, ['nom', 'ville', 'adresse']), bailleur_id: req.espace.id }));
+  res.status(201).json(await Site.create({ ...garder(req.body, CHAMPS_SITE), bailleur_id: req.espace.id }));
 }));
 router.patch('/sites/:id', proprietaire, route(async (req, res) => {
   const s = await Site.findOne({ where: { id: req.params.id, bailleur_id: req.espace.id } });
   if (!s) throw new Erreur(404, 'Site introuvable');
-  res.json(await s.update(garder(req.body, ['nom', 'ville', 'adresse'])));
+  res.json(await s.update(garder(req.body, CHAMPS_SITE)));
 }));
 
 router.delete('/sites/:id', proprietaire, route(async (req, res) => {
@@ -97,7 +98,7 @@ router.delete('/sites/:id', proprietaire, route(async (req, res) => {
 }));
 
 // ---------- Biens ----------
-const CHAMPS_BIEN = ['site_id', 'reference', 'type', 'mode', 'standing', 'pieces', 'prix_nuit', 'prix_mois', 'etat', 'compteur_electrique', 'description'];
+const CHAMPS_BIEN = ['site_id', 'reference', 'type', 'mode', 'standing', 'pieces', 'prix_nuit', 'prix_mois', 'etat', 'compteur_electrique', 'description', 'publie', 'equipements', 'capacite'];
 router.get('/biens', route(async (req, res) => {
   const extra = req.query.site_id ? { site_id: req.query.site_id } : {};
   res.json(await Bien.findAll({ where: portee(req, extra), include: [Site], order: [['reference', 'ASC']] }));

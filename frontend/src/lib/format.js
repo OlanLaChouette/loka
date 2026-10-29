@@ -19,3 +19,5 @@ export const initiales = (nom = '') => nom.split(/\s+/).filter(Boolean).slice(0,
 export const MOYENS = { especes: 'Espèces', mobile_money: 'Mobile Money', virement: 'Virement', autre: 'Autre' };
 export const ROLES = { proprietaire: 'Propriétaire', gerant: 'Gérant', comptable: 'Comptable' };
 export const TYPES_BIEN = { villa: 'Villa', appartement: 'Appartement', studio: 'Studio', chambre: 'Chambre', magasin: 'Magasin', bureau: 'Bureau', autre: 'Autre' };
+// Équipements proposés sur la place de marché (clés identiques côté serveur).
+export const EQUIPEMENTS = { piscine: 'Piscine', clim: 'Climatisation', wifi: 'Wi-Fi', parking: 'Parking', cuisine: 'Cuisine équipée', groupe: 'Groupe électrogène', gardien: 'Gardiennage', eau_chaude: 'Eau chaude', tv: 'Télévision', jardin: 'Jardin' };
