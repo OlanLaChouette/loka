@@ -16,6 +16,7 @@ const ONGLETS = [
   { a: '/reservations', label: 'Réservations' },
   { a: '/baux', label: 'Baux' },
   { a: '/argent', label: 'Argent' },
+  { a: '/clients', label: 'Clients' },
   { a: '/membres', label: 'Gérants', roles: ['proprietaire'] },
   { a: '/parametres', label: 'Entreprise', roles: ['proprietaire'] },
 ];

@@ -22,6 +22,7 @@ import Argent from './pages/Argent';
 import Membres from './pages/Membres';
 import Parametres from './pages/Parametres';
 import Plateforme from './pages/Plateforme';
+import Clients from './pages/Clients';
 
 // Les dernières données consultées restent lisibles sans réseau (7 jours).
 const SEPT_JOURS = 7 * 86400000;
@@ -59,6 +60,7 @@ function Application() {
         <Route path="/reservations" element={<Garde><Reservations /></Garde>} />
         <Route path="/baux" element={<Garde><Baux /></Garde>} />
         <Route path="/argent" element={<Garde><Argent /></Garde>} />
+        <Route path="/clients" element={<Garde><Clients /></Garde>} />
         <Route path="/membres" element={<Garde roles={['proprietaire']}><Membres /></Garde>} />
         <Route path="/parametres" element={<Garde roles={['proprietaire']}><Parametres /></Garde>} />
         <Route path="/plateforme" element={pret && utilisateur?.est_admin_plateforme ? <Plateforme /> : <Navigate to="/" replace />} />

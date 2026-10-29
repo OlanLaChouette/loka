@@ -19,14 +19,91 @@ async function bienAccessible(req, bienId, transaction) {
 }
 
 // ---------- Clients ----------
+// Un client est reconnu à son numéro (8 derniers chiffres) : pas de doublon quand on le ressaisit.
+const chiffres = (t) => String(t || '').replace(/\D/g, '').slice(-8);
+const parTelephone = (req, telephone, transaction) => {
+  const c = chiffres(telephone);
+  if (c.length < 8) return null;
+  const huitDerniers = sequelize.fn('right', sequelize.fn('regexp_replace', sequelize.col('telephone'), '\\D', '', 'g'), 8);
+  return Client.findOne({ where: { bailleur_id: req.espace.id, [Op.and]: sequelize.where(huitDerniers, c) }, transaction });
+};
+async function clientPour(req, { client_id, client }, transaction) {
+  if (client_id) {
+    const c = await Client.findOne({ where: { id: client_id, bailleur_id: req.espace.id }, transaction });
+    if (!c) throw new Erreur(404, 'Client introuvable');
+    return c.id;
+  }
+  if (!client?.nom) throw new Erreur(400, 'Client requis');
+  const connu = await parTelephone(req, client.telephone, transaction);
+  if (connu) {
+    if (client.piece_numero && !connu.piece_numero) await connu.update({ piece_type: client.piece_type, piece_numero: client.piece_numero }, { transaction });
+    return connu.id;
+  }
+  const { nom, telephone, piece_type, piece_numero, notes } = client;
+  return (await Client.create({ nom, telephone, piece_type, piece_numero, notes, bailleur_id: req.espace.id }, { transaction })).id;
+}
+
+// Chiffres d'un client : séjours, baux, payé, reste dû, fidélité (le gérant ne voit que ses sites).
+const SEJOURS_FIDELE = 3;
+function bilan(c) {
+  const auj = aujourdhui();
+  const somme = (paiements) => (paiements || []).reduce((x, p) => x + p.montant, 0);
+  const sejours = (c.Reservations || []).filter(r => r.statut !== 'annulee');
+  const passes = sejours.filter(r => r.statut === 'confirmee' && r.arrivee <= auj);
+  const baux = c.Bails || [];
+  return {
+    sejours: passes.length,
+    a_venir: sejours.filter(r => r.arrivee > auj).length,
+    baux: baux.filter(b => b.statut === 'actif').length,
+    nuits: passes.reduce((s, r) => s + r.nuits, 0),
+    paye: sejours.reduce((s, r) => s + somme(r.Paiements), 0) + baux.reduce((s, b) => s + somme(b.Paiements), 0),
+    reste: passes.reduce((s, r) => s + Math.max(0, r.total - somme(r.Paiements)), 0),
+    dernier: passes.map(r => r.arrivee).sort().at(-1) || null,
+    fidele: passes.length >= SEJOURS_FIDELE || baux.some(b => b.statut === 'actif'),
+  };
+}
+const historique = (req, avecBien = false) => [
+  { model: Reservation, where: portee(req, {}), required: false, include: avecBien ? [Paiement, Bien] : [Paiement] },
+  { model: Bail, where: portee(req, {}), required: false, include: avecBien ? [Paiement, Bien] : [Paiement] },
+];
+const resume = (c) => { const { Reservations, Bails, ...reste } = c.toJSON(); return { ...reste, bilan: bilan(c) }; };
+
 router.get('/clients', route(async (req, res) => {
   const where = { bailleur_id: req.espace.id };
   if (req.query.q) where[Op.or] = [{ nom: { [Op.iLike]: `%${req.query.q}%` } }, { telephone: { [Op.iLike]: `%${req.query.q}%` } }];
-  res.json(await Client.findAll({ where, order: [['nom', 'ASC']], limit: 50 }));
+  const liste = await Client.findAll({ where, include: historique(req), order: [['nom', 'ASC']], limit: 300 });
+  res.json(liste.map(resume));
+}));
+// Reconnaissance du client pendant la saisie d'une réservation ou d'un bail.
+router.get('/clients/recherche', route(async (req, res) => {
+  const c = await parTelephone(req, req.query.telephone);
+  if (!c) return res.json(null);
+  res.json(resume(await Client.findByPk(c.id, { include: historique(req) })));
+}));
+router.get('/clients/:id', route(async (req, res) => {
+  const c = await Client.findOne({ where: { id: req.params.id, bailleur_id: req.espace.id }, include: historique(req, true) });
+  if (!c) throw new Erreur(404, 'Client introuvable');
+  const j = c.toJSON();
+  j.Reservations.sort((a, b) => (a.arrivee < b.arrivee ? 1 : -1));
+  res.json({ ...j, bilan: bilan(c) });
 }));
 router.post('/clients', ecriture, route(async (req, res) => {
   const { nom, telephone, piece_type, piece_numero, notes } = req.body || {};
+  if (!nom) throw new Erreur(400, 'Nom requis');
+  if (await parTelephone(req, telephone)) throw new Erreur(409, 'Un client a déjà ce numéro');
   res.status(201).json(await Client.create({ nom, telephone, piece_type, piece_numero, notes, bailleur_id: req.espace.id }));
+}));
+router.patch('/clients/:id', ecriture, route(async (req, res) => {
+  const c = await Client.findOne({ where: { id: req.params.id, bailleur_id: req.espace.id } });
+  if (!c) throw new Erreur(404, 'Client introuvable');
+  const champs = ['nom', 'telephone', 'piece_type', 'piece_numero', 'notes'];
+  // Seul le propriétaire signale un client « à éviter ».
+  if (req.role === 'proprietaire') champs.push('statut', 'motif_alerte');
+  else if (req.body.statut !== undefined) throw new Erreur(403, 'Seul le propriétaire peut signaler un client');
+  const avant = c.statut;
+  await c.update(Object.fromEntries(champs.filter(k => req.body[k] !== undefined).map(k => [k, req.body[k]])));
+  if (avant !== c.statut) await noter(req, c.statut === 'a_eviter' ? 'client_signale' : 'client_retabli', 'client', c.id, { nom: c.nom, motif: c.motif_alerte });
+  res.json(c);
 }));
 
 // ---------- Réservations (location à la nuit) ----------
@@ -54,11 +131,7 @@ router.post('/reservations', ecriture, route(async (req, res) => {
     if (prix.reduction > 0 && !reduction_motif) throw new Erreur(400, 'Indiquez la raison de la réduction');
     const limite = req.membre.limite_reduction ?? req.espace.limite_reduction_defaut;
     const aValider = besoinValidation({ role: req.role, pourcent: prix.pourcent, limite });
-    let idClient = client_id;
-    if (!idClient) {
-      if (!client?.nom) throw new Erreur(400, 'Client requis');
-      idClient = (await Client.create({ ...client, bailleur_id: req.espace.id }, { transaction: t })).id;
-    } else if (!(await Client.findOne({ where: { id: idClient, bailleur_id: req.espace.id }, transaction: t }))) throw new Erreur(404, 'Client introuvable');
+    const idClient = await clientPour(req, { client_id, client }, t);
     return Reservation.create({
       bailleur_id: req.espace.id, site_id: bien.site_id, bien_id: bien.id, client_id: idClient, arrivee, depart, nuits,
       prix_nuit: bien.prix_nuit, prix_normal: prix.prixNormal, reduction: prix.reduction, reduction_motif: reduction_motif || null,
@@ -95,8 +168,7 @@ router.post('/baux', autoriser('proprietaire', 'gerant'), route(async (req, res)
     const bien = await bienAccessible(req, bien_id, t);
     if (bien.mode !== 'mois') throw new Erreur(400, 'Ce bien se loue à la nuit : créez une réservation');
     if (await Bail.findOne({ where: { bien_id: bien.id, statut: 'actif' }, transaction: t })) throw new Erreur(409, 'Ce bien a déjà un bail en cours');
-    let idClient = client_id;
-    if (!idClient) idClient = (await Client.create({ ...client, bailleur_id: req.espace.id }, { transaction: t })).id;
+    const idClient = await clientPour(req, { client_id, client }, t);
     return Bail.create({ bailleur_id: req.espace.id, site_id: bien.site_id, bien_id: bien.id, client_id: idClient, debut, fin: fin || null, loyer: loyer ?? bien.prix_mois, jour_echeance, caution }, { transaction: t });
   });
   await noter(req, 'bail_cree', 'bail', bail.id, { loyer: bail.loyer });

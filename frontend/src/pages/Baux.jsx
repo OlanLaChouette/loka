@@ -4,6 +4,7 @@ import { api, messageErreur } from '../lib/api';
 import { useSession } from '../lib/session';
 import { aujourdhui, dateCourte, fcfa, nomMois } from '../lib/format';
 import { Chargement, Champ, Erreur, Modale, Puce, Vide } from '../composants/Ui';
+import { BandeauClient, useClientConnu } from '../composants/Clients';
 import { Encaisser, useBiens } from '../composants/Formulaires';
 import { messages, ouvrirPdf, ouvrirWhatsApp } from '../lib/partage';
 
@@ -16,6 +17,7 @@ function NouveauBail({ onFermer }) {
   const [f, setF] = useState({ bien_id: '', nom: '', telephone: '', debut: aujourdhui(), loyer: '', jour_echeance: 5, caution: '' });
   const maj = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const bien = libres.find(b => b.id === f.bien_id);
+  const connu = useClientConnu(f.telephone);
   const envoi = useMutation({
     mutationFn: () => api.post('/baux', { bien_id: f.bien_id, client: { nom: f.nom, telephone: f.telephone }, debut: f.debut, loyer: Number(f.loyer || bien?.prix_mois), jour_echeance: Number(f.jour_echeance), caution: Number(f.caution || 0) }),
     onSuccess: () => { client.invalidateQueries(); onFermer(); },
@@ -32,6 +34,7 @@ function NouveauBail({ onFermer }) {
         </Champ>
         <Champ label="Locataire" plein><input value={f.nom} onChange={maj('nom')} /></Champ>
         <Champ label="Téléphone"><input value={f.telephone} onChange={maj('telephone')} inputMode="tel" /></Champ>
+        {connu && <div className="plein"><BandeauClient client={connu} /></div>}
         <Champ label="Début"><input type="date" value={f.debut} onChange={maj('debut')} /></Champ>
         <Champ label="Loyer mensuel (FCFA)"><input value={f.loyer} onChange={maj('loyer')} inputMode="numeric" /></Champ>
         <Champ label="Jour d’échéance"><input value={f.jour_echeance} onChange={maj('jour_echeance')} inputMode="numeric" /></Champ>

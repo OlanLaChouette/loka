@@ -96,6 +96,9 @@ const Client = sequelize.define('Client', {
   piece_type: DataTypes.STRING(40),
   piece_numero: DataTypes.STRING(60),
   notes: DataTypes.TEXT,
+  // Signalement par le propriétaire (impayé, dégâts…) : le gérant est prévenu avant de réserver.
+  statut: { type: DataTypes.ENUM('normal', 'a_eviter'), allowNull: false, defaultValue: 'normal' },
+  motif_alerte: DataTypes.STRING(255),
 }, { tableName: 'clients' });
 
 const Reservation = sequelize.define('Reservation', {
@@ -201,6 +204,8 @@ Site.hasMany(Bien, { foreignKey: 'site_id' });
 Bien.belongsTo(Site, { foreignKey: 'site_id' });
 Reservation.belongsTo(Bien, { foreignKey: 'bien_id' });
 Reservation.belongsTo(Client, { foreignKey: 'client_id' });
+Client.hasMany(Reservation, { foreignKey: 'client_id' });
+Client.hasMany(Bail, { foreignKey: 'client_id' });
 Reservation.hasMany(Paiement, { foreignKey: 'reservation_id' });
 Bail.belongsTo(Bien, { foreignKey: 'bien_id' });
 Bail.belongsTo(Client, { foreignKey: 'client_id' });

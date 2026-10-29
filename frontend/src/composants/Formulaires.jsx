@@ -7,6 +7,7 @@ import { useSession } from '../lib/session';
 import { messages, ouvrirPdf, partagerRecu } from '../lib/partage';
 import { envoyer } from '../lib/horsLigne';
 import { compresserImage } from '../lib/image';
+import { BandeauClient, useClientConnu } from './Clients';
 
 export const useBiens = () => useQuery({ queryKey: ['biens'], queryFn: () => api.get('/biens').then(r => r.data) });
 export const useSites = () => useQuery({ queryKey: ['sites'], queryFn: () => api.get('/sites').then(r => r.data) });
@@ -28,6 +29,10 @@ export function NouvelleReservation({ onFermer, bienInitial }) {
   const v = Number(f.valeur) || 0;
   const reduction = f.type === 'pourcent' ? Math.round(prixNormal * v / 100) : v;
   const [resultat, setResultat] = useState(null);
+  // Numéro reconnu : on reprend le nom du client (sans écraser ce que le gérant a déjà tapé).
+  const connu = useClientConnu(f.telephone);
+  const [repris, setRepris] = useState(null);
+  if (connu && repris !== connu.id && !f.nom) { setRepris(connu.id); setF({ ...f, nom: connu.nom, piece_numero: f.piece_numero || connu.piece_numero || '' }); }
   const envoi = useEnvoi(() => api.post('/reservations', {
     bien_id: f.bien_id, client: { nom: f.nom, telephone: f.telephone, piece_type: f.piece_numero ? 'CNIB' : null, piece_numero: f.piece_numero },
     arrivee: f.arrivee, depart: f.depart, reduction: v ? (f.type === 'pourcent' ? { pourcent: v } : { montant: v }) : null, reduction_motif: f.motif || null,
@@ -59,13 +64,14 @@ export function NouvelleReservation({ onFermer, bienInitial }) {
         </Champ>
         <Champ label="Arrivée"><input type="date" value={f.arrivee} onChange={maj('arrivee')} /></Champ>
         <Champ label="Départ"><input type="date" value={f.depart} min={ajouterJours(f.arrivee, 1)} onChange={maj('depart')} /></Champ>
-        <Champ label="Nom du client" plein><input value={f.nom} onChange={maj('nom')} autoComplete="off" /></Champ>
-        <Champ label="Téléphone"><input value={f.telephone} onChange={maj('telephone')} inputMode="tel" /></Champ>
+        <Champ label="Téléphone du client"><input value={f.telephone} onChange={maj('telephone')} inputMode="tel" placeholder="Retrouve un client connu" /></Champ>
+        <Champ label="Nom du client"><input value={f.nom} onChange={maj('nom')} autoComplete="off" /></Champ>
+        {connu && <div className="plein"><BandeauClient client={connu} /></div>}
         <Champ label="N° de pièce d’identité"><input value={f.piece_numero} onChange={maj('piece_numero')} /></Champ>
         <Champ label="Réduction">
           <div style={{ display: 'flex', gap: 6 }}>
             <input value={f.valeur} onChange={maj('valeur')} inputMode="numeric" placeholder="0" style={{ flex: 1, minWidth: 0 }} />
-            <select value={f.type} onChange={maj('type')} aria-label="Type de réduction"><option value="pourcent">%</option><option value="montant">FCFA</option></select>
+            <select value={f.type} onChange={maj('type')} aria-label="Type de réduction" style={{ width: 96, flex: '0 0 96px' }}><option value="pourcent">%</option><option value="montant">FCFA</option></select>
           </div>
         </Champ>
         <Champ label="Raison de la réduction"><input value={f.motif} onChange={maj('motif')} placeholder={reduction ? 'Obligatoire' : 'Client fidèle, long séjour…'} /></Champ>

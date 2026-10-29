@@ -317,3 +317,42 @@ test('photos d’un bien : gérant du site, 6 au plus, protégées par espace et
   assert.equal(s.corps.photos.length, 5);
   assert.equal((await lire(issa, photos[3])).status, 404);
 });
+
+test('fichier clients : reconnaissance par numéro, bilan, signalement réservé au propriétaire', async () => {
+  const issa = await connecter('70111111');
+  const ali = await connecter('70222222');
+  const paul = await connecter('70555555');
+  const esp = issa.espaces[0].id;
+  const o = { jeton: ali.jeton, espace: esp };
+  // Liste avec bilan : la démo contient des clients ayant séjourné.
+  const liste = (await appel('GET', '/api/clients', { jeton: issa.jeton, espace: esp })).corps;
+  assert.ok(liste.length >= 5);
+  assert.ok(liste.every(c => c.bilan && typeof c.bilan.paye === 'number'));
+  // Un client ressaisi avec le même numéro (écrit autrement) n'est pas dupliqué.
+  const biens = (await appel('GET', '/api/biens', o)).corps;
+  const b1 = biens.find(b => b.reference === 'B1');
+  const loin = (j) => new Date(Date.now() + j * 864e5).toISOString().slice(0, 10);
+  const r1 = await appel('POST', '/api/reservations', { ...o, corps: { bien_id: b1.id, client: { nom: 'Yacouba Test', telephone: '70 12 34 56' }, arrivee: loin(60), depart: loin(62) } });
+  assert.equal(r1.statut, 201);
+  const r2 = await appel('POST', '/api/reservations', { ...o, corps: { bien_id: b1.id, client: { nom: 'Yacouba T.', telephone: '+226 70123456' }, arrivee: loin(70), depart: loin(71) } });
+  assert.equal(r2.statut, 201);
+  assert.equal(r1.corps.client_id, r2.corps.client_id);
+  const connu = (await appel('GET', '/api/clients/recherche?telephone=70123456', o)).corps;
+  assert.equal(connu.nom, 'Yacouba Test');
+  assert.equal(connu.bilan.a_venir, 2);
+  assert.equal((await appel('GET', '/api/clients/recherche?telephone=79999999', o)).corps, null);
+  // Fiche complète.
+  const fiche = (await appel('GET', '/api/clients/' + connu.id, o)).corps;
+  assert.equal(fiche.Reservations.length, 2);
+  assert.ok(fiche.Reservations[0].Bien.reference);
+  // Le gérant ne peut pas signaler ; le propriétaire si, et le gérant le voit.
+  assert.equal((await appel('PATCH', '/api/clients/' + connu.id, { ...o, corps: { statut: 'a_eviter' } })).statut, 403);
+  assert.equal((await appel('PATCH', '/api/clients/' + connu.id, { ...o, corps: { notes: 'Arrive tard le soir' } })).statut, 200);
+  assert.equal((await appel('PATCH', '/api/clients/' + connu.id, { jeton: issa.jeton, espace: esp, corps: { statut: 'a_eviter', motif_alerte: 'Chèque sans provision' } })).statut, 200);
+  const vu = (await appel('GET', '/api/clients/recherche?telephone=70123456', o)).corps;
+  assert.equal(vu.statut, 'a_eviter');
+  assert.equal(vu.notes, 'Arrive tard le soir');
+  // Un autre bailleur ne voit pas ce client.
+  assert.equal((await appel('GET', '/api/clients/' + connu.id, { jeton: paul.jeton, espace: paul.espaces[0].id })).statut, 404);
+  assert.equal((await appel('GET', '/api/clients/recherche?telephone=70123456', { jeton: paul.jeton, espace: paul.espaces[0].id })).corps, null);
+});
