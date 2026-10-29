@@ -57,3 +57,30 @@ test('premier loyer dû à la première échéance après le début du bail', ()
   assert.equal(loyerDu({ debut: '2026-10-03', jour_echeance: 5 }, '2026-10'), true);
   assert.equal(loyerDu({ debut: '2026-01-01', jour_echeance: 5 }, '2026-10'), true);
 });
+
+test('annulation par le client : gratuite, tardive, non-présentation ; par le bailleur', () => {
+  const regles = { heure_arrivee: '15:00', delai_annulation_heures: 24, penalite_nuits: 1 };
+  const base = { par: 'client', arrivee: '2026-11-10', prixNuit: 30000, total: 90000, regles };
+  assert.deepEqual(c.annulation({ ...base, maintenant: new Date('2026-11-09T14:00:00Z') }), { type: 'gratuite', penalite: 0 });
+  assert.deepEqual(c.annulation({ ...base, maintenant: new Date('2026-11-09T16:00:00Z') }), { type: 'tardive', penalite: 30000 });
+  assert.deepEqual(c.annulation({ ...base, maintenant: new Date('2026-11-10T14:59:00Z') }), { type: 'tardive', penalite: 30000 });
+  assert.deepEqual(c.annulation({ ...base, maintenant: new Date('2026-11-10T15:00:00Z') }), { type: 'absence', penalite: 30000 });
+  assert.deepEqual(c.annulation({ ...base, par: 'bailleur', maintenant: new Date('2026-11-10T16:00:00Z') }), { type: 'bailleur', penalite: 0 });
+  // La pénalité ne dépasse jamais le prix du séjour.
+  assert.equal(c.annulation({ ...base, total: 20000, maintenant: new Date('2026-11-10T10:00:00Z') }).penalite, 20000);
+});
+
+test('départ tardif, acompte, pénalité bailleur et note de classement', () => {
+  const regles = { heure_depart: '12:00', tolerance_depart_minutes: 30 };
+  assert.equal(c.departTardif({ depart: '2026-11-12', regles, maintenant: new Date('2026-11-12T12:29:00Z') }), false);
+  assert.equal(c.departTardif({ depart: '2026-11-12', regles, maintenant: new Date('2026-11-12T12:31:00Z') }), true);
+  assert.equal(c.acompteMinimum(90000, 50), 45000);
+  assert.equal(c.acompteMinimum(25001, 50), 12501);
+  assert.equal(c.penaliteBailleur(30000), 5000);
+  assert.equal(c.penaliteBailleur(200000), 20000);
+  const nouveau = c.noteClassement({});
+  const excellent = c.noteClassement({ somme: 50, nombre: 10 });
+  const annule = c.noteClassement({ somme: 50, nombre: 10, fiabilite: 0.8 });
+  assert.equal(nouveau, 0.8);
+  assert.ok(excellent > nouveau && annule < nouveau, 'les bons avis font monter, les annulations font descendre');
+});

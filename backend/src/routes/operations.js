@@ -1,12 +1,13 @@
 // Le quotidien : clients, réservations, baux, encaissements, dépenses.
 const router = require('express').Router();
 const { Op } = require('sequelize');
-const { sequelize, Bien, Site, Client, Reservation, Bail, Paiement, Depense, Utilisateur, Fichier, Demande } = require('../models');
+const crypto = require('crypto');
+const { sequelize, Bien, Site, Client, Reservation, Bail, Paiement, Depense, Utilisateur, Fichier, Demande, Avis } = require('../models');
 const { authentifier, espace, autoriser, ecriture, portee, verifierSite } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
 const { noter } = require('../utils/journal');
-const { nuitsEntre, prixSejour, besoinValidation, numeroRecu, versTexte } = require('../services/calculs');
+const { nuitsEntre, prixSejour, besoinValidation, numeroRecu, versTexte, instant, acompteMinimum, annulation, departTardif, penaliteBailleur } = require('../services/calculs');
 const { recevoirJustificatif, enregistrer } = require('../utils/fichiers');
 
 router.use(authentifier, espace);
@@ -107,9 +108,10 @@ router.patch('/clients/:id', ecriture, route(async (req, res) => {
 }));
 
 // ---------- Demandes venues de la place de marché ----------
+const DELAI_ACOMPTE_MS = 2 * 3600e3;                 // 2 h pour envoyer l'acompte après acceptation
 router.get('/demandes', route(async (req, res) => {
   const filtre = req.query.statut ? { statut: req.query.statut } : {};
-  res.json(await Demande.findAll({ where: portee(req, filtre), include: [{ model: Bien, attributes: ['id', 'reference', 'standing', 'pieces'] }, { model: Site, attributes: ['id', 'nom'] }], order: [['cree_le', 'DESC']], limit: 100 }));
+  res.json(await Demande.findAll({ where: portee(req, filtre), include: [{ model: Bien, attributes: ['id', 'reference', 'standing', 'pieces'] }, { model: Site, attributes: ['id', 'nom'] }, { model: Reservation, include: [Paiement] }], order: [['cree_le', 'DESC']], limit: 100 }));
 }));
 // Accepter : la demande devient une réservation confirmée (si les dates sont toujours libres).
 router.post('/demandes/:id/accepter', ecriture, route(async (req, res) => {
@@ -123,13 +125,30 @@ router.post('/demandes/:id/accepter', ecriture, route(async (req, res) => {
     const resa = await Reservation.create({
       bailleur_id: req.espace.id, site_id: d.site_id, bien_id: d.bien_id, client_id: idClient, arrivee: d.arrivee, depart: d.depart, nuits: d.nuits,
       prix_nuit: d.prix_nuit, prix_normal: d.total, reduction: 0, total: d.total, statut: 'confirmee', cree_par: req.utilisateur.id,
-      source: 'place_de_marche', demande_id: d.id,
+      source: 'place_de_marche', demande_id: d.id, expire_le: new Date(Date.now() + DELAI_ACOMPTE_MS),
     }, { transaction: t });
     await d.update({ statut: 'acceptee', reservation_id: resa.id, traitee_par: req.utilisateur.id, traitee_le: new Date() }, { transaction: t });
     return { demande: d, reservation: resa };
   });
   await noter(req, 'demande_acceptee', 'reservation', resultat.reservation.id, { total: resultat.reservation.total });
   res.json(resultat);
+}));
+// Acompte envoyé par le client (référence Mobile Money déclarée sur sa page de suivi) : le gérant vérifie et valide.
+router.post('/demandes/:id/acompte', ecriture, route(async (req, res) => {
+  const paiement = await transaction(async (t) => {
+    const d = await Demande.findOne({ where: portee(req, { id: req.params.id }), transaction: t, lock: t.LOCK.UPDATE });
+    if (!d || !d.reservation_id) throw new Erreur(404, 'Demande introuvable');
+    const r = await Reservation.findOne({ where: { id: d.reservation_id, bailleur_id: req.espace.id }, include: [Paiement], transaction: t });
+    if (!r || r.statut !== 'confirmee') throw new Erreur(409, 'Cette réservation n’est plus active');
+    const montant = Number(req.body?.montant || d.acompte_montant || acompteMinimum(r.total, req.espace.acompte_pourcent));
+    const reste = r.total - r.Paiements.reduce((s, p) => s + p.montant, 0);
+    if (!(montant > 0) || montant > reste) throw new Erreur(400, `Montant invalide (reste à payer : ${reste} FCFA)`);
+    const p = await creerPaiement(req, { site_id: r.site_id, reservation_id: r.id, montant, moyen: 'mobile_money', reference: req.body?.reference || d.acompte_reference }, t);
+    await r.update({ expire_le: null }, { transaction: t });
+    return p;
+  });
+  await noter(req, 'acompte_valide', 'paiement', paiement.id, { montant: paiement.montant });
+  res.status(201).json(paiement);
 }));
 router.post('/demandes/:id/refuser', ecriture, route(async (req, res) => {
   const d = await Demande.findOne({ where: portee(req, { id: req.params.id }) });
@@ -183,13 +202,98 @@ router.post('/reservations/:id/valider', autoriser('proprietaire'), route(async 
   await noter(req, 'reduction_validee', 'reservation', r.id, { reduction: r.reduction });
   res.json(r);
 }));
-router.post('/reservations/:id/annuler', ecriture, route(async (req, res) => {
-  const r = await Reservation.findOne({ where: portee(req, { id: req.params.id }), include: [Paiement] });
+// ---------- Déroulé du séjour : clés, départ, annulation, remboursement ----------
+const regles = (espace) => ({
+  heure_arrivee: espace.heure_arrivee, heure_depart: espace.heure_depart, acompte_pourcent: espace.acompte_pourcent,
+  delai_annulation_heures: espace.delai_annulation_heures, penalite_nuits: espace.penalite_nuits, tolerance_depart_minutes: espace.tolerance_depart_minutes,
+});
+const totalPaye = (r) => (r.Paiements || []).reduce((s, p) => s + p.montant, 0);
+const sejourDe = (req, id, transaction) => Reservation.findOne({ where: portee(req, { id }), include: [Paiement, Bien, Client], transaction, lock: transaction ? transaction.LOCK.UPDATE : undefined });
+
+// Remise des clés : à partir de l'heure d'arrivée, et seulement si l'acompte minimum est payé.
+router.post('/reservations/:id/cles', ecriture, route(async (req, res) => {
+  const r = await sejourDe(req, req.params.id);
   if (!r) throw new Erreur(404, 'Réservation introuvable');
-  if (r.Paiements.length && req.role !== 'proprietaire') throw new Erreur(403, 'Réservation déjà payée : seul le propriétaire peut l’annuler');
-  await r.update({ statut: 'annulee' });
-  await noter(req, 'reservation_annulee', 'reservation', r.id, { motif: req.body?.motif });
+  if (r.statut !== 'confirmee') throw new Erreur(409, r.statut === 'annulee' ? 'Réservation annulée' : 'Réduction en attente de validation');
+  if (r.cles_remises_le) throw new Erreur(409, 'Les clés ont déjà été remises');
+  const R = regles(req.espace);
+  const maintenant = new Date();
+  if (maintenant < instant(r.arrivee)) throw new Erreur(409, `L’arrivée est prévue le ${r.arrivee}`);
+  if (maintenant < instant(r.arrivee, R.heure_arrivee) && !(req.body?.forcer && req.role === 'proprietaire')) throw new Erreur(409, `Les entrées se font à partir de ${R.heure_arrivee}`);
+  const minimum = acompteMinimum(r.total, R.acompte_pourcent);
+  const paye = totalPaye(r);
+  if (paye < minimum) throw new Erreur(409, `Acompte insuffisant : ${minimum} FCFA à payer avant la remise des clés (déjà payé : ${paye} FCFA)`);
+  await r.update({ cles_remises_le: maintenant, expire_le: null });
+  await noter(req, 'cles_remises', 'reservation', r.id, { reference: r.Bien?.reference });
   res.json(r);
+}));
+
+// Départ : après l'heure (et la tolérance), une nuit supplémentaire s'ajoute au séjour. Simulation possible.
+router.post('/reservations/:id/depart', ecriture, route(async (req, res) => {
+  const r = await sejourDe(req, req.params.id);
+  if (!r) throw new Erreur(404, 'Réservation introuvable');
+  if (!r.cles_remises_le) throw new Erreur(409, 'Les clés n’ont pas été remises');
+  if (r.parti_le) throw new Erreur(409, 'Départ déjà enregistré');
+  const R = regles(req.espace);
+  const tardif = departTardif({ depart: r.depart, regles: R });
+  const supplement = tardif ? R.penalite_nuits * r.prix_nuit : 0;
+  const total = r.total + supplement;
+  const reste = total - totalPaye(r);
+  if (req.body?.simulation) return res.json({ tardif, supplement, total, reste, heure_depart: R.heure_depart });
+  await r.update({ parti_le: new Date(), supplement: r.supplement + supplement, total, code_avis: crypto.randomBytes(5).toString('hex').toUpperCase() });
+  await noter(req, 'depart_enregistre', 'reservation', r.id, { supplement });
+  res.json({ ...r.toJSON(), reste, tardif, supplement });
+}));
+
+// Annulation selon les règles ; « simulation » renvoie la pénalité et le remboursement sans rien changer.
+router.post('/reservations/:id/annuler', ecriture, route(async (req, res) => {
+  const par = req.body?.par === 'bailleur' ? 'bailleur' : 'client';
+  const r = await sejourDe(req, req.params.id);
+  if (!r) throw new Erreur(404, 'Réservation introuvable');
+  if (r.statut === 'annulee') throw new Erreur(409, 'Réservation déjà annulée');
+  if (r.cles_remises_le) throw new Erreur(409, 'Le séjour a commencé : enregistrez plutôt le départ');
+  const paye = totalPaye(r);
+  if (paye && req.role !== 'proprietaire' && !req.body?.simulation) throw new Erreur(403, 'Réservation déjà payée : seul le propriétaire peut l’annuler');
+  const calcul = annulation({ par, arrivee: r.arrivee, prixNuit: r.prix_nuit, total: r.total, regles: regles(req.espace) });
+  const resultat = {
+    type: calcul.type, penalite: calcul.penalite, paye,
+    a_rembourser: Math.max(0, paye - calcul.penalite),
+    reste_du: Math.max(0, calcul.penalite - paye),
+    penalite_bailleur: par === 'bailleur' && r.source === 'place_de_marche' ? penaliteBailleur(r.total) : 0,
+  };
+  if (req.body?.simulation) return res.json(resultat);
+  await r.update({
+    statut: 'annulee', annule_le: new Date(), annule_par: calcul.type === 'absence' ? 'absence' : par, motif_annulation: req.body?.motif || null,
+    penalite: calcul.penalite, a_rembourser: resultat.a_rembourser, penalite_bailleur: resultat.penalite_bailleur, expire_le: null,
+  });
+  if (r.demande_id) await Demande.update({ statut: 'annulee' }, { where: { id: r.demande_id, bailleur_id: req.espace.id } });
+  await noter(req, 'reservation_annulee', 'reservation', r.id, { par, type: calcul.type, penalite: calcul.penalite, a_rembourser: resultat.a_rembourser });
+  res.json({ ...r.toJSON(), ...resultat });
+}));
+
+// Le remboursement dû au client a été fait (Mobile Money, espèces…).
+router.post('/reservations/:id/remboursement', ecriture, route(async (req, res) => {
+  const r = await sejourDe(req, req.params.id);
+  if (!r) throw new Erreur(404, 'Réservation introuvable');
+  if (!r.a_rembourser || r.rembourse_le) throw new Erreur(409, 'Aucun remboursement en attente');
+  await r.update({ rembourse_le: new Date(), rembourse_moyen: req.body?.moyen || 'mobile_money', rembourse_ref: req.body?.reference || null });
+  await noter(req, 'remboursement_effectue', 'reservation', r.id, { montant: r.a_rembourser });
+  res.json(r);
+}));
+
+// Villas libres sur les mêmes dates, à proposer au client quand le bailleur doit annuler.
+router.get('/reservations/:id/alternatives', route(async (req, res) => {
+  const r = await sejourDe(req, req.params.id);
+  if (!r) throw new Erreur(404, 'Réservation introuvable');
+  const biens = await Bien.findAll({ where: { bailleur_id: req.espace.id, mode: 'nuit', etat: 'disponible', id: { [Op.ne]: r.bien_id } }, include: [Site] });
+  const pris = new Set((await Reservation.findAll({ attributes: ['bien_id'], where: { bailleur_id: req.espace.id, statut: { [Op.ne]: 'annulee' }, arrivee: { [Op.lt]: r.depart }, depart: { [Op.gt]: r.arrivee } } })).map(x => x.bien_id));
+  const libres = biens.filter(b => !pris.has(b.id)).sort((a, b) => Math.abs(a.prix_nuit - r.prix_nuit) - Math.abs(b.prix_nuit - r.prix_nuit));
+  res.json({ villas: libres.slice(0, 6), recherche: `/villas?arrivee=${r.arrivee}&depart=${r.depart}${r.Bien?.capacite ? '&personnes=' + r.Bien.capacite : ''}` });
+}));
+
+// Avis reçus par l'espace.
+router.get('/avis', route(async (req, res) => {
+  res.json(await Avis.findAll({ where: { bailleur_id: req.espace.id }, include: [{ model: Bien, attributes: ['reference'] }], order: [['cree_le', 'DESC']], limit: 100 }));
 }));
 
 // ---------- Baux (location au mois) ----------
@@ -223,6 +327,17 @@ router.get('/paiements', route(async (req, res) => {
   res.json(await Paiement.findAll({ where: portee(req, extra), include: [{ model: Reservation, include: [Bien, Client] }, { model: Bail, include: [Bien, Client] }], order: [['date_paiement', 'DESC'], ['cree_le', 'DESC']], limit: 200 }));
 }));
 
+// Paiement avec reçu numéroté propre à chaque bailleur, sans doublon.
+async function creerPaiement(req, p, t) {
+  await req.espace.reload({ transaction: t, lock: t.LOCK.UPDATE });
+  const n = req.espace.dernier_numero_recu + 1;
+  await req.espace.update({ dernier_numero_recu: n }, { transaction: t });
+  return Paiement.create({
+    bailleur_id: req.espace.id, site_id: p.site_id, reservation_id: p.reservation_id || null, bail_id: p.bail_id || null, periode: p.periode || null,
+    montant: p.montant, moyen: p.moyen, reference: p.reference, date_paiement: p.date_paiement || aujourdhui(), numero_recu: numeroRecu(n), encaisse_par: req.utilisateur.id,
+    cle_client: p.cle_client || null,
+  }, { transaction: t });
+}
 router.post('/paiements', ecriture, route(async (req, res) => {
   const { reservation_id, bail_id, periode, montant, moyen, reference, date_paiement, cle_client } = req.body || {};
   if (cle_client) {
@@ -245,15 +360,7 @@ router.post('/paiements', ecriture, route(async (req, res) => {
       if (!/^\d{4}-\d{2}$/.test(periode || '')) throw new Erreur(400, 'Mois du loyer requis (AAAA-MM)');
       siteId = b.site_id;
     }
-    // Numéro de reçu propre à chaque bailleur, sans doublon.
-    await req.espace.reload({ transaction: t, lock: t.LOCK.UPDATE });
-    const n = req.espace.dernier_numero_recu + 1;
-    await req.espace.update({ dernier_numero_recu: n }, { transaction: t });
-    return Paiement.create({
-      bailleur_id: req.espace.id, site_id: siteId, reservation_id: reservation_id || null, bail_id: bail_id || null, periode: periode || null,
-      montant, moyen, reference, date_paiement: date_paiement || aujourdhui(), numero_recu: numeroRecu(n), encaisse_par: req.utilisateur.id,
-      cle_client: cle_client || null,
-    }, { transaction: t });
+    return creerPaiement(req, { site_id: siteId, reservation_id, bail_id, periode, montant, moyen, reference, date_paiement, cle_client }, t);
   });
   await noter(req, 'paiement_encaisse', 'paiement', paiement.id, { montant: paiement.montant, moyen: paiement.moyen, recu: paiement.numero_recu });
   res.status(201).json(paiement);

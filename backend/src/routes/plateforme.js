@@ -2,7 +2,8 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const { fn, col } = require('sequelize');
-const { sequelize, Bailleur, Utilisateur, Membre, Bien, Site } = require('../models');
+const { Op } = require('sequelize');
+const { sequelize, Bailleur, Utilisateur, Membre, Bien, Site, Reservation, Avis } = require('../models');
 const { authentifier, adminPlateforme } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
@@ -18,6 +19,11 @@ router.get('/bailleurs', route(async (req, res) => {
   const sites = await Site.findAll({ attributes: ['bailleur_id', [fn('COUNT', col('id')), 'n']], group: ['bailleur_id'], raw: true });
   const parId = (l) => Object.fromEntries(l.map(x => [x.bailleur_id, Number(x.n)]));
   const ns = parId(sites);
+  // Place de marché : pénalités des bailleurs qui ont annulé ce mois-ci (à facturer avec l'abonnement), et avis reçus.
+  const debutMois = new Date(); debutMois.setUTCDate(1); debutMois.setUTCHours(0, 0, 0, 0);
+  const penalites = await Reservation.findAll({ attributes: ['bailleur_id', [fn('SUM', col('penalite_bailleur')), 'n'], [fn('COUNT', col('id')), 'nb']], where: { annule_par: 'bailleur', source: 'place_de_marche', annule_le: { [Op.gte]: debutMois } }, group: ['bailleur_id'], raw: true });
+  const avis = await Avis.findAll({ attributes: ['bailleur_id', [fn('COUNT', col('id')), 'nb'], [fn('AVG', col('note')), 'moyenne']], group: ['bailleur_id'], raw: true });
+  const P = Object.fromEntries(penalites.map(x => [x.bailleur_id, x])), A = Object.fromEntries(avis.map(x => [x.bailleur_id, x]));
   const parMode = {};
   for (const x of biens) { parMode[x.bailleur_id] = parMode[x.bailleur_id] || { nuit: 0, mois: 0 }; parMode[x.bailleur_id][x.mode] = Number(x.n); }
   const nb = Object.fromEntries(Object.entries(parMode).map(([k, v]) => [k, v.nuit + v.mois]));
@@ -25,6 +31,8 @@ router.get('/bailleurs', route(async (req, res) => {
     ...b.toJSON(), proprietaire: proprioDe[b.id] || null, biens_enregistres: nb[b.id] || 0, sites: ns[b.id] || 0,
     biens_nuit: parMode[b.id]?.nuit || 0, biens_mois: parMode[b.id]?.mois || 0,
     abonnement_mensuel: abonnementMensuel(parMode[b.id] || {}),
+    penalites_mois: Number(P[b.id]?.n || 0), annulations_mois: Number(P[b.id]?.nb || 0),
+    note: A[b.id] ? Math.round(Number(A[b.id].moyenne) * 10) / 10 : null, avis: Number(A[b.id]?.nb || 0),
   })));
 }));
 

@@ -15,6 +15,7 @@ import Villas from './pages/Villas';
 import VillaDetail from './pages/VillaDetail';
 import SuiviDemande from './pages/SuiviDemande';
 import Residence from './pages/Residence';
+import Avis from './pages/Avis';
 import Inscription from './pages/Inscription';
 import MotDePasseOublie from './pages/MotDePasseOublie';
 import Apercu from './pages/Apercu';
@@ -59,6 +60,7 @@ function Application() {
       <Route path="/villas/:id" element={<VillaDetail />} />
       <Route path="/demande/:code" element={<SuiviDemande />} />
       <Route path="/r/:page" element={<Residence />} />
+      <Route path="/avis/:code" element={<Avis />} />
       <Route path="/inscription" element={pret && utilisateur ? <Navigate to="/" replace /> : <Inscription />} />
       <Route path="/mot-de-passe-oublie" element={pret && utilisateur ? <Navigate to="/" replace /> : <MotDePasseOublie />} />
       <Route element={<Cadre />}>
@@ -80,7 +82,7 @@ function Application() {
 
 ReactDOM.createRoot(document.getElementById('racine')).render(
   <React.StrictMode>
-    <PersistQueryClientProvider client={client} persistOptions={{ persister: persistance, maxAge: SEPT_JOURS, buster: 'v1' }}>
+    <PersistQueryClientProvider client={client} persistOptions={{ persister: persistance, maxAge: SEPT_JOURS, buster: 'v2', dehydrateOptions: { shouldDehydrateQuery: (q) => q.state.status === 'success' && q.queryKey[0] !== 'public' } }}>
       <BrowserRouter>
         <SessionProvider><Application /></SessionProvider>
       </BrowserRouter>

@@ -61,4 +61,34 @@ const finEssai = (depuis = new Date()) => new Date(depuis.getTime() + JOURS_ESSA
 const echeanceDuMois = (bail, mois) => `${mois}-${String(bail.jour_echeance).padStart(2, '0')}`;
 const loyerDu = (bail, mois) => bail.debut <= echeanceDuMois(bail, mois);
 
-module.exports = { loyerDu, JOURS_ESSAI, finEssai, nuitsEntre, prixSejour, besoinValidation, nuitsDansMois, joursDuMois, chargeMensuelle, abonnementMensuel, numeroRecu, versTexte };
+// ---------- Règles de séjour (arrivée, départ, annulation) ----------
+// Ouagadougou est à UTC+0 : une date et une heure locales se lisent directement en UTC.
+const instant = (jour, heure = '00:00') => new Date(`${jour}T${heure}:00Z`);
+const acompteMinimum = (total, pourcent) => Math.ceil((total * pourcent) / 100);
+
+// Annulation par le client : gratuite avant le délai, une pénalité (en nuits) ensuite ;
+// après l'heure d'arrivée, c'est une non-présentation (même pénalité). Par le bailleur : rien n'est retenu au client.
+function annulation({ par, arrivee, prixNuit, total, regles, maintenant = new Date() }) {
+  if (par === 'bailleur') return { type: 'bailleur', penalite: 0 };
+  const debut = instant(arrivee, regles.heure_arrivee);
+  const penalite = Math.min(total, regles.penalite_nuits * prixNuit);
+  if (maintenant >= debut) return { type: 'absence', penalite };
+  if (debut - maintenant > regles.delai_annulation_heures * 3600e3) return { type: 'gratuite', penalite: 0 };
+  return { type: 'tardive', penalite };
+}
+
+// Départ après l'heure prévue (au-delà de la tolérance) : une nuit de plus est due.
+const departTardif = ({ depart, regles, maintenant = new Date() }) =>
+  maintenant.getTime() > instant(depart, regles.heure_depart).getTime() + regles.tolerance_depart_minutes * 60e3;
+
+// Pénalité d'un bailleur qui annule une réservation de la place de marché : 10 % du séjour, 5 000 F au moins.
+const penaliteBailleur = (total) => Math.max(Math.round(total * 0.1), 5000);
+
+// Note de classement d'un bailleur sur la place de marché (0 à 1) : moyenne des avis lissée
+// (un nouveau bailleur part de 4/5), multipliée par le carré de sa fiabilité (annuler fait vite reculer).
+function noteClassement({ somme = 0, nombre = 0, fiabilite = 1 }) {
+  const lissee = (3 * 4 + somme) / (3 + nombre);
+  return Math.round((lissee / 5) * fiabilite ** 2 * 1000) / 1000;
+}
+
+module.exports = { instant, acompteMinimum, annulation, departTardif, penaliteBailleur, noteClassement, loyerDu, JOURS_ESSAI, finEssai, nuitsEntre, prixSejour, besoinValidation, nuitsDansMois, joursDuMois, chargeMensuelle, abonnementMensuel, numeroRecu, versTexte };

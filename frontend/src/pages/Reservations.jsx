@@ -3,38 +3,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, messageErreur } from '../lib/api';
 import { useSession } from '../lib/session';
 import { DemandesEnAttente } from '../composants/Demandes';
+import { DetailSejour } from '../composants/Sejour';
 import { ajouterJours, aujourdhui, dateCourte, fcfa } from '../lib/format';
 import { Chargement, Erreur, Modale, Puce, Vide } from '../composants/Ui';
 import { Encaisser, NouvelleReservation, useBiens, useSites } from '../composants/Formulaires';
 
 const JOURS = 14;
 const LETTRES = ['D', 'L', 'M', 'M', 'J', 'V', 'S'];
-
-function DetailSejour({ r, onFermer }) {
-  const { role } = useSession();
-  const client = useQueryClient();
-  const [encaisser, setEncaisser] = useState(false);
-  const action = useMutation({ mutationFn: (quoi) => api.post(`/reservations/${r.id}/${quoi}`), onSuccess: () => { client.invalidateQueries(); onFermer(); } });
-  const reste = r.total - r.paye;
-  if (encaisser) return <Encaisser reservation={r} reste={reste} onFermer={onFermer} />;
-  return (
-    <Modale titre={`${r.Bien?.reference} · ${r.Client?.nom}`} onFermer={onFermer} actions={<>
-      {r.statut !== 'annulee' && role !== 'comptable' && <button className="bouton danger" onClick={() => window.confirm('Annuler cette réservation ?') && action.mutate('annuler')}>Annuler le séjour</button>}
-      {r.statut === 'attente_validation' && role === 'proprietaire' && <button className="bouton principal" onClick={() => action.mutate('valider')}>Valider la réduction</button>}
-      {r.statut === 'confirmee' && reste > 0 && role !== 'comptable' && <button className="bouton principal" onClick={() => setEncaisser(true)}>Encaisser {fcfa(reste)}</button>}
-    </>}>
-      <Erreur message={action.error && messageErreur(action.error)} />
-      <div className="liste-lignes">
-        <div><span className="muet" style={{ flex: 1 }}>Séjour</span><b>{dateCourte(r.arrivee)} → {dateCourte(r.depart)} · {r.nuits} nuit{r.nuits > 1 ? 's' : ''}</b></div>
-        <div><span className="muet" style={{ flex: 1 }}>Prix normal</span><b>{fcfa(r.prix_normal)}</b></div>
-        {r.reduction > 0 && <div><span className="muet" style={{ flex: 1 }}>Réduction · {r.reduction_motif}</span><b style={{ color: 'var(--negatif)' }}>− {fcfa(r.reduction)}</b></div>}
-        <div><span className="muet" style={{ flex: 1 }}>Total</span><b>{fcfa(r.total)}</b></div>
-        <div><span className="muet" style={{ flex: 1 }}>Déjà payé</span><b>{fcfa(r.paye)}</b></div>
-        <div><span className="muet" style={{ flex: 1 }}>Statut</span><Puce statut={r.statut} /></div>
-      </div>
-    </Modale>
-  );
-}
 
 export default function Reservations() {
   const { role } = useSession();

@@ -8,6 +8,7 @@ import { Chargement, Modale, Puce, Vide } from '../composants/Ui';
 import { Encaisser, NouvelleDepense, NouvelleReservation, useBiens, useSites } from '../composants/Formulaires';
 import { PhotosBien } from '../composants/Photos';
 import { DemandesEnAttente } from '../composants/Demandes';
+import { DetailSejour } from '../composants/Sejour';
 
 export default function Terrain() {
   const { utilisateur, role } = useSession();
@@ -15,6 +16,7 @@ export default function Terrain() {
   const [fenetre, setFenetre] = useState(null);
   const [aEncaisser, setAEncaisser] = useState(null);
   const [photos, setPhotos] = useState(null);
+  const [sejour, setSejour] = useState(null);
   const { data: biens = [], isLoading } = useBiens();
   const { data: sites = [] } = useSites();
   const { data: resas = [] } = useQuery({ queryKey: ['reservations', 'terrain'], queryFn: () => api.get('/reservations', { params: { du: ajouterJours(auj, -60), au: ajouterJours(auj, 2) } }).then(r => r.data) });
@@ -68,11 +70,11 @@ export default function Terrain() {
         <h2>Aujourd’hui</h2>
         <div className="liste-lignes">
           {mouvements.map(r => (
-            <div key={r.id}>
+            <button key={r.id} type="button" className="ligne-client" onClick={() => setSejour(r)}>
               <span className="avatar" style={{ borderRadius: 10, width: 44, height: 44 }}>{r.Bien?.reference}</span>
-              <span style={{ flex: 1 }}><b>{r.arrivee === auj ? 'Arrivée' : 'Départ'} · {r.Client?.nom}</b><div className="petit muet">{r.nuits} nuit{r.nuits > 1 ? 's' : ''} · {fcfa(r.total)}</div></span>
+              <span style={{ flex: 1, textAlign: 'left' }}><b>{r.arrivee === auj ? 'Arrivée' : 'Départ'} · {r.Client?.nom}</b><div className="petit muet">{r.nuits} nuit{r.nuits > 1 ? 's' : ''} · {fcfa(r.total)}{r.arrivee === auj ? (r.cles_remises_le ? ' · clés remises' : ' · clés à remettre') : (r.parti_le ? ' · parti' : ' · départ à enregistrer')}</div></span>
               {r.total - r.paye > 0 ? <Puce ton="negatif">Reste {fcfa(r.total - r.paye)}</Puce> : <Puce ton="violet">Payé</Puce>}
-            </div>
+            </button>
           ))}
           {!mouvements.length && <span className="muet">Aucune arrivée ni aucun départ aujourd’hui.</span>}
         </div>
@@ -110,6 +112,7 @@ export default function Terrain() {
           ) : <Vide>Aucun séjour à encaisser. Créez d’abord une réservation.</Vide>}
         </Modale>
       )}
+      {sejour && <DetailSejour r={sejour} onFermer={() => setSejour(null)} />}
       {photos && <PhotosBien bienId={photos} onFermer={() => setPhotos(null)} />}
       {aEncaisser && <Encaisser reservation={aEncaisser} reste={aEncaisser.total - aEncaisser.paye} onFermer={() => setAEncaisser(null)} />}
     </main>

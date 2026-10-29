@@ -5,10 +5,12 @@ const router = require('express').Router();
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const { Op } = require('sequelize');
-const { Bien, Site, Bailleur, Reservation, Demande, Fichier } = require('../models');
+const { fn, col } = require('sequelize');
+const { Bien, Site, Bailleur, Reservation, Demande, Fichier, Avis, Paiement } = require('../models');
 const { Erreur, route } = require('../utils/erreurs');
 const { definir } = require('../middleware/contexte');
-const { nuitsEntre, versTexte } = require('../services/calculs');
+const { nuitsEntre, versTexte, acompteMinimum, annulation, noteClassement } = require('../services/calculs');
+const { expirerReservations } = require('../services/expirations');
 const { envoyer } = require('../utils/fichiers');
 const { envoyer: envoyerCourriel, courrielDemande } = require('../services/courriel');
 
@@ -21,7 +23,7 @@ const plateforme = () => definir('app.plateforme', 'on');
 const visibles = { publie: true, mode: 'nuit', etat: 'disponible' };
 const avecSiteEtBailleur = [
   { model: Site, attributes: ['id', 'nom', 'ville', 'quartier', 'latitude', 'longitude'] },
-  { model: Bailleur, attributes: ['id', 'nom', 'telephone', 'logo_id'], where: { statut: { [Op.in]: ['essai', 'actif'] } } },
+  { model: Bailleur, attributes: ['id', 'nom', 'telephone', 'logo_id', 'heure_arrivee', 'heure_depart', 'acompte_pourcent', 'delai_annulation_heures', 'penalite_nuits', 'numero_paiement', 'titulaire_paiement'], where: { statut: { [Op.in]: ['essai', 'actif'] } } },
 ];
 
 // Distance à vol d'oiseau en km.
@@ -32,6 +34,27 @@ function distance(a, b) {
   return 6371 * 2 * Math.asin(Math.sqrt(h));
 }
 
+// Réputation d'un ou plusieurs bailleurs : note moyenne, nombre d'avis, fiabilité, note de classement.
+async function reputations(ids) {
+  const uniques = [...new Set(ids)];
+  if (!uniques.length) return {};
+  const depuis = new Date(Date.now() - 180 * 864e5);
+  const [avis, resas, annulees] = await Promise.all([
+    Avis.findAll({ attributes: ['bailleur_id', [fn('COUNT', col('id')), 'n'], [fn('SUM', col('note')), 'somme']], where: { bailleur_id: uniques }, group: ['bailleur_id'], raw: true }),
+    Reservation.findAll({ attributes: ['bailleur_id', [fn('COUNT', col('id')), 'n']], where: { bailleur_id: uniques, source: 'place_de_marche', cree_le: { [Op.gte]: depuis } }, group: ['bailleur_id'], raw: true }),
+    Reservation.findAll({ attributes: ['bailleur_id', [fn('COUNT', col('id')), 'n']], where: { bailleur_id: uniques, source: 'place_de_marche', annule_par: 'bailleur', cree_le: { [Op.gte]: depuis } }, group: ['bailleur_id'], raw: true }),
+  ]);
+  const parId = (l) => Object.fromEntries(l.map(x => [x.bailleur_id, x]));
+  const A = parId(avis), R = parId(resas), X = parId(annulees);
+  return Object.fromEntries(uniques.map(id => {
+    const nombre = Number(A[id]?.n || 0), somme = Number(A[id]?.somme || 0);
+    const total = Number(R[id]?.n || 0), annul = Number(X[id]?.n || 0);
+    const fiabilite = total ? 1 - annul / total : 1;
+    return [id, { note: nombre ? Math.round((somme / nombre) * 10) / 10 : null, avis: nombre, fiabilite: Math.round(fiabilite * 100), classement: noteClassement({ somme, nombre, fiabilite }) }];
+  }));
+}
+const reglesPubliques = (b) => ({ heure_arrivee: b.heure_arrivee, heure_depart: b.heure_depart, acompte_pourcent: b.acompte_pourcent, delai_annulation_heures: b.delai_annulation_heures, penalite_nuits: b.penalite_nuits });
+
 // Ce que voit un client : jamais le numéro de compteur, les notes internes, ni la position exacte (arrondie à ~1 km).
 function fiche(b, extra = {}) {
   const s = b.Site;
@@ -40,8 +63,8 @@ function fiche(b, extra = {}) {
     description: b.description, equipements: b.equipements,
     photos: b.photos.map(p => `/api/public/biens/${b.id}/photos/${p}`),
     lieu: { site: s.nom, ville: s.ville, quartier: s.quartier, lat: s.latitude != null ? Math.round(s.latitude * 100) / 100 : null, lng: s.longitude != null ? Math.round(s.longitude * 100) / 100 : null },
-    bailleur: { nom: b.Bailleur.nom, logo: b.Bailleur.logo_id ? `/api/fichiers/logo/${b.Bailleur.id}` : null },
-    ...extra,
+    bailleur: { nom: b.Bailleur.nom, logo: b.Bailleur.logo_id ? `/api/fichiers/logo/${b.Bailleur.id}` : null, ...(extra.reputation || {}) },
+    ...extra, reputation: undefined,
   };
 }
 
@@ -76,6 +99,7 @@ router.get('/recherche', route(async (req, res) => {
   if (ville) filtreSite.ville = { [Op.iLike]: ville };
   if (quartier) filtreSite.quartier = { [Op.iLike]: quartier };
   if (Object.keys(filtreSite).length) include[0].where = filtreSite;
+  await expirerReservations().catch(() => {});
   let biens = await Bien.findAll({ where, include, order: [['prix_nuit', 'ASC']], limit: 300 });
   // Disponibilité réelle : les plannings des gérants font foi.
   let nuits = null;
@@ -85,15 +109,17 @@ router.get('/recherche', route(async (req, res) => {
     const pris = new Set((await occupe(biens.map(b => b.id), arrivee, depart)).map(r => r.bien_id));
     biens = biens.filter(b => !pris.has(b.id));
   }
-  // Les villas avec photos d'abord (les clients les choisissent), puis du moins cher au plus cher.
-  biens.sort((a, b) => (b.photos.length > 0) - (a.photos.length > 0) || a.prix_nuit - b.prix_nuit);
-  let resultats = biens.map(b => fiche(b, nuits ? { nuits, total: nuits * b.prix_nuit } : {}));
+  // Classement : réputation du bailleur (avis et fiabilité), puis villas avec photos, puis prix.
+  const rep = await reputations(biens.map(b => b.bailleur_id));
+  biens.sort((a, b) => rep[b.bailleur_id].classement - rep[a.bailleur_id].classement || (b.photos.length > 0) - (a.photos.length > 0) || a.prix_nuit - b.prix_nuit);
+  const extra = (b) => ({ reputation: rep[b.bailleur_id], ...(nuits ? { nuits, total: nuits * b.prix_nuit } : {}) });
+  let resultats = biens.map(b => fiche(b, extra(b)));
   if (lat && lng) {
     const ici = { lat: Number(lat), lng: Number(lng) };
     const max = Number(rayon) || 15;
     resultats = biens.filter(b => b.Site.latitude != null).map(b => ({ b, d: distance(ici, { lat: Number(b.Site.latitude), lng: Number(b.Site.longitude) }) }))
       .filter(x => x.d <= max).sort((x, y) => x.d - y.d)
-      .map(({ b, d }) => fiche(b, { distance_km: Math.round(d * 10) / 10, ...(nuits ? { nuits, total: nuits * b.prix_nuit } : {}) }));
+      .map(({ b, d }) => fiche(b, { distance_km: Math.round(d * 10) / 10, ...extra(b) }));
   }
   res.json(resultats);
 }));
@@ -106,7 +132,9 @@ router.get('/biens/:id', route(async (req, res) => {
   // Nuits déjà prises dans les quatre prochains mois (sans dire par qui).
   const fin = versTexte(new Date(Date.now() + 120 * 864e5));
   const prises = await Reservation.findAll({ attributes: ['arrivee', 'depart'], where: { bien_id: b.id, statut: { [Op.ne]: 'annulee' }, depart: { [Op.gt]: aujourdhui() }, arrivee: { [Op.lt]: fin } }, order: [['arrivee', 'ASC']] });
-  res.json(fiche(b, { indisponible: prises.map(r => ({ du: r.arrivee, au: r.depart })) }));
+  const rep = await reputations([b.bailleur_id]);
+  const avis = await Avis.findAll({ where: { bailleur_id: b.bailleur_id }, attributes: ['note', 'commentaire', 'auteur', 'cree_le'], order: [['cree_le', 'DESC']], limit: 10 });
+  res.json(fiche(b, { indisponible: prises.map(r => ({ du: r.arrivee, au: r.depart })), regles: reglesPubliques(b.Bailleur), reputation: rep[b.bailleur_id], avis }));
 }));
 
 router.get('/biens/:id/photos/:photo', route(async (req, res) => {
@@ -152,20 +180,96 @@ router.get('/residences/:page', route(async (req, res) => {
   if (!bailleur) throw new Erreur(404, 'Cette page n’existe pas ou n’est plus disponible');
   const biens = await Bien.findAll({ where: { ...visibles, bailleur_id: bailleur.id }, include: avecSiteEtBailleur });
   biens.sort((a, b) => (b.photos.length > 0) - (a.photos.length > 0) || a.prix_nuit - b.prix_nuit);
-  res.json({ nom: bailleur.nom, ville: bailleur.ville, logo: bailleur.logo_id ? `/api/fichiers/logo/${bailleur.id}` : null, villas: biens.map(b => fiche(b)) });
+  const rep = await reputations([bailleur.id]);
+  res.json({ nom: bailleur.nom, ville: bailleur.ville, logo: bailleur.logo_id ? `/api/fichiers/logo/${bailleur.id}` : null, ...rep[bailleur.id], villas: biens.map(b => fiche(b, { reputation: rep[bailleur.id] })) });
 }));
 
-// Suivi par le client, avec le code reçu (sans compte).
-router.get('/demandes/:code', route(async (req, res) => {
+// ---------- Suivi par le client, avec le code reçu (sans compte) ----------
+const demandeParCode = async (code) => {
   await plateforme();
-  const d = await Demande.findOne({ where: { code: String(req.params.code).toUpperCase().slice(0, 12) }, include: [{ model: Bien, include: avecSiteEtBailleur }] });
+  await expirerReservations().catch(() => {});
+  const d = await Demande.findOne({ where: { code: String(code).toUpperCase().slice(0, 12) }, include: [{ model: Bien, include: avecSiteEtBailleur }, { model: Reservation, include: [Paiement] }] });
   if (!d) throw new Erreur(404, 'Demande introuvable');
+  return d;
+};
+
+router.get('/demandes/:code', route(async (req, res) => {
+  const d = await demandeParCode(req.params.code);
+  const r = d.Reservation;
+  const B = d.Bien.Bailleur;
+  const paye = r ? r.Paiements.reduce((s, p) => s + p.montant, 0) : 0;
+  const acompte = r ? acompteMinimum(r.total, B.acompte_pourcent) : acompteMinimum(d.total, B.acompte_pourcent);
   res.json({
-    code: d.code, statut: d.statut, motif_refus: d.motif_refus, arrivee: d.arrivee, depart: d.depart, nuits: d.nuits, total: d.total, nom: d.nom,
+    code: d.code, statut: d.statut, motif_refus: d.motif_refus, arrivee: d.arrivee, depart: d.depart, nuits: d.nuits, total: r ? r.total : d.total, nom: d.nom,
     villa: { id: d.Bien.id, type: d.Bien.type, standing: d.Bien.standing, lieu: { site: d.Bien.Site.nom, ville: d.Bien.Site.ville, quartier: d.Bien.Site.quartier } },
-    // Le contact du bailleur n'est donné qu'une fois la demande acceptée.
-    contact: d.statut === 'acceptee' ? { nom: d.Bien.Bailleur.nom, telephone: d.Bien.Bailleur.telephone } : null,
+    regles: reglesPubliques(B),
+    // Après acceptation : acompte à envoyer (numéro Mobile Money du bailleur) avant l'heure limite, puis contact.
+    contact: d.statut === 'acceptee' ? { nom: B.nom, telephone: B.telephone } : null,
+    paiement: d.statut === 'acceptee' && r ? {
+      acompte, paye, reste: r.total - paye, expire_le: r.expire_le, numero: r.expire_le || paye < acompte ? (B.numero_paiement || B.telephone) : null, titulaire: B.titulaire_paiement || B.nom,
+      declare: d.acompte_reference ? { reference: d.acompte_reference, montant: d.acompte_montant, le: d.acompte_declare_le } : null,
+    } : null,
+    sejour: r ? { statut: r.statut, annule_par: r.annule_par, penalite: r.penalite, a_rembourser: r.a_rembourser, rembourse: !!r.rembourse_le, cles: !!r.cles_remises_le, parti: !!r.parti_le, avis: r.parti_le ? r.code_avis : null } : null,
   });
+}));
+
+// Le client déclare avoir envoyé l'acompte (référence de la transaction) ; le gérant le vérifie dans Loka.
+router.post('/demandes/:code/acompte', limiteur, route(async (req, res) => {
+  const reference = String(req.body?.reference || '').trim().slice(0, 80);
+  if (reference.length < 4) throw new Erreur(400, 'Indiquez la référence de la transaction Mobile Money');
+  const d = await demandeParCode(req.params.code);
+  if (d.statut !== 'acceptee' || !d.Reservation || d.Reservation.statut !== 'confirmee') throw new Erreur(409, 'Cette demande n’attend plus d’acompte');
+  await definir('app.plateforme', '');
+  await definir('app.bailleur_id', d.bailleur_id);
+  const montant = Number(req.body?.montant) || acompteMinimum(d.Reservation.total, d.Bien.Bailleur.acompte_pourcent);
+  await Demande.update({ acompte_reference: reference, acompte_montant: montant, acompte_declare_le: new Date() }, { where: { id: d.id } });
+  res.json({ ok: true });
+}));
+
+// Annulation par le client lui-même, selon les règles du bailleur (pénalité calculée et annoncée avant).
+router.post('/demandes/:code/annuler', limiteur, route(async (req, res) => {
+  const d = await demandeParCode(req.params.code);
+  const r = d.Reservation;
+  if (d.statut === 'en_attente') {
+    if (req.body?.simulation) return res.json({ type: 'gratuite', penalite: 0, a_rembourser: 0 });
+    await definir('app.plateforme', ''); await definir('app.bailleur_id', d.bailleur_id);
+    await Demande.update({ statut: 'annulee' }, { where: { id: d.id } });
+    return res.json({ statut: 'annulee' });
+  }
+  if (d.statut !== 'acceptee' || !r || r.statut !== 'confirmee') throw new Erreur(409, 'Cette demande ne peut plus être annulée');
+  if (r.cles_remises_le) throw new Erreur(409, 'Votre séjour a commencé');
+  const B = d.Bien.Bailleur;
+  const calcul = annulation({ par: 'client', arrivee: r.arrivee, prixNuit: r.prix_nuit, total: r.total, regles: B });
+  const paye = r.Paiements.reduce((s, p) => s + p.montant, 0);
+  const resultat = { type: calcul.type, penalite: calcul.penalite, paye, a_rembourser: Math.max(0, paye - calcul.penalite) };
+  if (req.body?.simulation) return res.json(resultat);
+  await definir('app.plateforme', ''); await definir('app.bailleur_id', d.bailleur_id);
+  await Reservation.update({ statut: 'annulee', annule_le: new Date(), annule_par: calcul.type === 'absence' ? 'absence' : 'client', motif_annulation: 'Annulée par le client', penalite: calcul.penalite, a_rembourser: resultat.a_rembourser, expire_le: null }, { where: { id: r.id } });
+  await Demande.update({ statut: 'annulee' }, { where: { id: d.id } });
+  res.json(resultat);
+}));
+
+// ---------- Avis : uniquement après un séjour réel (code remis au départ) ----------
+const sejourParCodeAvis = async (code) => {
+  await plateforme();
+  const r = await Reservation.findOne({ where: { code_avis: String(code).toUpperCase().slice(0, 12) }, include: [{ model: Bien, include: avecSiteEtBailleur }] });
+  if (!r || !r.parti_le) throw new Erreur(404, 'Lien d’avis introuvable');
+  return r;
+};
+router.get('/avis/:code', route(async (req, res) => {
+  const r = await sejourParCodeAvis(req.params.code);
+  const deja = await Avis.findOne({ where: { reservation_id: r.id }, attributes: ['note', 'commentaire'] });
+  res.json({ villa: { type: r.Bien.type, standing: r.Bien.standing, chambres: r.Bien.pieces, lieu: { site: r.Bien.Site.nom, ville: r.Bien.Site.ville, quartier: r.Bien.Site.quartier } }, bailleur: r.Bien.Bailleur.nom, arrivee: r.arrivee, depart: r.depart, deja });
+}));
+router.post('/avis/:code', limiteur, route(async (req, res) => {
+  const note = Number(req.body?.note);
+  if (!(note >= 1 && note <= 5) || !Number.isInteger(note)) throw new Erreur(400, 'Choisissez une note de 1 à 5 étoiles');
+  const r = await sejourParCodeAvis(req.params.code);
+  if (await Avis.findOne({ where: { reservation_id: r.id } })) throw new Erreur(409, 'Vous avez déjà donné votre avis sur ce séjour. Merci !');
+  await definir('app.plateforme', ''); await definir('app.bailleur_id', r.bailleur_id);
+  const auteur = String(req.body?.auteur || '').trim().split(/\s+/)[0]?.slice(0, 30) || null;
+  await Avis.create({ bailleur_id: r.bailleur_id, reservation_id: r.id, bien_id: r.bien_id, note, commentaire: req.body?.commentaire ? String(req.body.commentaire).slice(0, 600) : null, auteur });
+  res.status(201).json({ ok: true });
 }));
 
 module.exports = { router, EQUIPEMENTS };

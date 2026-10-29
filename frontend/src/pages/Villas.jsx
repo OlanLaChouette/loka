@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { BedDouble, LocateFixed, MapPin, Search, SlidersHorizontal, Users } from 'lucide-react';
+import { BedDouble, LocateFixed, MapPin, Search, SlidersHorizontal, Star, Users } from 'lucide-react';
 import { api, messageErreur, urlFichier } from '../lib/api';
 import { ajouterJours, aujourdhui, dateCourte, EQUIPEMENTS, fcfa, TYPES_BIEN } from '../lib/format';
 import '../styles/marche.css';
@@ -15,6 +15,13 @@ export function EnteteMarche() {
       <Link to="/bienvenue" className="mc-lien-bailleur">Vous êtes bailleur ?</Link>
     </header>
   );
+}
+
+// Note du bailleur : étoiles et nombre d'avis (« Nouveau » tant qu'il n'a pas d'avis).
+export function Etoiles({ b, grand }) {
+  if (!b) return null;
+  if (!b.avis) return <span className={'mc-etoiles' + (grand ? ' grand' : '')}><Star size={grand ? 16 : 13} />Nouveau sur Loka</span>;
+  return <span className={'mc-etoiles' + (grand ? ' grand' : '')} aria-label={`${b.note} sur 5, ${b.avis} avis`}><Star size={grand ? 16 : 13} fill="currentColor" /><b>{String(b.note).replace('.', ',')}</b> ({b.avis} avis){b.fiabilite < 100 ? ` · fiabilité ${b.fiabilite} %` : ''}</span>;
 }
 
 export const titreVilla = (v) => [TYPES_BIEN[v.type] || 'Villa', v.standing, v.chambres ? `${v.chambres} ch.` : ''].filter(Boolean).join(' · ');
@@ -32,6 +39,7 @@ export function CarteVilla({ v, criteres }) {
       <div className="mc-corps">
         <b>{titreVilla(v)}</b>
         <span className="mc-lieu">{lieuVilla(v)}</span>
+        <span className="mc-bailleur">{v.bailleur.nom} · <Etoiles b={v.bailleur} /></span>
         <span className="mc-details">{v.capacite ? <><Users size={14} />{v.capacite} pers.</> : null}{v.chambres ? <><BedDouble size={14} />{v.chambres} ch.</> : null}{v.equipements.slice(0, 3).map(e => <i key={e}>{EQUIPEMENTS[e]}</i>)}</span>
         <span className="mc-prix"><b>{fcfa(v.prix_nuit)}</b> / nuit{v.total ? <em> · {fcfa(v.total)} pour {v.nuits} nuit{v.nuits > 1 ? 's' : ''}</em> : null}</span>
       </div>
@@ -47,7 +55,7 @@ export default function Villas() {
   const [position, setPosition] = useState('');
   const criteres = Object.fromEntries([...params.entries()]);
   const { data: lieux = [] } = useQuery({ queryKey: ['public', 'lieux'], queryFn: () => api.get('/public/lieux').then(r => r.data), staleTime: 300000 });
-  const { data: villas, isLoading, error } = useQuery({ queryKey: ['public', 'recherche', criteres], queryFn: () => api.get('/public/recherche', { params: criteres }).then(r => r.data) });
+  const { data: villas, isPending: isLoading, error } = useQuery({ queryKey: ['public', 'recherche', criteres], queryFn: () => api.get('/public/recherche', { params: criteres }).then(r => r.data) });
   const quartiers = lieux.find(l => l.ville === f.ville)?.quartiers || [];
   const maj = (k) => (e) => setF({ ...f, [k]: e.target.value });
 

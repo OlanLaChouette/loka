@@ -34,7 +34,7 @@ app.use(gestionnaireErreurs);
 const PORT = Number(process.env.PORT || 4100);
 if (require.main === module) {
   sequelize.authenticate()
-    .then(() => app.listen(PORT, () => console.log(`API Loka sur http://localhost:${PORT}`)))
+    .then(() => { app.listen(PORT, () => console.log(`API Loka sur http://localhost:${PORT}`)); require('./src/services/expirations').demarrerExpirations(); })
     .catch((e) => { console.error('Base de données inaccessible :', e.message, '\n→ Vérifiez .env puis lancez : npm run db:creer'); process.exit(1); });
 }
 

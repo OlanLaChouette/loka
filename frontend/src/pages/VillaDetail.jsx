@@ -5,13 +5,13 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { ArrowLeft, BedDouble, Check, MapPin, Users } from 'lucide-react';
 import { api, messageErreur, urlFichier } from '../lib/api';
 import { ajouterJours, aujourdhui, dateCourte, EQUIPEMENTS, fcfa } from '../lib/format';
-import { EnteteMarche, lieuVilla, titreVilla } from './Villas';
+import { EnteteMarche, Etoiles, lieuVilla, titreVilla } from './Villas';
 import '../styles/marche.css';
 
 export default function VillaDetail() {
   const { id } = useParams();
   const [params] = useSearchParams();
-  const { data: v, isLoading, error } = useQuery({ queryKey: ['public', 'villa', id], queryFn: () => api.get('/public/biens/' + id).then(r => r.data) });
+  const { data: v, isPending: isLoading, error } = useQuery({ queryKey: ['public', 'villa', id], queryFn: () => api.get('/public/biens/' + id).then(r => r.data) });
   const [f, setF] = useState({ arrivee: params.get('arrivee') || '', depart: params.get('depart') || '', nom: '', telephone: '', message: '' });
   const [envoye, setEnvoye] = useState(null);
   const demande = useMutation({ mutationFn: () => api.post('/public/demandes', { bien_id: id, ...f }).then(r => r.data), onSuccess: setEnvoye });
@@ -29,7 +29,7 @@ export default function VillaDetail() {
         <div className="mc-succes">
           <span className="mc-coche"><Check size={34} /></span>
           <h1>Demande envoyée !</h1>
-          <p>Le gérant de <b>{v.bailleur.nom}</b> va la confirmer. Rien n’est à payer maintenant : le paiement se fait sur place.</p>
+          <p>Le gérant de <b>{v.bailleur.nom}</b> va vous répondre. Une fois la demande acceptée, vous aurez <b>2 heures</b> pour envoyer l’acompte ({v.regles?.acompte_pourcent ?? 50} %) par Mobile Money ; le reste se paie à l’arrivée.</p>
           <div className="mc-code">Votre code de suivi<b>{envoye.code}</b></div>
           <Link to={`/demande/${envoye.code}`} className="mc-bouton">Suivre ma demande</Link>
           <p className="mc-note">Gardez ce code (une capture d’écran suffit) pour revenir voir la réponse.</p>
@@ -47,10 +47,25 @@ export default function VillaDetail() {
         </div>
         <h1 className="mc-titre">{titreVilla(v)}</h1>
         <p className="mc-lieu"><MapPin size={16} />{lieuVilla(v)} · proposée par <b>{v.bailleur.nom}</b></p>
+        <p style={{ margin: '4px 0' }}><Etoiles b={v.bailleur} grand /></p>
         <p className="mc-details grand">{v.capacite ? <><Users size={16} />{v.capacite} personnes</> : null}{v.chambres ? <><BedDouble size={16} />{v.chambres} chambres</> : null}</p>
         <p className="mc-prix grand"><b>{fcfa(v.prix_nuit)}</b> / nuit</p>
         {v.description && <p className="mc-description">{v.description}</p>}
         {v.equipements.length > 0 && <ul className="mc-liste-eq">{v.equipements.map(e => <li key={e}><Check size={16} />{EQUIPEMENTS[e]}</li>)}</ul>}
+        {v.regles && (
+          <div className="mc-regles">
+            <b>Conditions de séjour</b>
+            <span>Arrivée à partir de <b>{v.regles.heure_arrivee}</b> · départ avant <b>{v.regles.heure_depart}</b> (au-delà, une nuit de plus est due)</span>
+            <span>Acompte de <b>{v.regles.acompte_pourcent} %</b> avant la remise des clés, par Mobile Money ou sur place</span>
+            <span>Annulation gratuite jusqu’à <b>{v.regles.delai_annulation_heures} h</b> avant l’arrivée ; ensuite, {v.regles.penalite_nuits} nuit{v.regles.penalite_nuits > 1 ? 's' : ''} retenue{v.regles.penalite_nuits > 1 ? 's' : ''}, le reste est remboursé</span>
+          </div>
+        )}
+        {v.avis?.length > 0 && (
+          <div className="mc-avis">
+            <b>Avis des clients sur {v.bailleur.nom}</b>
+            {v.avis.map((a, i) => <div key={i} className="mc-un-avis"><span className="mc-etoiles">{'★'.repeat(a.note)}<span style={{ opacity: .25 }}>{'★'.repeat(5 - a.note)}</span></span>{a.commentaire && <p>« {a.commentaire} »</p>}<span className="mc-note">{a.auteur || 'Client'} · {dateCourte(a.cree_le.slice(0, 10))}</span></div>)}
+          </div>
+        )}
         {v.indisponible.length > 0 && (
           <div className="mc-indispo"><b>Déjà réservée</b>{v.indisponible.map(p => <span key={p.du}>{dateCourte(p.du)} → {dateCourte(p.au)}</span>)}</div>
         )}
@@ -68,7 +83,7 @@ export default function VillaDetail() {
           <label><span>Message (facultatif)</span><textarea rows={2} value={f.message} onChange={maj('message')} placeholder="Heure d’arrivée, nombre de personnes…" /></label>
           {nuits > 0 && <div className="mc-total"><span>{nuits} nuit{nuits > 1 ? 's' : ''} × {fcfa(v.prix_nuit)}</span><b>{fcfa(nuits * v.prix_nuit)}</b></div>}
           <button type="submit" className="mc-bouton" disabled={!nuits || chevauche || !f.nom || !f.telephone || demande.isPending}>{demande.isPending ? 'Envoi…' : 'Envoyer ma demande'}</button>
-          <p className="mc-note">Gratuit et sans engagement. Le gérant confirme votre demande ; vous payez sur place.</p>
+          <p className="mc-note">Sans engagement : rien à payer tant que le gérant n’a pas accepté. Ensuite, acompte de {v.regles?.acompte_pourcent ?? 50} % par Mobile Money dans les 2 heures.</p>
         </form>
       </main>
     </div>

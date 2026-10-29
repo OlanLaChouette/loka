@@ -87,3 +87,18 @@
 .mc-residence { text-align: center; }
 .mc-residence h1, .mc-residence > p { margin-left: auto; margin-right: auto; }
 .mc-logo-residence { width: 84px; height: 84px; object-fit: contain; background: #fff; border-radius: 20px; padding: 8px; margin: 0 auto 12px; display: block; box-shadow: 0 10px 30px rgba(20,10,80,.3); }
+
+.mc-bailleur { font-size: 13px; color: var(--mm); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.mc-etoiles { display: inline-flex; align-items: center; gap: 4px; color: #C7880A; font-size: 13px; font-weight: 600; }
+.mc-etoiles b { color: var(--me); }
+.mc-etoiles.grand { font-size: 15px; }
+.mc-etoiles-heros .mc-etoiles, .mc-etoiles-heros .mc-etoiles b { color: #FFE7A3; }
+.mc-regles, .mc-avis { background: #fff; border: 1px solid var(--mb); border-radius: 16px; padding: 12px 14px; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.mc-regles span::before { content: '• '; color: var(--mv); font-weight: 800; }
+.mc-un-avis { border-top: 1px solid var(--mb); padding-top: 8px; }
+.mc-un-avis p { margin: 4px 0; color: #3A3A4A; }
+.mc-paiement { background: #FFF7E6; border: 1px solid #F3D9A4; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+.mc-numero { font: 800 26px 'Sora', sans-serif; letter-spacing: .02em; color: var(--me); }
+.mc-note-etoiles { display: flex; justify-content: center; gap: 6px; }
+.mc-note-etoiles button { background: none; border: 0; font-size: 40px; line-height: 1; cursor: pointer; color: #D9D6E6; padding: 4px; }
+.mc-note-etoiles button.actif { color: #F2B01E; }

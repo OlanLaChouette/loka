@@ -52,7 +52,7 @@ export default function Plateforme() {
           <thead><tr><th>Bailleur</th><th>Sites</th><th>Biens enregistrés</th><th className="nombre">Abonnement</th><th>Statut</th><th aria-label="Actions" /></tr></thead>
           <tbody>{data.map(b => (
             <tr key={b.id}>
-              <td><b>{b.nom}</b>{b.origine === 'inscription' && <span className="puce violet" style={{ marginLeft: 8 }}>Inscrit en ligne</span>}<div className="petit muet">{b.proprietaire ? `${b.proprietaire.nom} · ${b.proprietaire.telephone}${b.proprietaire.email ? ' · ' + b.proprietaire.email : ''}` : ''}{b.ville ? ' · ' + b.ville : ''}{b.statut === 'essai' && b.essai_fin ? ` · essai jusqu’au ${dateCourte(b.essai_fin)}` : ''}</div></td>
+              <td><b>{b.nom}</b>{b.origine === 'inscription' && <span className="puce violet" style={{ marginLeft: 8 }}>Inscrit en ligne</span>}<div className="petit muet">{b.proprietaire ? `${b.proprietaire.nom} · ${b.proprietaire.telephone}${b.proprietaire.email ? ' · ' + b.proprietaire.email : ''}` : ''}{b.ville ? ' · ' + b.ville : ''}{b.statut === 'essai' && b.essai_fin ? ` · essai jusqu’au ${dateCourte(b.essai_fin)}` : ''}</div>{(b.avis > 0 || b.penalites_mois > 0) && <div className="petit">{b.avis > 0 && `★ ${String(b.note).replace('.', ',')} (${b.avis} avis)`}{b.penalites_mois > 0 && <span style={{ color: 'var(--negatif)', marginLeft: 8 }}>Pénalités du mois : {fcfa(b.penalites_mois)} ({b.annulations_mois} annulation{b.annulations_mois > 1 ? 's' : ''})</span>}</div>}</td>
               <td>{b.sites}</td><td>{b.biens_enregistres}</td><td className="nombre">{fcfa(b.abonnement_mensuel)}</td>
               <td><Puce statut={b.statut} /></td>
               <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>

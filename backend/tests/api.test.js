@@ -417,3 +417,83 @@ test('page publique d’une résidence, à partager', async () => {
   assert.ok(page.corps.villas.length > 0 && page.corps.villas.every(v => v.bailleur.nom === 'Résidences Kaboré'));
   assert.equal((await appel('GET', '/api/public/residences/inconnue-0000')).statut, 404);
 });
+
+test('séjour : acompte de la place de marché, clés, départ tardif, avis, annulations et classement', async () => {
+  const { expirerReservations } = require('../src/services/expirations');
+  const pub = (chemin, corps) => appel(corps ? 'POST' : 'GET', '/api/public' + chemin, corps ? { corps } : {});
+  const jour = (j) => new Date(Date.now() + j * 864e5).toISOString().slice(0, 10);
+  const issa = await connecter('70111111');
+  const o = { jeton: issa.jeton, espace: issa.espaces[0].id };
+  const villas = (await pub('/recherche?ville=Ouagadougou')).corps;
+  const villa = villas.find(v => v.prix_nuit === 25000);
+  // 1. Demande acceptée : 2 h pour l'acompte ; le client voit le numéro et déclare sa référence ; le gérant valide.
+  const dem = (await pub('/demandes', { bien_id: villa.id, arrivee: jour(90), depart: jour(92), nom: 'Awa Client', telephone: '70 55 44 33' })).corps;
+  const d = (await appel('GET', '/api/demandes?statut=en_attente', o)).corps.find(x => x.code === dem.code);
+  const acc = (await appel('POST', `/api/demandes/${d.id}/accepter`, o)).corps;
+  const delai = new Date(acc.reservation.expire_le) - Date.now();
+  assert.ok(delai > 1.9 * 3600e3 && delai <= 2 * 3600e3);
+  let suivi = (await pub('/demandes/' + dem.code)).corps;
+  assert.equal(suivi.paiement.acompte, 25000);
+  assert.ok(suivi.paiement.numero);
+  assert.equal((await pub(`/demandes/${dem.code}/acompte`, { reference: 'OM-998877' })).statut, 200);
+  const declaree = (await appel('GET', '/api/demandes', o)).corps.find(x => x.code === dem.code);
+  assert.equal(declaree.acompte_reference, 'OM-998877');
+  assert.equal((await appel('POST', `/api/demandes/${d.id}/acompte`, o)).statut, 201);
+  suivi = (await pub('/demandes/' + dem.code)).corps;
+  assert.equal(suivi.paiement.paye, 25000);
+  assert.equal(suivi.paiement.expire_le, null);
+  // 2. Une demande acceptée sans acompte est libérée après le délai.
+  const dem2 = (await pub('/demandes', { bien_id: villa.id, arrivee: jour(95), depart: jour(96), nom: 'Sans Acompte', telephone: '70 55 44 34' })).corps;
+  const d2 = (await appel('GET', '/api/demandes?statut=en_attente', o)).corps.find(x => x.code === dem2.code);
+  await appel('POST', `/api/demandes/${d2.id}/accepter`, o);
+  await expirerReservations(new Date(Date.now() + 3 * 3600e3));
+  assert.equal((await pub('/demandes/' + dem2.code)).corps.statut, 'expiree');
+  assert.ok((await pub(`/recherche?arrivee=${jour(95)}&depart=${jour(96)}`)).corps.some(v => v.id === villa.id), 'les dates sont de nouveau libres');
+  // 3. Clés : refusées sans acompte suffisant, puis remises ; départ après l'heure : une nuit en plus ; avis vérifié.
+  await appel('PATCH', '/api/profil', { ...o, corps: { heure_arrivee: '00:00', heure_depart: '00:00', tolerance_depart_minutes: 0 } });
+  const biens = (await appel('GET', '/api/biens', o)).corps;
+  const k1 = biens.find(b => b.reference === 'K1');
+  const resa = (await appel('POST', '/api/reservations', { ...o, corps: { bien_id: k1.id, client: { nom: 'Séjour Test', telephone: '70 44 33 22' }, arrivee: jour(-1), depart: jour(0) } })).corps;
+  assert.match((await appel('POST', `/api/reservations/${resa.id}/cles`, o)).corps.message, /Acompte insuffisant/);
+  await appel('POST', '/api/paiements', { ...o, corps: { reservation_id: resa.id, montant: 10000, moyen: 'especes' } });
+  assert.equal((await appel('POST', `/api/reservations/${resa.id}/cles`, o)).statut, 200);
+  const sim = (await appel('POST', `/api/reservations/${resa.id}/depart`, { ...o, corps: { simulation: true } })).corps;
+  assert.equal(sim.tardif, true);
+  assert.equal(sim.supplement, 20000);
+  const parti = (await appel('POST', `/api/reservations/${resa.id}/depart`, o)).corps;
+  assert.equal(parti.total, 40000);
+  assert.equal(parti.reste, 30000);
+  assert.ok(parti.code_avis);
+  assert.equal((await pub('/avis/' + parti.code_avis)).statut, 200);
+  assert.equal((await pub('/avis/' + parti.code_avis, { note: 5, commentaire: 'Très propre, accueil parfait', auteur: 'Moussa Traoré' })).statut, 201);
+  assert.equal((await pub('/avis/' + parti.code_avis, { note: 1 })).statut, 409);
+  const fiche = (await pub('/biens/' + villa.id)).corps;
+  assert.equal(fiche.bailleur.note, 5);
+  assert.equal(fiche.avis[0].auteur, 'Moussa');
+  assert.equal(fiche.regles.acompte_pourcent, 50);
+  // 4. Annulations par le client : gratuite longtemps avant, une nuit retenue la veille.
+  await appel('PATCH', '/api/profil', { ...o, corps: { heure_arrivee: '15:00', heure_depart: '12:00', tolerance_depart_minutes: 30 } });
+  const loin = (await appel('POST', '/api/reservations', { ...o, corps: { bien_id: k1.id, client: { nom: 'Loin', telephone: '70 44 33 23' }, arrivee: jour(30), depart: jour(32) } })).corps;
+  await appel('POST', '/api/paiements', { ...o, corps: { reservation_id: loin.id, montant: 20000, moyen: 'especes' } });
+  const a1 = (await appel('POST', `/api/reservations/${loin.id}/annuler`, { ...o, corps: { par: 'client' } })).corps;
+  assert.equal(a1.type, 'gratuite');
+  assert.equal(a1.a_rembourser, 20000);
+  const demain = (await appel('POST', '/api/reservations', { ...o, corps: { bien_id: k1.id, client: { nom: 'Demain', telephone: '70 44 33 24' }, arrivee: jour(1), depart: jour(3) } })).corps;
+  await appel('POST', '/api/paiements', { ...o, corps: { reservation_id: demain.id, montant: 40000, moyen: 'especes' } });
+  const s2 = (await appel('POST', `/api/reservations/${demain.id}/annuler`, { ...o, corps: { par: 'client', simulation: true } })).corps;
+  assert.equal(s2.type, 'tardive');
+  assert.equal(s2.penalite, 20000);
+  assert.equal(s2.a_rembourser, 20000);
+  await appel('POST', `/api/reservations/${demain.id}/annuler`, { ...o, corps: { par: 'client' } });
+  assert.equal((await appel('POST', `/api/reservations/${demain.id}/remboursement`, { ...o, corps: { moyen: 'mobile_money', reference: 'OM-REMB-1' } })).statut, 200);
+  // 5. Le bailleur annule la réservation de la place de marché : pénalité, fiabilité et classement en baisse.
+  const resaPlace = acc.reservation;
+  const ab = (await appel('POST', `/api/reservations/${resaPlace.id}/annuler`, { ...o, corps: { par: 'bailleur', motif: 'Villa en panne' } })).corps;
+  assert.equal(ab.penalite, 0);
+  assert.equal(ab.a_rembourser, 25000);
+  assert.equal(ab.penalite_bailleur, 5000);
+  const apres = (await pub('/biens/' + villa.id)).corps;
+  assert.ok(apres.bailleur.fiabilite < 100);
+  const alternatives = (await appel('GET', `/api/reservations/${resaPlace.id}/alternatives`, o)).corps;
+  assert.ok(alternatives.villas.length > 0 && alternatives.recherche.startsWith('/villas?'));
+});

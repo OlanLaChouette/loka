@@ -14,7 +14,8 @@ const proprietaire = autoriser('proprietaire');
 const garder = (obj, champs) => Object.fromEntries(champs.filter(c => obj[c] !== undefined).map(c => [c, obj[c]]));
 
 // ---------- Entreprise du bailleur ----------
-const CHAMPS_ENTREPRISE = ['nom', 'forme_juridique', 'rccm', 'ifu', 'adresse', 'ville', 'pays', 'telephone', 'email', 'limite_reduction_defaut'];
+const CHAMPS_ENTREPRISE = ['nom', 'forme_juridique', 'rccm', 'ifu', 'adresse', 'ville', 'pays', 'telephone', 'email', 'limite_reduction_defaut',
+  'heure_arrivee', 'heure_depart', 'acompte_pourcent', 'delai_annulation_heures', 'penalite_nuits', 'tolerance_depart_minutes', 'numero_paiement', 'titulaire_paiement'];
 // Adresse de la page publique : le nom, sans accents ni espaces, suivi du début de l'identifiant (donc unique).
 const adressePage = (b) => `${b.nom.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50) || 'residence'}-${b.id.slice(0, 4)}`;
 router.get('/profil', route(async (req, res) => {

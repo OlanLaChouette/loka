@@ -40,6 +40,16 @@ const Bailleur = sequelize.define('Bailleur', {
   origine: { type: DataTypes.ENUM('plateforme', 'inscription'), defaultValue: 'plateforme' },
   // Adresse de la page publique de la résidence : loka.eyamtech.com/r/<page>.
   page: { type: DataTypes.STRING(80), unique: true },
+  // Règles de location (réglables par le bailleur). Heures de Ouagadougou (UTC+0).
+  heure_arrivee: { type: DataTypes.STRING(5), allowNull: false, defaultValue: '15:00' },
+  heure_depart: { type: DataTypes.STRING(5), allowNull: false, defaultValue: '12:00' },
+  acompte_pourcent: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 50, validate: { min: 0, max: 100 } },
+  delai_annulation_heures: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 24, validate: { min: 0 } },
+  penalite_nuits: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1, validate: { min: 0 } },
+  tolerance_depart_minutes: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 30, validate: { min: 0 } },
+  // Numéro Mobile Money où les clients de la place de marché envoient leur acompte.
+  numero_paiement: DataTypes.STRING(30),
+  titulaire_paiement: DataTypes.STRING(120),
 }, { tableName: 'bailleurs' });
 
 // Codes envoyés par e-mail : création d'un espace par le bailleur lui-même, mot de passe oublié.
@@ -130,6 +140,22 @@ const Reservation = sequelize.define('Reservation', {
   // Origine : saisie par l'équipe, ou demande venue de la place de marché (base d'une future commission).
   source: { type: DataTypes.ENUM('interne', 'place_de_marche'), allowNull: false, defaultValue: 'interne' },
   demande_id: DataTypes.UUID,
+  // Déroulé du séjour
+  expire_le: DataTypes.DATE,                         // place de marché : sans acompte avant cette heure, les dates sont libérées
+  cles_remises_le: DataTypes.DATE,
+  parti_le: DataTypes.DATE,
+  supplement: montant(),                             // nuit due pour un départ après l'heure (déjà comprise dans le total)
+  code_avis: { type: DataTypes.STRING(12), unique: true },
+  // Annulation : pénalité retenue au client, somme à lui rendre, pénalité du bailleur (place de marché)
+  annule_le: DataTypes.DATE,
+  annule_par: DataTypes.ENUM('client', 'bailleur', 'absence', 'expiration'),
+  motif_annulation: DataTypes.STRING(255),
+  penalite: montant(),
+  a_rembourser: montant(),
+  rembourse_le: DataTypes.DATE,
+  rembourse_moyen: DataTypes.STRING(20),
+  rembourse_ref: DataTypes.STRING(80),
+  penalite_bailleur: montant(),
 }, { tableName: 'reservations' });
 
 // Demande de réservation envoyée par un client depuis la place de marché : le gérant l'accepte ou la refuse.
@@ -145,13 +171,27 @@ const Demande = sequelize.define('Demande', {
   nom: { type: DataTypes.STRING(160), allowNull: false },
   telephone: { type: DataTypes.STRING(30), allowNull: false },
   message: DataTypes.STRING(500),
-  statut: { type: DataTypes.ENUM('en_attente', 'acceptee', 'refusee', 'annulee'), allowNull: false, defaultValue: 'en_attente' },
+  statut: { type: DataTypes.ENUM('en_attente', 'acceptee', 'refusee', 'annulee', 'expiree'), allowNull: false, defaultValue: 'en_attente' },
+  // Acompte déclaré par le client (référence Mobile Money), à valider par le gérant.
+  acompte_reference: DataTypes.STRING(80),
+  acompte_montant: montant(false),
+  acompte_declare_le: DataTypes.DATE,
   motif_refus: DataTypes.STRING(255),
   code: { type: DataTypes.STRING(12), allowNull: false, unique: true },
   reservation_id: DataTypes.UUID,
   traitee_par: DataTypes.UUID,
   traitee_le: DataTypes.DATE,
 }, { tableName: 'demandes' });
+
+// Avis d'un client sur son séjour : un seul par réservation, uniquement après un vrai séjour.
+const Avis = sequelize.define('Avis', {
+  id, ...lieAuBailleur,
+  reservation_id: { type: DataTypes.UUID, allowNull: false, unique: true },
+  bien_id: { type: DataTypes.UUID, allowNull: false },
+  note: { type: DataTypes.INTEGER, allowNull: false, validate: { min: 1, max: 5 } },
+  commentaire: DataTypes.STRING(600),
+  auteur: DataTypes.STRING(60),
+}, { tableName: 'avis' });
 
 const Bail = sequelize.define('Bail', {
   id, ...lieAuBailleur,
@@ -242,6 +282,8 @@ Client.hasMany(Reservation, { foreignKey: 'client_id' });
 Bien.belongsTo(Bailleur, { foreignKey: 'bailleur_id' });
 Demande.belongsTo(Bien, { foreignKey: 'bien_id' });
 Demande.belongsTo(Site, { foreignKey: 'site_id' });
+Demande.belongsTo(Reservation, { foreignKey: 'reservation_id' });
+Avis.belongsTo(Bien, { foreignKey: 'bien_id' });
 Client.hasMany(Bail, { foreignKey: 'client_id' });
 Reservation.hasMany(Paiement, { foreignKey: 'reservation_id' });
 Bail.belongsTo(Bien, { foreignKey: 'bien_id' });
@@ -254,4 +296,4 @@ Depense.belongsTo(Site, { foreignKey: 'site_id' });
 Depense.belongsTo(Utilisateur, { foreignKey: 'saisie_par', as: 'auteur' });
 Journal.belongsTo(Utilisateur, { foreignKey: 'utilisateur_id' });
 
-module.exports = { sequelize, Utilisateur, Bailleur, Verification, Demande, Membre, Site, Bien, Client, Reservation, Bail, Paiement, ChargeFixe, Depense, Journal, Fichier };
+module.exports = { sequelize, Utilisateur, Bailleur, Verification, Demande, Avis, Membre, Site, Bien, Client, Reservation, Bail, Paiement, ChargeFixe, Depense, Journal, Fichier };

@@ -8,7 +8,7 @@ process.env.DB_MODE = 'proprietaire';
 require('dotenv').config();
 const { Client } = require('pg');
 
-const TABLES_BAILLEUR = ['membres', 'sites', 'biens', 'clients', 'reservations', 'baux', 'paiements', 'charges_fixes', 'depenses', 'journal', 'fichiers', 'demandes'];
+const TABLES_BAILLEUR = ['membres', 'sites', 'biens', 'clients', 'reservations', 'baux', 'paiements', 'charges_fixes', 'depenses', 'journal', 'fichiers', 'demandes', 'avis'];
 const ident = (s) => '"' + String(s).replace(/"/g, '""') + '"';
 const litteral = (s) => "'" + String(s).replace(/'/g, "''") + "'";
 

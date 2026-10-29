@@ -10,6 +10,13 @@ const CHAMPS = [
   ['nom', 'Nom de l’entreprise', true], ['forme_juridique', 'Forme juridique'], ['rccm', 'RCCM'], ['ifu', 'IFU'],
   ['adresse', 'Adresse', true], ['ville', 'Ville'], ['pays', 'Pays'], ['telephone', 'Téléphone'], ['email', 'E-mail'],
 ];
+// Règles de séjour : affichées aux clients, appliquées aux clés, départs et annulations.
+const REGLES = [
+  ['heure_arrivee', 'Arrivées à partir de', 'time'], ['heure_depart', 'Départs avant', 'time'],
+  ['acompte_pourcent', 'Acompte avant la remise des clés (%)'], ['delai_annulation_heures', 'Annulation gratuite jusqu’à (heures avant l’arrivée)'],
+  ['penalite_nuits', 'Pénalité (annulation tardive, absence, départ en retard), en nuits'], ['tolerance_depart_minutes', 'Tolérance au départ (minutes)'],
+  ['numero_paiement', 'Numéro Mobile Money pour les acomptes'], ['titulaire_paiement', 'Nom du titulaire de ce numéro'],
+];
 
 export default function Parametres() {
   const client = useQueryClient();
@@ -19,7 +26,7 @@ export default function Parametres() {
   const [ok, setOk] = useState('');
   useEffect(() => { if (data) setF(data); }, [data]);
   const enregistrer = useMutation({
-    mutationFn: () => api.patch('/profil', { ...Object.fromEntries(CHAMPS.map(([k]) => [k, f[k]])), limite_reduction_defaut: Number(f.limite_reduction_defaut) }),
+    mutationFn: () => api.patch('/profil', { ...Object.fromEntries(CHAMPS.map(([k]) => [k, f[k]])), ...Object.fromEntries(REGLES.map(([k]) => [k, f[k]])), limite_reduction_defaut: Number(f.limite_reduction_defaut) }),
     onSuccess: () => { client.invalidateQueries(); recharger(); setOk('Informations enregistrées.'); },
   });
   const logo = useMutation({
@@ -62,6 +69,8 @@ export default function Parametres() {
         <Erreur message={enregistrer.error && messageErreur(enregistrer.error)} />
         <div className="grille-form" style={{ marginTop: enregistrer.error ? 12 : 0 }}>
           {CHAMPS.map(([k, label, plein]) => <Champ key={k} label={label} plein={plein}><input value={f[k] || ''} onChange={e => setF({ ...f, [k]: e.target.value })} /></Champ>)}
+          <div className="plein" style={{ marginTop: 6 }}><h2 style={{ fontSize: 16 }}>Règles de séjour</h2><p className="petit muet" style={{ margin: '4px 0 0' }}>Affichées aux clients ; Loka les applique aux clés, aux départs et aux annulations.</p></div>
+          {REGLES.map(([k, label, type]) => <Champ key={k} label={label}><input type={type || 'text'} value={f[k] ?? ''} onChange={e => setF({ ...f, [k]: e.target.value })} inputMode={type ? undefined : (/heure|pourcent|nuits|minutes/.test(k) ? 'numeric' : k === 'numero_paiement' ? 'tel' : undefined)} /></Champ>)}
           <Champ label="Réduction maximale d’un gérant sans votre accord (%)" plein><input value={f.limite_reduction_defaut} onChange={e => setF({ ...f, limite_reduction_defaut: e.target.value.replace(/\D/g, '') })} inputMode="numeric" /></Champ>
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
