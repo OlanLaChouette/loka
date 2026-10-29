@@ -497,3 +497,18 @@ test('séjour : acompte de la place de marché, clés, départ tardif, avis, ann
   const alternatives = (await appel('GET', `/api/reservations/${resaPlace.id}/alternatives`, o)).corps;
   assert.ok(alternatives.villas.length > 0 && alternatives.recherche.startsWith('/villas?'));
 });
+
+test('ajout de plusieurs biens publiés d’un coup, et publication de tout un site', async () => {
+  const issa = await connecter('70111111');
+  const o = { jeton: issa.jeton, espace: issa.espaces[0].id };
+  const site = (await appel('POST', '/api/sites', { ...o, corps: { nom: 'Site Lot', ville: 'Ouagadougou', quartier: 'Tampouy' } })).corps;
+  const lot = await appel('POST', '/api/biens/lot', { ...o, corps: { site_id: site.id, prefixe: 'P', debut: 1, fin: 3, prix: 28000, publie: true, capacite: 5, equipements: ['clim', 'wifi'] } });
+  assert.equal(lot.corps.crees, 3);
+  const publies = (await appel('GET', '/api/public/recherche?quartier=Tampouy')).corps;
+  assert.equal(publies.length, 3);
+  assert.ok(publies.every(v => v.capacite === 5 && v.equipements.includes('wifi')));
+  assert.equal((await appel('POST', `/api/sites/${site.id}/publication`, { ...o, corps: { publie: false } })).corps.modifies, 3);
+  assert.equal((await appel('GET', '/api/public/recherche?quartier=Tampouy')).corps.length, 0);
+  await appel('POST', `/api/sites/${site.id}/publication`, { ...o, corps: { publie: true } });
+  assert.equal((await appel('GET', '/api/public/recherche?quartier=Tampouy')).corps.length, 3);
+});

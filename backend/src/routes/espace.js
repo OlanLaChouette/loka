@@ -1,6 +1,7 @@
 // Ce qui structure l'espace d'un bailleur : son entreprise, ses membres, ses sites, ses biens, ses charges fixes.
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
+const { Op } = require('sequelize');
 const { sequelize, Bailleur, Utilisateur, Membre, Site, Bien, ChargeFixe, Fichier, Reservation, Bail, Depense } = require('../models');
 const { recevoirLogo, recevoirPhoto, enregistrer, envoyer } = require('../utils/fichiers');
 const { authentifier, espace, autoriser, ecriture, portee, verifierSite } = require('../middleware/auth');
@@ -117,7 +118,7 @@ router.post('/biens', proprietaire, route(async (req, res) => {
 }));
 // Ajout de plusieurs biens d'un coup : par exemple A1 à A10, même type et même prix.
 router.post('/biens/lot', proprietaire, route(async (req, res) => {
-  const { site_id, prefixe = '', debut = 1, fin, type = 'villa', mode = 'nuit', prix, standing, pieces } = req.body || {};
+  const { site_id, prefixe = '', debut = 1, fin, type = 'villa', mode = 'nuit', prix, standing, pieces, publie, capacite, equipements, description } = req.body || {};
   const site = await Site.findOne({ where: { id: site_id || null, bailleur_id: req.espace.id } });
   if (!site) throw new Erreur(400, 'Site inconnu');
   const a = Number(debut), b = Number(fin);
@@ -126,12 +127,26 @@ router.post('/biens/lot', proprietaire, route(async (req, res) => {
   const lignes = [];
   for (let n = a; n <= b; n++) {
     const reference = `${prefixe}${n}`;
-    if (!existants.has(reference)) lignes.push({ bailleur_id: req.espace.id, site_id: site.id, reference, type, mode, standing: standing || null, pieces: pieces || null, prix_nuit: mode === 'nuit' ? Number(prix) || 0 : null, prix_mois: mode === 'mois' ? Number(prix) || 0 : null });
+    if (!existants.has(reference)) lignes.push({
+      bailleur_id: req.espace.id, site_id: site.id, reference, type, mode, standing: standing || null, pieces: pieces || null,
+      prix_nuit: mode === 'nuit' ? Number(prix) || 0 : null, prix_mois: mode === 'mois' ? Number(prix) || 0 : null,
+      // Place de marché (location à la nuit seulement)
+      publie: mode === 'nuit' && !!publie, capacite: capacite ? Number(capacite) : null, equipements: Array.isArray(equipements) ? equipements : [], description: description || null,
+    });
   }
   if (!lignes.length) throw new Erreur(409, 'Ces références existent déjà sur ce site');
   const crees = await Bien.bulkCreate(lignes, { validate: true });
   await noter(req, 'bien_ajoute', 'bien', null, { nombre: crees.length, de: lignes[0].reference, a: lignes[lignes.length - 1].reference });
   res.status(201).json({ crees: crees.length, ignores: b - a + 1 - crees.length });
+}));
+
+// Publier (ou retirer) d'un coup toutes les villas à la nuit d'un site sur la place de marché.
+router.post('/sites/:id/publication', proprietaire, route(async (req, res) => {
+  const site = await Site.findOne({ where: { id: req.params.id, bailleur_id: req.espace.id } });
+  if (!site) throw new Erreur(404, 'Site introuvable');
+  const publie = !!req.body?.publie;
+  const [n] = await Bien.update({ publie }, { where: { bailleur_id: req.espace.id, site_id: site.id, mode: 'nuit', etat: { [Op.ne]: 'retire' } } });
+  res.json({ modifies: n, publie });
 }));
 
 // Supprimer un bien n'est possible que s'il n'a encore rien enregistré ; sinon on le retire de la location.

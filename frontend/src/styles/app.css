@@ -272,3 +272,7 @@ table.tableau { width: 100%; border-collapse: collapse; font-size: 14px; }
 
 .page-publique { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; border-color: var(--violet); }
 .lien-public { display: inline-block; margin-top: 8px; font-weight: 700; color: var(--violet-texte); word-break: break-all; }
+
+.entete-site { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.entete-site > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.actions-site { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }

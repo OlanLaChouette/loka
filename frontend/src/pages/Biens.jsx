@@ -64,12 +64,13 @@ function FormulaireBien({ bien, sites, onFermer }) {
 
 function FormulaireLot({ sites, onFermer }) {
   const client = useQueryClient();
-  const [f, setF] = useState({ site_id: sites[0]?.id || '', prefixe: 'V', debut: '1', fin: '10', type: 'villa', mode: 'nuit', prix: '', standing: '', pieces: '' });
+  const [f, setF] = useState({ site_id: sites[0]?.id || '', prefixe: 'V', debut: '1', fin: '10', type: 'villa', mode: 'nuit', prix: '', standing: '', pieces: '', publie: true, capacite: '', equipements: [], description: '' });
+  const basculer = (e) => setF({ ...f, equipements: f.equipements.includes(e) ? f.equipements.filter(x => x !== e) : [...f.equipements, e] });
   const maj = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const [fait, setFait] = useState(null);
   const n = Math.max(0, Number(f.fin) - Number(f.debut) + 1);
   const envoi = useMutation({
-    mutationFn: () => api.post('/biens/lot', { ...f, debut: Number(f.debut), fin: Number(f.fin), prix: Number(f.prix) || 0, pieces: f.pieces ? Number(f.pieces) : null }).then(r => r.data),
+    mutationFn: () => api.post('/biens/lot', { ...f, debut: Number(f.debut), fin: Number(f.fin), prix: Number(f.prix) || 0, pieces: f.pieces ? Number(f.pieces) : null, capacite: f.capacite ? Number(f.capacite) : null }).then(r => r.data),
     onSuccess: (r) => { client.invalidateQueries(); setFait(r); },
   });
   if (fait) return (
@@ -95,6 +96,22 @@ function FormulaireLot({ sites, onFermer }) {
         <Champ label={f.mode === 'nuit' ? 'Prix par nuit (FCFA)' : 'Loyer mensuel (FCFA)'}><input value={f.prix} onChange={maj('prix')} inputMode="numeric" /></Champ>
         <Champ label="Chambres"><input value={f.pieces} onChange={maj('pieces')} inputMode="numeric" /></Champ>
         <Champ label="Standing" plein><input value={f.standing} onChange={maj('standing')} placeholder="Standing, haut standing…" /></Champ>
+        {f.mode === 'nuit' && <>
+          <div className="plein publication">
+            <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 700, color: 'var(--texte)' }}>
+              <input type="checkbox" checked={f.publie} onChange={e => setF({ ...f, publie: e.target.checked })} />
+              Publier ces villas sur la place de marché Loka
+            </label>
+            <span className="petit muet">Ajoutez ensuite les photos de chacune (icône d’appareil photo) : les villas avec photos sont bien mieux classées.</span>
+          </div>
+          {f.publie && <>
+            <Champ label="Personnes (capacité)"><input value={f.capacite} onChange={maj('capacite')} inputMode="numeric" placeholder="4" /></Champ>
+            <Champ label="Description pour les clients" plein><textarea rows={2} value={f.description} onChange={maj('description')} placeholder="Villa meublée, climatisée…" /></Champ>
+            <div className="plein"><span className="petit muet" style={{ fontWeight: 600 }}>Équipements (communs à ces villas)</span>
+              <div className="choix-equipements">{Object.entries(EQUIPEMENTS).map(([k, v]) => <button key={k} type="button" className={f.equipements.includes(k) ? 'actif' : ''} onClick={() => basculer(k)}>{v}</button>)}</div>
+            </div>
+          </>}
+        </>}
       </div>
       {n > 0 && n <= 100 && <p className="petit muet" style={{ margin: 0 }}>Seront créés : {f.prefixe}{f.debut}{n > 1 ? ` … ${f.prefixe}${f.fin}` : ''}. Les références déjà présentes sont ignorées.</p>}
     </Modale>
@@ -149,6 +166,7 @@ export default function Biens() {
   const [photos, setPhotos] = useState(null);
   const [params, setParams] = useSearchParams();
   const supprimerSite = useMutation({ mutationFn: (id) => api.delete('/sites/' + id), onSuccess: () => client.invalidateQueries() });
+  const publication = useMutation({ mutationFn: ({ id, publie }) => api.post(`/sites/${id}/publication`, { publie }), onSuccess: () => client.invalidateQueries() });
   useEffect(() => {
     const action = params.get('action');
     if (!action || role !== 'proprietaire') return;
@@ -175,10 +193,14 @@ export default function Biens() {
         const liste = biens.filter(b => b.site_id === s.id);
         return (
           <section key={s.id} className="carte">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
-              <h2>{s.nom}</h2>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div className="entete-site">
+              <div><h2>{s.nom}</h2>
                 <span className="petit muet">{[s.quartier, s.ville, `${liste.length} bien${liste.length > 1 ? 's' : ''}`, liste.some(b => b.publie) ? `${liste.filter(b => b.publie).length} en ligne` : ''].filter(Boolean).join(' · ')}</span>
+              </div>
+              <span className="actions-site">
+                {proprio && liste.some(b => b.mode === 'nuit') && (liste.filter(b => b.mode === 'nuit').every(b => b.publie)
+                  ? <button className="bouton discret petit" onClick={() => window.confirm(`Retirer toutes les villas de ${s.nom} de la place de marché ?`) && publication.mutate({ id: s.id, publie: false })}>Retirer de la place de marché</button>
+                  : <button className="bouton discret petit" onClick={() => publication.mutate({ id: s.id, publie: true })}>Tout publier</button>)}
                 {proprio && <button className="bouton discret petit" onClick={() => setSiteEdite(s)}>Modifier</button>}
                 {proprio && !liste.length && <button className="bouton discret danger petit" onClick={() => window.confirm(`Supprimer le site ${s.nom} ?`) && supprimerSite.mutate(s.id)}>Supprimer</button>}
               </span>
