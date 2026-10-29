@@ -38,6 +38,8 @@ const Bailleur = sequelize.define('Bailleur', {
   limite_reduction_defaut: { type: DataTypes.INTEGER, defaultValue: 10, validate: { min: 0, max: 100 } },
   dernier_numero_recu: { type: DataTypes.INTEGER, defaultValue: 0 },
   origine: { type: DataTypes.ENUM('plateforme', 'inscription'), defaultValue: 'plateforme' },
+  // Adresse de la page publique de la résidence : loka.eyamtech.com/r/<page>.
+  page: { type: DataTypes.STRING(80), unique: true },
 }, { tableName: 'bailleurs' });
 
 // Codes envoyés par e-mail : création d'un espace par le bailleur lui-même, mot de passe oublié.

@@ -15,7 +15,10 @@ const garder = (obj, champs) => Object.fromEntries(champs.filter(c => obj[c] !==
 
 // ---------- Entreprise du bailleur ----------
 const CHAMPS_ENTREPRISE = ['nom', 'forme_juridique', 'rccm', 'ifu', 'adresse', 'ville', 'pays', 'telephone', 'email', 'limite_reduction_defaut'];
+// Adresse de la page publique : le nom, sans accents ni espaces, suivi du début de l'identifiant (donc unique).
+const adressePage = (b) => `${b.nom.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50) || 'residence'}-${b.id.slice(0, 4)}`;
 router.get('/profil', route(async (req, res) => {
+  if (!req.espace.page && req.role === 'proprietaire') await req.espace.update({ page: adressePage(req.espace) });
   res.json({ ...req.espace.toJSON(), logo: req.espace.logo_id ? `/api/fichiers/logo/${req.espace.id}` : null, mon_role: req.role });
 }));
 router.patch('/profil', proprietaire, route(async (req, res) => {

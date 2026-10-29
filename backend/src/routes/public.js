@@ -145,6 +145,16 @@ router.post('/demandes', limiteur, route(async (req, res) => {
   res.status(201).json({ code: demande.code, total: demande.total, nuits });
 }));
 
+// Page publique d'une résidence (un bailleur) : ses villas publiées, à partager sur Facebook et WhatsApp.
+router.get('/residences/:page', route(async (req, res) => {
+  await plateforme();
+  const bailleur = await Bailleur.findOne({ where: { page: String(req.params.page).slice(0, 80), statut: { [Op.in]: ['essai', 'actif'] } }, attributes: ['id', 'nom', 'ville', 'logo_id'] });
+  if (!bailleur) throw new Erreur(404, 'Cette page n’existe pas ou n’est plus disponible');
+  const biens = await Bien.findAll({ where: { ...visibles, bailleur_id: bailleur.id }, include: avecSiteEtBailleur });
+  biens.sort((a, b) => (b.photos.length > 0) - (a.photos.length > 0) || a.prix_nuit - b.prix_nuit);
+  res.json({ nom: bailleur.nom, ville: bailleur.ville, logo: bailleur.logo_id ? `/api/fichiers/logo/${bailleur.id}` : null, villas: biens.map(b => fiche(b)) });
+}));
+
 // Suivi par le client, avec le code reçu (sans compte).
 router.get('/demandes/:code', route(async (req, res) => {
   await plateforme();

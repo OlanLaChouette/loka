@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Camera, Plus, Trash2 } from 'lucide-react';
+import { Camera, Plus, Share2, Trash2 } from 'lucide-react';
+import { partagerLien } from '../lib/partage';
 import { api, messageErreur } from '../lib/api';
 import { useSession } from '../lib/session';
 import { EQUIPEMENTS, fcfa, TYPES_BIEN } from '../lib/format';
@@ -195,6 +196,7 @@ export default function Biens() {
                         <td className="nombre">{b.mode === 'nuit' ? fcfa(b.prix_nuit) + ' / nuit' : fcfa(b.prix_mois) + ' / mois'}</td>
                         <td><Puce statut={b.etat} /></td>
                         <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                          {b.publie && b.mode === 'nuit' && <button className="bouton discret" onClick={() => partagerLien(`/villas/${b.id}`, `${TYPES_BIEN[b.type]} ${b.standing || ''} à louer · ${fcfa(b.prix_nuit)} / nuit — ${s.nom}`.replace(/\s+/g, ' '))} aria-label={`Partager ${b.reference}`} title="Partager l’annonce"><Share2 size={15} /></button>}
                           <button className="bouton discret" onClick={() => setPhotos(b.id)} aria-label={`Photos de ${b.reference}`}><Camera size={15} />{b.photos?.length || (role === 'comptable' ? 0 : '+')}</button>
                           {proprio && <button className="bouton discret" onClick={() => setEdition(b)}>Modifier</button>}
                           {role === 'gerant' && b.etat !== 'retire' && (

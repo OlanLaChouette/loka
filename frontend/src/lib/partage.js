@@ -86,3 +86,20 @@ export const messages = {
   relanceSejour: ({ client, montant, bien, bailleur }) =>
     `Bonjour ${client || ''}, il reste ${fcfa(montant)} à régler pour votre séjour (${bien}). Vous pouvez payer en espèces ou par Mobile Money. Merci ! ${bailleur || ''}`.trim(),
 };
+
+// Adresse publique du site (l'application Android tourne sur « localhost » : on ne peut pas s'en servir pour partager).
+export const SITE_PUBLIC = 'https://loka.eyamtech.com';
+
+// Partage d'un lien : partage du téléphone si possible, sinon WhatsApp avec le message prêt.
+export async function partagerLien(chemin, texte) {
+  const url = SITE_PUBLIC + chemin;
+  if (natif()) {
+    const { Share } = await import('@capacitor/share');
+    await Share.share({ text: texte, url, dialogTitle: 'Partager' });
+    return;
+  }
+  if (navigator.share) {
+    try { await navigator.share({ text: texte, url }); return; } catch (e) { if (e.name === 'AbortError') return; }
+  }
+  window.open(`https://wa.me/?text=${encodeURIComponent(texte + ' ' + url)}`, '_blank', 'noopener');
+}

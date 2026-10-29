@@ -406,3 +406,14 @@ test('place de marché : recherche publique tous bailleurs, disponibilité réel
   // Le client devient un client connu du bailleur.
   assert.equal((await appel('GET', '/api/clients/recherche?telephone=76543210', o)).corps.nom, 'Client Place');
 });
+
+test('page publique d’une résidence, à partager', async () => {
+  const issa = await connecter('70111111');
+  const profil = (await appel('GET', '/api/profil', { jeton: issa.jeton, espace: issa.espaces[0].id })).corps;
+  assert.match(profil.page, /^residences-kabore-[0-9a-f]{4}$/);
+  const page = await appel('GET', '/api/public/residences/' + profil.page);
+  assert.equal(page.statut, 200);
+  assert.equal(page.corps.nom, 'Résidences Kaboré');
+  assert.ok(page.corps.villas.length > 0 && page.corps.villas.every(v => v.bailleur.nom === 'Résidences Kaboré'));
+  assert.equal((await appel('GET', '/api/public/residences/inconnue-0000')).statut, 404);
+});

@@ -20,7 +20,7 @@ export function EnteteMarche() {
 export const titreVilla = (v) => [TYPES_BIEN[v.type] || 'Villa', v.standing, v.chambres ? `${v.chambres} ch.` : ''].filter(Boolean).join(' · ');
 export const lieuVilla = (v) => [v.lieu.quartier, v.lieu.ville].filter(Boolean).join(', ');
 
-function CarteVilla({ v, criteres }) {
+export function CarteVilla({ v, criteres }) {
   const nav = useNavigate();
   const suite = new URLSearchParams(Object.entries(criteres).filter(([k, x]) => x && ['arrivee', 'depart', 'personnes'].includes(k))).toString();
   return (

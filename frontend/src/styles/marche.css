@@ -83,3 +83,7 @@
   .mc-recherche .mc-dates, .mc-recherche .mc-equipements, .mc-recherche .mc-actions, .mc-recherche .mc-note { grid-column: 1 / -1; }
   .mc-galerie img { flex-basis: 70%; }
 }
+
+.mc-residence { text-align: center; }
+.mc-residence h1, .mc-residence > p { margin-left: auto; margin-right: auto; }
+.mc-logo-residence { width: 84px; height: 84px; object-fit: contain; background: #fff; border-radius: 20px; padding: 8px; margin: 0 auto 12px; display: block; box-shadow: 0 10px 30px rgba(20,10,80,.3); }

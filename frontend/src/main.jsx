@@ -14,6 +14,7 @@ import Vitrine from './pages/Vitrine';
 import Villas from './pages/Villas';
 import VillaDetail from './pages/VillaDetail';
 import SuiviDemande from './pages/SuiviDemande';
+import Residence from './pages/Residence';
 import Inscription from './pages/Inscription';
 import MotDePasseOublie from './pages/MotDePasseOublie';
 import Apercu from './pages/Apercu';
@@ -57,6 +58,7 @@ function Application() {
       <Route path="/villas" element={<Villas />} />
       <Route path="/villas/:id" element={<VillaDetail />} />
       <Route path="/demande/:code" element={<SuiviDemande />} />
+      <Route path="/r/:page" element={<Residence />} />
       <Route path="/inscription" element={pret && utilisateur ? <Navigate to="/" replace /> : <Inscription />} />
       <Route path="/mot-de-passe-oublie" element={pret && utilisateur ? <Navigate to="/" replace /> : <MotDePasseOublie />} />
       <Route element={<Cadre />}>

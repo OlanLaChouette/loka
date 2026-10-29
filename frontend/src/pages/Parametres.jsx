@@ -4,6 +4,7 @@ import { api, messageErreur, urlFichier } from '../lib/api';
 import { useSession } from '../lib/session';
 import { Chargement, Champ, Erreur, Puce } from '../composants/Ui';
 import { compresserImage } from '../lib/image';
+import { partagerLien, SITE_PUBLIC } from '../lib/partage';
 
 const CHAMPS = [
   ['nom', 'Nom de l’entreprise', true], ['forme_juridique', 'Forme juridique'], ['rccm', 'RCCM'], ['ifu', 'IFU'],
@@ -47,6 +48,16 @@ export default function Parametres() {
           </label>
         </div>
       </section>
+      {data.page && (
+        <section className="carte page-publique">
+          <div style={{ flex: 1, minWidth: 220 }}>
+            <h2>Votre page publique</h2>
+            <p className="petit muet" style={{ margin: '4px 0 0' }}>Vos villas publiées, avec photos et dates libres. Partagez-la sur Facebook, dans vos statuts et groupes WhatsApp : les clients vous envoient leurs demandes dans Loka.</p>
+            <a className="lien-public" href={`${SITE_PUBLIC}/r/${data.page}`} target="_blank" rel="noreferrer">{SITE_PUBLIC.replace('https://', '')}/r/{data.page}</a>
+          </div>
+          <button type="button" className="bouton principal" onClick={() => partagerLien(`/r/${data.page}`, `Découvrez nos villas meublées à louer — ${data.nom}`)}>Partager</button>
+        </section>
+      )}
       <section className="carte">
         <Erreur message={enregistrer.error && messageErreur(enregistrer.error)} />
         <div className="grille-form" style={{ marginTop: enregistrer.error ? 12 : 0 }}>
