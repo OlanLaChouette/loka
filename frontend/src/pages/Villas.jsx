@@ -1,18 +1,30 @@
 // Place de marché : un client cherche une villa selon SES critères (lieu, dates, budget, équipements),
 // parmi tous les bailleurs qui publient sur Loka. Disponibilités réelles, tirées des plannings.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { BedDouble, LocateFixed, MapPin, Search, SlidersHorizontal, Star, Users } from 'lucide-react';
+import { BedDouble, ClipboardList, LocateFixed, MapPin, Search, SlidersHorizontal, Star, Users } from 'lucide-react';
+import { lienRecherche, mesDemandes, retenirRecherche } from '../lib/mesDemandes';
 import { api, messageErreur, urlFichier } from '../lib/api';
 import { ajouterJours, aujourdhui, dateCourte, EQUIPEMENTS, fcfa, TYPES_BIEN } from '../lib/format';
 import '../styles/marche.css';
 
+// Nombre de demandes gardées sur ce téléphone (mis à jour quand une demande est ajoutée ou retirée).
+export function useNombreDemandes() {
+  const [n, setN] = useState(() => mesDemandes().length);
+  useEffect(() => { const maj = () => setN(mesDemandes().length); window.addEventListener('loka-mes-demandes', maj); window.addEventListener('storage', maj); return () => { window.removeEventListener('loka-mes-demandes', maj); window.removeEventListener('storage', maj); }; }, []);
+  return n;
+}
+
 export function EnteteMarche() {
+  const n = useNombreDemandes();
   return (
     <header className="mc-entete">
       <Link to="/villas" className="mc-marque"><img src="/logo.svg" width="30" height="30" alt="" />Loka <span>Villas</span></Link>
-      <Link to="/bienvenue" className="mc-lien-bailleur">Vous êtes bailleur ?</Link>
+      <nav className="mc-nav" aria-label="Navigation">
+        <Link to={lienRecherche()}><Search size={17} /><span>Rechercher</span></Link>
+        <Link to="/mes-demandes"><ClipboardList size={17} /><span>Mes demandes</span>{n > 0 && <i>{n}</i>}</Link>
+      </nav>
     </header>
   );
 }
@@ -57,6 +69,8 @@ export default function Villas() {
   const { data: lieux = [] } = useQuery({ queryKey: ['public', 'lieux'], queryFn: () => api.get('/public/lieux').then(r => r.data), staleTime: 300000 });
   const { data: villas, isPending: isLoading, error } = useQuery({ queryKey: ['public', 'recherche', criteres], queryFn: () => api.get('/public/recherche', { params: criteres }).then(r => r.data) });
   const quartiers = lieux.find(l => l.ville === f.ville)?.quartiers || [];
+  const nDemandes = useNombreDemandes();
+  useEffect(() => { retenirRecherche(params.toString() ? '?' + params.toString() : ''); }, [params]);
   const maj = (k) => (e) => setF({ ...f, [k]: e.target.value });
 
   function chercher(extra = {}) {
@@ -113,6 +127,7 @@ export default function Villas() {
       </section>
 
       <main className="mc-resultats">
+        {nDemandes > 0 && <Link to="/mes-demandes" className="mc-rappel">Vous avez {nDemandes} demande{nDemandes > 1 ? 's' : ''} : suivez la réponse du gérant →</Link>}
         {error && <div className="mc-alerte">{messageErreur(error)}</div>}
         {isLoading ? <p className="mc-note">Recherche des villas libres…</p> : villas && (
           <>
@@ -122,7 +137,7 @@ export default function Villas() {
           </>
         )}
       </main>
-      <footer className="mc-pied">Loka · par eYamTech · <Link to="/bienvenue">Vous louez des villas ? Gérez-les avec Loka</Link></footer>
+      <footer className="mc-pied">Loka · par eYamTech · <Link to="/bienvenue">Vous êtes bailleur ? Gérez vos villas avec Loka</Link></footer>
     </div>
   );
 }

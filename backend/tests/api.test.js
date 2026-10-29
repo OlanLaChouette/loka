@@ -512,3 +512,22 @@ test('ajout de plusieurs biens publiés d’un coup, et publication de tout un s
   await appel('POST', `/api/sites/${site.id}/publication`, { ...o, corps: { publie: true } });
   assert.equal((await appel('GET', '/api/public/recherche?quartier=Tampouy')).corps.length, 3);
 });
+
+test('place de marché : deux demandes sur les mêmes dates, le client est prévenu puis peut confirmer', async () => {
+  const pub = (chemin, corps) => appel(corps ? 'POST' : 'GET', '/api/public' + chemin, corps ? { corps } : {});
+  const jour = (j) => new Date(Date.now() + j * 864e5).toISOString().slice(0, 10);
+  const villas = (await pub('/recherche')).corps;
+  const [v1, v2] = villas.filter(v => v.lieu.ville === 'Ouagadougou');
+  const client = { nom: 'Double Demande', telephone: '+226 77 66 55 44', arrivee: jour(120), depart: jour(123) };
+  assert.equal((await pub('/demandes', { ...client, bien_id: v1.id })).statut, 201);
+  // Même numéro écrit autrement, dates qui se chevauchent, autre villa : avertissement.
+  const r = await pub('/demandes', { ...client, telephone: '77665544', arrivee: jour(121), depart: jour(122), bien_id: v2.id });
+  assert.equal(r.statut, 409);
+  assert.equal(r.corps.details.code, 'chevauchement');
+  assert.equal(r.corps.details.demandes.length, 1);
+  assert.ok(!('code' in r.corps.details.demandes[0]), 'aucun code de suivi n’est révélé');
+  // Le client confirme : la seconde demande part.
+  assert.equal((await pub('/demandes', { ...client, telephone: '77665544', arrivee: jour(121), depart: jour(122), bien_id: v2.id, confirmer: true })).statut, 201);
+  // D'autres dates : aucune alerte.
+  assert.equal((await pub('/demandes', { ...client, arrivee: jour(130), depart: jour(131), bien_id: v2.id })).statut, 201);
+});

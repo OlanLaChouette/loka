@@ -16,6 +16,7 @@ import VillaDetail from './pages/VillaDetail';
 import SuiviDemande from './pages/SuiviDemande';
 import Residence from './pages/Residence';
 import Avis from './pages/Avis';
+import MesDemandes from './pages/MesDemandes';
 import Inscription from './pages/Inscription';
 import MotDePasseOublie from './pages/MotDePasseOublie';
 import Apercu from './pages/Apercu';
@@ -61,6 +62,7 @@ function Application() {
       <Route path="/demande/:code" element={<SuiviDemande />} />
       <Route path="/r/:page" element={<Residence />} />
       <Route path="/avis/:code" element={<Avis />} />
+      <Route path="/mes-demandes" element={<MesDemandes />} />
       <Route path="/inscription" element={pret && utilisateur ? <Navigate to="/" replace /> : <Inscription />} />
       <Route path="/mot-de-passe-oublie" element={pret && utilisateur ? <Navigate to="/" replace /> : <MotDePasseOublie />} />
       <Route element={<Cadre />}>

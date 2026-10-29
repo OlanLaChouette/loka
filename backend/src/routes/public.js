@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const { Op } = require('sequelize');
 const { fn, col } = require('sequelize');
+const { sequelize } = require('../models');
 const { Bien, Site, Bailleur, Reservation, Demande, Fichier, Avis, Paiement } = require('../models');
 const { Erreur, route } = require('../utils/erreurs');
 const { definir } = require('../middleware/contexte');
@@ -160,6 +161,25 @@ router.post('/demandes', limiteur, route(async (req, res) => {
   const b = await Bien.findOne({ where: { ...visibles, id: bien_id }, include: avecSiteEtBailleur });
   if (!b) throw new Erreur(404, 'Villa introuvable ou plus proposée');
   if ((await occupe([b.id], arrivee, depart)).length) throw new Erreur(409, 'Ces dates ne sont plus libres pour cette villa. Essayez d’autres dates.');
+  // Le même client (même numéro) a peut-être déjà une demande en cours sur ces dates, ailleurs : on le prévient
+  // (il peut confirmer s'il veut vraiment deux villas). Seules les dates et le lieu sont rappelés, jamais d'autre détail.
+  if (!req.body?.confirmer) {
+    const huit = telephone.replace(/\D/g, '').slice(-8);
+    const memes = await Demande.findAll({
+      where: {
+        statut: { [Op.in]: ['en_attente', 'acceptee'] }, arrivee: { [Op.lt]: depart }, depart: { [Op.gt]: arrivee },
+        [Op.and]: sequelize.where(fn('right', fn('regexp_replace', col('Demande.telephone'), '\\D', '', 'g'), 8), huit),
+      },
+      include: [{ model: Bien, attributes: ['type', 'standing'], include: [{ model: Site, attributes: ['quartier', 'ville'] }] }, { model: Reservation, attributes: ['statut'] }],
+    });
+    const actives = memes.filter(d => !d.Reservation || d.Reservation.statut !== 'annulee');
+    if (actives.length) {
+      throw new Erreur(409, 'Vous avez déjà une demande en cours sur ces dates.', {
+        code: 'chevauchement',
+        demandes: actives.map(d => ({ arrivee: d.arrivee, depart: d.depart, statut: d.statut, type: d.Bien?.type, standing: d.Bien?.standing, lieu: [d.Bien?.Site?.quartier, d.Bien?.Site?.ville].filter(Boolean).join(', ') })),
+      });
+    }
+  }
   // Écriture dans l'espace du bailleur seulement : on quitte le mode plateforme.
   await definir('app.plateforme', '');
   await definir('app.bailleur_id', b.bailleur_id);

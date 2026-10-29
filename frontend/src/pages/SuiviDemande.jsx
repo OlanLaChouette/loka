@@ -1,6 +1,6 @@
 // Suivi d'une demande par le client, avec son code (sans compte) : réponse du gérant, acompte Mobile Money à envoyer
 // dans le délai (puis saisie de la référence), annulation selon les règles, et avis après le séjour.
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { MessageCircle, Phone, Star } from 'lucide-react';
@@ -8,6 +8,7 @@ import { api, messageErreur } from '../lib/api';
 import { dateCourte, fcfa } from '../lib/format';
 import { ouvrirWhatsApp } from '../lib/partage';
 import { EnteteMarche, titreVilla } from './Villas';
+import { lienRecherche, retenirDemande } from '../lib/mesDemandes';
 import '../styles/marche.css';
 
 const ETATS = {
@@ -25,6 +26,9 @@ export default function SuiviDemande() {
   const client = useQueryClient();
   const { data: d, isPending: isLoading, error } = useQuery({ queryKey: ['public', 'demande', code], queryFn: () => api.get('/public/demandes/' + code).then(r => r.data), refetchInterval: 30000 });
   const [reference, setReference] = useState('');
+  useEffect(() => {
+    if (d) retenirDemande({ code: d.code, titre: titreVilla(d.villa), lieu: [d.villa.lieu.quartier, d.villa.lieu.ville].filter(Boolean).join(', '), arrivee: d.arrivee, depart: d.depart, terminee: ['refusee', 'annulee', 'expiree'].includes(d.statut) || d.sejour?.statut === 'annulee' });
+  }, [d]);
   const [annuler, setAnnuler] = useState(false);
   const recharger = () => client.invalidateQueries({ queryKey: ['public', 'demande', code] });
   const declarer = useMutation({ mutationFn: () => api.post(`/public/demandes/${code}/acompte`, { reference }), onSuccess: recharger });
@@ -97,7 +101,7 @@ export default function SuiviDemande() {
             )}
 
             <p className="mc-note">Code de suivi : <b>{d.code}</b></p>
-            {['refusee', 'expiree', 'annulee'].includes(d.statut) && <Link to="/villas" className="mc-bouton clair">Chercher une autre villa</Link>}
+            <div className="mc-actions"><Link to="/mes-demandes" className="mc-bouton clair">Mes demandes</Link><Link to={lienRecherche()} className="mc-bouton clair">Chercher une villa</Link></div>
           </div>
         )}
       </main>

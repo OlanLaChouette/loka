@@ -1,11 +1,12 @@
 // Fiche publique d'une villa : photos, équipements, nuits déjà prises, et demande de réservation.
 import { useState } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { ArrowLeft, BedDouble, Check, MapPin, Users } from 'lucide-react';
 import { api, messageErreur, urlFichier } from '../lib/api';
 import { ajouterJours, aujourdhui, dateCourte, EQUIPEMENTS, fcfa } from '../lib/format';
 import { EnteteMarche, Etoiles, lieuVilla, titreVilla } from './Villas';
+import { chevauchements, lienRecherche, retenirDemande } from '../lib/mesDemandes';
 import '../styles/marche.css';
 
 export default function VillaDetail() {
@@ -13,8 +14,15 @@ export default function VillaDetail() {
   const [params] = useSearchParams();
   const { data: v, isPending: isLoading, error } = useQuery({ queryKey: ['public', 'villa', id], queryFn: () => api.get('/public/biens/' + id).then(r => r.data) });
   const [f, setF] = useState({ arrivee: params.get('arrivee') || '', depart: params.get('depart') || '', nom: '', telephone: '', message: '' });
+  const nav = useNavigate();
   const [envoye, setEnvoye] = useState(null);
-  const demande = useMutation({ mutationFn: () => api.post('/public/demandes', { bien_id: id, ...f }).then(r => r.data), onSuccess: setEnvoye });
+  const [confirmer, setConfirmer] = useState(false);
+  const demande = useMutation({
+    mutationFn: () => api.post('/public/demandes', { bien_id: id, ...f, confirmer }).then(r => r.data),
+    onSuccess: (r) => { retenirDemande({ code: r.code, titre: titreVilla(v), lieu: lieuVilla(v), arrivee: f.arrivee, depart: f.depart }); setEnvoye(r); },
+  });
+  // Le serveur a trouvé une autre demande de ce numéro sur ces dates (peut-être depuis un autre téléphone).
+  const doublonServeur = demande.error?.response?.data?.details?.code === 'chevauchement' ? demande.error.response.data.details.demandes : null;
   const maj = (k) => (e) => setF({ ...f, [k]: e.target.value });
 
   if (isLoading) return <div className="marche"><EnteteMarche /><p className="mc-note" style={{ padding: 24 }}>Chargement…</p></div>;
@@ -32,7 +40,8 @@ export default function VillaDetail() {
           <p>Le gérant de <b>{v.bailleur.nom}</b> va vous répondre. Une fois la demande acceptée, vous aurez <b>2 heures</b> pour envoyer l’acompte ({v.regles?.acompte_pourcent ?? 50} %) par Mobile Money ; le reste se paie à l’arrivée.</p>
           <div className="mc-code">Votre code de suivi<b>{envoye.code}</b></div>
           <Link to={`/demande/${envoye.code}`} className="mc-bouton">Suivre ma demande</Link>
-          <p className="mc-note">Gardez ce code (une capture d’écran suffit) pour revenir voir la réponse.</p>
+          <Link to={lienRecherche()} className="mc-bouton clair">Revenir à la recherche</Link>
+          <p className="mc-note">Elle est gardée dans « Mes demandes » sur ce téléphone. Notez aussi le code pour la retrouver depuis un autre appareil.</p>
         </div>
       </main>
     </div>
@@ -41,7 +50,7 @@ export default function VillaDetail() {
   return (
     <div className="marche"><EnteteMarche />
       <main className="mc-resultats mc-etroit">
-        <Link to={-1} className="mc-retour" onClick={(e) => { e.preventDefault(); window.history.length > 1 ? window.history.back() : (window.location.href = '/villas'); }}><ArrowLeft size={18} />Retour aux résultats</Link>
+        <button type="button" className="mc-retour" onClick={() => nav(lienRecherche())}><ArrowLeft size={18} />Retour aux résultats</button>
         <div className="mc-galerie">
           {v.photos.length ? v.photos.map((p, i) => <img key={p} src={urlFichier(p)} alt={`Photo ${i + 1}`} />) : <div className="mc-sans-photo grande">Photos bientôt disponibles</div>}
         </div>
@@ -72,17 +81,30 @@ export default function VillaDetail() {
 
         <form className="mc-demande" onSubmit={(e) => { e.preventDefault(); demande.mutate(); }}>
           <h2>Demander cette villa</h2>
-          {demande.error && <div className="mc-alerte">{messageErreur(demande.error)}</div>}
+          {demande.error && !doublonServeur && <div className="mc-alerte">{messageErreur(demande.error)}</div>}
           <div className="mc-dates">
             <label><span>Arrivée</span><input type="date" min={aujourdhui()} value={f.arrivee} onChange={e => setF({ ...f, arrivee: e.target.value, depart: f.depart && f.depart > e.target.value ? f.depart : ajouterJours(e.target.value, 1) })} required /></label>
             <label><span>Départ</span><input type="date" min={f.arrivee ? ajouterJours(f.arrivee, 1) : aujourdhui()} value={f.depart} onChange={maj('depart')} required /></label>
           </div>
           {chevauche && <div className="mc-alerte">Ces dates chevauchent une réservation existante : choisissez d’autres dates.</div>}
+          {(() => {
+            const locales = nuits > 0 && !chevauche ? chevauchements(f.arrivee, f.depart) : [];
+            const liste = doublonServeur || locales;
+            if (!liste.length) return null;
+            return (
+              <div className="mc-avertissement">
+                <b>Vous avez déjà {liste.length > 1 ? `${liste.length} demandes` : 'une demande'} sur ces dates</b>
+                {liste.map((x, i) => <span key={i}>• {x.titre || [x.type === 'villa' ? 'Villa' : x.type, x.standing].filter(Boolean).join(' · ')}{x.lieu ? `, ${x.lieu}` : ''} : du {dateCourte(x.arrivee)} au {dateCourte(x.depart)}</span>)}
+                <span>Si vous l’avez oubliée, pensez à l’annuler depuis « Mes demandes » si celle-ci vous convient mieux. Vous pouvez aussi garder les deux.</span>
+                <label style={{ flexDirection: 'row', alignItems: 'center', gap: 8, color: 'var(--me)' }}><input type="checkbox" checked={confirmer} onChange={e => setConfirmer(e.target.checked)} style={{ width: 'auto' }} />Oui, je veux aussi demander cette villa</label>
+              </div>
+            );
+          })()}
           <label><span>Votre nom</span><input value={f.nom} onChange={maj('nom')} autoComplete="name" required /></label>
           <label><span>Votre téléphone (WhatsApp)</span><input value={f.telephone} onChange={maj('telephone')} inputMode="tel" autoComplete="tel" required /></label>
           <label><span>Message (facultatif)</span><textarea rows={2} value={f.message} onChange={maj('message')} placeholder="Heure d’arrivée, nombre de personnes…" /></label>
           {nuits > 0 && <div className="mc-total"><span>{nuits} nuit{nuits > 1 ? 's' : ''} × {fcfa(v.prix_nuit)}</span><b>{fcfa(nuits * v.prix_nuit)}</b></div>}
-          <button type="submit" className="mc-bouton" disabled={!nuits || chevauche || !f.nom || !f.telephone || demande.isPending}>{demande.isPending ? 'Envoi…' : 'Envoyer ma demande'}</button>
+          <button type="submit" className="mc-bouton" disabled={!nuits || chevauche || !f.nom || !f.telephone || demande.isPending || ((doublonServeur || (nuits > 0 && chevauchements(f.arrivee, f.depart).length)) && !confirmer)}>{demande.isPending ? 'Envoi…' : 'Envoyer ma demande'}</button>
           <p className="mc-note">Sans engagement : rien à payer tant que le gérant n’a pas accepté. Ensuite, acompte de {v.regles?.acompte_pourcent ?? 50} % par Mobile Money dans les 2 heures.</p>
         </form>
       </main>
