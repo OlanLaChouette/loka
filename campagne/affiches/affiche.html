@@ -13,8 +13,9 @@
   .voile { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,8,30,.82) 0%, rgba(10,8,30,.35) 34%, rgba(10,8,30,.15) 55%, rgba(40,28,140,.75) 85%, rgba(62,47,184,1) 100%); }
   .titre { left: 64px; right: 64px; }
   .sous { left: 64px; max-width: 560px; text-shadow: 0 4px 20px rgba(0,0,0,.5); }
-  .tel { z-index: 5; transform: rotate(5deg); }
-  .tel .ecran img { opacity: 1; }
+  .tel, .tablette { z-index: 5; transform: rotate(5deg); }
+  .tablette { transform: rotate(4deg); }
+  .ecran img { opacity: 1; }
   .puce { z-index: 6; left: 64px; }
   .bande { position: absolute; left: 0; right: 0; bottom: 0; z-index: 10; display: flex; align-items: center; gap: 30px; padding: 0 64px;
     background: linear-gradient(165deg, #7566F7 0%, #5A49E6 45%, #3E2FB8 100%); box-shadow: 0 -30px 60px rgba(10,5,40,.35); }
@@ -46,7 +47,7 @@ const C = {
     marque: 'Loka <span>Villas</span>', url: 'loka.eyamtech.com/villas', offre: 'Recherche gratuite, sans compte', qr: 'qr-villas.svg',
   },
   bailleurs: {
-    photo: '05-villa-crepuscule.jpg', ecran: 'bailleur-apercu.png',
+    photo: '05-villa-crepuscule.jpg', ecran: 'tablette-apercu.png', tablette: true,
     titre: 'Vos villas<br>méritent d’être<br><em>pleines.</em>',
     sous: 'Demandes de clients, acomptes, gérants et bénéfice : tout dans Loka.',
     puces: [['', '📩 Demandes de clients'], ['jaune', '📲 Acompte Mobile Money'], ['violette', '📈 Bénéfice en direct']],
@@ -63,7 +64,9 @@ st.innerHTML = `
   <div class="fond" style="background-image:url(../photos/${C.photo})"></div><div class="voile"></div>
   <div class="titre" style="top:${tt}px;font-size:${ts}px">${C.titre}</div>
   <div class="sous" style="top:${tt + ts * 3.1 + 10}px;font-size:${F.sous}px">${C.sous}</div>
-  <div class="tel" style="left:${tx}px;top:${ty}px;width:${tw}px;height:${tw * 2.164}px"><div class="bezel"><div class="ecran"><img src="../ecrans/${C.ecran}"><div class="ile"></div></div></div><div class="reflet"></div></div>
+  ${C.tablette
+    ? `<div class="tablette" style="left:${tx - 10}px;top:${ty + 20}px;width:${tw * 1.25}px;height:${tw * 1.75}px"><div class="bezel"><div class="ecran"><img src="../ecrans/${C.ecran}"></div><div class="reflet"></div></div></div>`
+    : `<div class="tel" style="left:${tx}px;top:${ty}px;width:${tw}px;height:${tw * 2.164}px"><div class="bezel"><div class="ecran"><img src="../ecrans/${C.ecran}"><div class="ile"></div></div></div><div class="reflet"></div></div>`}
   ${C.puces.map(([c, t], k) => `<div class="puce ${c}" style="top:${pt + k * pg}px;font-size:${ps}px;transform:rotate(${[-3, 2, -2][k]}deg)">${t}</div>`).join('')}
   <div class="bande" style="height:${F.bande}px">
     <div class="info"><div class="marque" style="font-size:${F.marque}px;gap:16px">${logo(F.marque * 1.1)}<div>${C.marque}</div></div>

@@ -23,8 +23,9 @@
   #s3 .liste, #s4 .liste { position: absolute; left: 110px; top: 610px; display: flex; flex-direction: column; gap: 18px; }
   .liste div { font: 700 38px 'Inter'; color: #EDEBFF; display: flex; align-items: center; gap: 18px; opacity: 0; }
   .liste div::before { content: '✓'; width: 50px; height: 50px; border-radius: 50%; background: #FFE7A3; color: #2A1F7A; font: 800 28px 'Inter'; display: flex; align-items: center; justify-content: center; }
-  #s3 .t1, #s4 .t1 { left: 1020px; top: 150px; }
-  #s3 .t2, #s4 .t2 { left: 1420px; top: 110px; }
+  #s3 .t1 { left: 960px; top: 230px; width: 860px; }
+  #s4 .t1 { left: 1010px; top: 150px; width: 560px; height: 785px; }
+  #s3 .t2, #s4 .t2 { left: 1560px; top: 330px; width: 300px; height: 650px; }
   #s5 .titre { left: 0; right: 0; top: 130px; text-align: center; font-size: 96px; }
   #s5 .regles { position: absolute; left: 160px; right: 160px; top: 420px; display: flex; gap: 40px; }
   #s5 .regle { flex: 1; background: rgba(255,255,255,.96); color: #16161D; border-radius: 40px; padding: 50px 40px; text-align: center; box-shadow: 0 40px 90px rgba(5,3,30,.5); opacity: 0; }
@@ -78,8 +79,8 @@
     <div class="etiquette">Pour les clients</div>
     <div class="titre"><span class="ligne"><span>Loka <em>Villas</em></span></span><span class="ligne"><span>Les villas libres.</span></span></div>
     <div class="liste"><div>Vraies photos et prix clairs</div><div>Avis vérifiés</div><div>Confirmé par le gérant, payé sur place</div></div>
-    <div class="tel t1" data-r="-4"><div class="bezel"><div class="ecran"><img src="../ecrans/client-resultats.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
-    <div class="tel t2" data-r="4"><div class="bezel"><div class="ecran"><img src="../ecrans/client-villa.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="portable appareil t1"><div class="couvercle"><div class="ecran"><img src="../ecrans/ordi-villas.png"></div><div class="reflet"></div></div><div class="socle"></div></div>
+    <div class="tel appareil t2"><div class="bezel"><div class="ecran"><img src="../ecrans/client-villa.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
     <div class="puce" style="left:1240px;top:900px"><span class="etoile">★</span> 4,8 · 4 avis</div>
   </div>
 
@@ -89,8 +90,8 @@
     <div class="etiquette">Pour les bailleurs</div>
     <div class="titre"><span class="ligne"><span>Tout suivi,</span></span><span class="ligne"><span><em>en direct.</em></span></span></div>
     <div class="liste"><div>Réservations et acomptes</div><div>Gérants et dépenses</div><div>Bénéfice du mois</div></div>
-    <div class="tel t1" data-r="-4"><div class="bezel"><div class="ecran"><img src="../ecrans/bailleur-apercu.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
-    <div class="tel t2" data-r="4"><div class="bezel"><div class="ecran"><img src="../ecrans/gerant-terrain.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="tablette appareil t1"><div class="bezel"><div class="ecran"><img src="../ecrans/tablette-apercu.png"></div><div class="reflet"></div></div></div>
+    <div class="tel appareil t2"><div class="bezel"><div class="ecran"><img src="../ecrans/gerant-terrain.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
     <div class="puce jaune" style="left:1180px;top:900px">Bénéfice · 1 256 000 F</div>
   </div>
 
@@ -155,9 +156,9 @@ for (const [i, id] of [[3, '#s3'], [4, '#s4']]) {
   tl.fromTo(id + ' .etiquette', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .5 }, s.debut + .1);
   lignes($(id + ' .titre'), s.debut + .2, .15);
   $$(id + ' .liste div').forEach((d, k) => tl.fromTo(d, { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: .5, ease: E }, s.voix + 1.6 + k * .9));
-  $$(id + ' .tel').forEach((t, k) => {
+  $$(id + ' .appareil').forEach((t, k) => {
     ecran(t, 0, s.debut);
-    tl.fromTo(t, { y: 900, rotation: 0 }, { y: 0, rotation: k ? 4 : -4, duration: 1.1, ease: 'power4.out' }, s.debut + k * .2);
+    tl.fromTo(t, { y: 900, rotation: 0 }, { y: 0, rotation: k ? 4 : (i === 3 ? 0 : -3), duration: 1.1, ease: 'power4.out' }, s.debut + k * .2);
     tl.to(t, { y: k ? -30 : 30, duration: s.duree, ease: 'none' }, s.debut + 1.2);
   });
   surgir($(id + ' .puce'), s.voix + 2.4);

@@ -15,7 +15,8 @@
   #s1 .tel { left: 230px; top: 560px; }
   #s1 .notif { left: 60px; right: 60px; }
   #s2 .tel { left: 230px; top: 500px; }
-  #s3 .tel { left: 230px; top: 500px; }
+  #s3 .portable { left: 60px; top: 520px; width: 960px; }
+  #s3 .tel { left: 700px; top: 1010px; width: 310px; height: 671px; }
   #s4 .titre { left: 70px; right: 70px; top: 140px; font-size: 104px; }
   #s4 .bilan { position: absolute; left: 70px; right: 70px; top: 1180px; background: #fff; color: #16161D; border-radius: 40px; padding: 44px 50px; box-shadow: 0 40px 90px rgba(5,3,30,.55); opacity: 0; }
   #s4 .bilan small { font: 700 32px 'Inter'; color: #5E5E74; }
@@ -26,7 +27,7 @@
   #s4 .bilan .barres i:last-child { background: #6D5DF5; }
   #s4 .bilan .direct { position: absolute; right: 44px; top: 44px; font: 800 26px 'Inter'; color: #19B26B; display: flex; align-items: center; gap: 10px; }
   #s4 .bilan .direct::before { content: ''; width: 16px; height: 16px; border-radius: 50%; background: #19B26B; box-shadow: 0 0 0 6px rgba(25,178,107,.25); }
-  #s5 .tel { left: 230px; top: 520px; }
+  #s5 .tablette { left: 190px; top: 560px; width: 700px; height: 980px; }
   #s5 .etoiles { position: absolute; left: 0; right: 0; top: 410px; text-align: center; font-size: 96px; color: #FFC93C; letter-spacing: 10px; z-index: 30; text-shadow: 0 10px 30px rgba(0,0,0,.4); }
   #s5 .etoiles span { display: inline-block; opacity: 0; }
   #s6 { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
@@ -78,10 +79,11 @@
   <div class="scene nuit" id="s3">
     <div class="anneau" style="width:1200px;height:1200px;right:-700px;top:700px"></div>
     <div class="titre"><span class="ligne"><span>Tout est suivi.</span></span><span class="ligne"><span><em>Sans cahier.</em></span></span></div>
-    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/bailleur-reservations.png"><img src="../ecrans/bailleur-clients.png"><img src="../ecrans/gerant-terrain.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
-    <div class="puce" data-r="-4" style="left:40px;top:760px">✓ Réservations</div>
-    <div class="puce" data-r="3" style="right:40px;top:1060px">✓ Dépenses</div>
-    <div class="puce violette" data-r="-3" style="left:40px;top:1360px">✓ Gérants</div>
+    <div class="portable"><div class="couvercle"><div class="ecran"><img src="../ecrans/ordi-reservations.png"><img src="../ecrans/ordi-apercu.png"></div><div class="reflet"></div></div><div class="socle"></div></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/gerant-terrain.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="puce" data-r="-4" style="left:60px;top:1300px">✓ Réservations</div>
+    <div class="puce" data-r="3" style="left:110px;top:1440px">✓ Dépenses</div>
+    <div class="puce violette" data-r="-3" style="left:60px;top:1580px">✓ Gérants</div>
   </div>
 
   <!-- 5. Le bénéfice -->
@@ -98,7 +100,7 @@
     <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:900px"></div>
     <div class="titre" style="text-align:center"><span class="ligne"><span>Vos avis vous font</span></span><span class="ligne"><span><em>monter.</em></span></span></div>
     <div class="etoiles"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/residence.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="tablette"><div class="bezel"><div class="ecran"><img src="../ecrans/tablette-residence.png"></div><div class="reflet"></div></div></div>
     <div class="puce" data-r="-4" style="left:40px;top:1180px">⬆ En tête des résultats</div>
   </div>
 
@@ -142,9 +144,11 @@ surgir($('#s2 .puce'), s.voix + 3.3);
 // 4
 s = scene(3, $('#s3'));
 lignes($('#s3 .titre'), s.debut + .1, .4);
+tl.fromTo('#s3 .portable', { y: 600, scale: .9 }, { y: 0, scale: 1, duration: 1, ease: 'power4.out' }, s.debut - .1);
+ecran($('#s3 .portable'), 0, s.debut);
+ecran($('#s3 .portable'), 1, s.debut + 2.6);
+tl.fromTo('#s3 .tel', { y: 900, rotation: 10 }, { y: 0, rotation: 4, duration: 1, ease: 'power4.out' }, s.debut + .8);
 ecran($('#s3 .tel'), 0, s.debut);
-ecran($('#s3 .tel'), 1, s.debut + 1.7);
-ecran($('#s3 .tel'), 2, s.debut + 3.2);
 $$('#s3 .puce').forEach((c, k) => surgir(c, s.voix + .1 + k * .75));
 // 5
 s = scene(4, $('#s4'));
@@ -157,8 +161,8 @@ tl.fromTo(n, { v: 0 }, { v: 1256000, duration: 1.6, ease: 'power2.out', onUpdate
 // 6
 s = scene(5, $('#s5'));
 lignes($('#s5 .titre'), s.debut + .1);
-ecran($('#s5 .tel'), 0, s.debut);
-tl.fromTo('#s5 .tel', { y: 500 }, { y: 0, duration: .9, ease: 'power4.out' }, s.debut);
+ecran($('#s5 .tablette'), 0, s.debut);
+tl.fromTo('#s5 .tablette', { y: 500 }, { y: 0, duration: .9, ease: 'power4.out' }, s.debut);
 $$('#s5 .etoiles span').forEach((e, k) => tl.fromTo(e, { opacity: 0, scale: 0, rotation: -90 }, { opacity: 1, scale: 1, rotation: 0, duration: .45, ease: 'back.out(2.2)' }, s.voix + .3 + k * .12));
 surgir($('#s5 .puce'), s.voix + 1.4);
 // 7

@@ -14,7 +14,8 @@
   #s0 .titre .ligne { opacity: 1; }
   #s1 .titre { left: 0; right: 0; top: 760px; text-align: center; font-size: 190px; }
   #s2 .titre { left: 70px; right: 70px; top: 130px; font-size: 100px; }
-  #s2 .tel { left: 230px; top: 520px; }
+  #s2 .portable { left: 60px; top: 560px; width: 960px; }
+  #s2 .tel { left: 700px; top: 1010px; width: 310px; height: 671px; }
   #s3 .titre { left: 70px; right: 70px; top: 120px; font-size: 100px; }
   #s3 .tel { left: 230px; top: 470px; }
   #s4 .titre { left: 70px; right: 70px; top: 150px; font-size: 104px; }
@@ -52,11 +53,12 @@
     <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:900px"></div>
     <div class="anneau" style="width:1000px;height:1000px;right:-560px;top:-200px"></div>
     <div class="titre"><span class="ligne"><span>Les villas vraiment</span></span><span class="ligne"><span><em>libres.</em> Près de</span></span><span class="ligne"><span>chez vous.</span></span></div>
-    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/client-accueil.png"><img src="../ecrans/client-resultats.png"><img src="../ecrans/client-resultats-2.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
-    <div class="carte-photo" data-r="-6" style="width:330px;height:300px;left:-10px;top:1020px"><div class="img" style="background-image:url(../photos/04-villa-blanche-piscine.jpg)"></div><span class="badge-libre">● Libre</span><div class="bas">Villa · Piscine<span>Ouaga 2000</span></div></div>
-    <div class="carte-photo" data-r="5" style="width:330px;height:300px;right:-10px;top:1350px"><div class="img" style="background-image:url(../photos/03-villa-palmiers.jpg)"></div><span class="badge-libre">● Libre</span><div class="bas">Villa · Jardin<span>Kossodo</span></div></div>
-    <svg class="epingle" style="left:830px;top:880px" viewBox="0 0 24 32"><path d="M12 31s10-11 10-19A10 10 0 0 0 2 12c0 8 10 19 10 19z" fill="#FFE7A3"/><circle cx="12" cy="12" r="4.2" fill="#4B3BC9"/></svg>
-    <svg class="epingle" style="left:120px;top:1660px;width:56px;height:76px" viewBox="0 0 24 32"><path d="M12 31s10-11 10-19A10 10 0 0 0 2 12c0 8 10 19 10 19z" fill="#fff"/><circle cx="12" cy="12" r="4.2" fill="#6D5DF5"/></svg>
+    <div class="portable"><div class="couvercle"><div class="ecran"><img src="../ecrans/ordi-villas.png"></div><div class="reflet"></div></div><div class="socle"></div></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/client-resultats.png"><img src="../ecrans/client-resultats-2.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="carte-photo" data-r="-6" style="width:330px;height:300px;left:40px;top:1300px"><div class="img" style="background-image:url(../photos/04-villa-blanche-piscine.jpg)"></div><span class="badge-libre">● Libre</span><div class="bas">Villa · Piscine<span>Ouaga 2000</span></div></div>
+    <div class="carte-photo" data-r="5" style="width:330px;height:300px;left:350px;top:1520px"><div class="img" style="background-image:url(../photos/03-villa-palmiers.jpg)"></div><span class="badge-libre">● Libre</span><div class="bas">Villa · Jardin<span>Kossodo</span></div></div>
+    <svg class="epingle" style="left:880px;top:470px" viewBox="0 0 24 32"><path d="M12 31s10-11 10-19A10 10 0 0 0 2 12c0 8 10 19 10 19z" fill="#FFE7A3"/><circle cx="12" cy="12" r="4.2" fill="#4B3BC9"/></svg>
+    <svg class="epingle" style="left:90px;top:1720px;width:56px;height:76px" viewBox="0 0 24 32"><path d="M12 31s10-11 10-19A10 10 0 0 0 2 12c0 8 10 19 10 19z" fill="#fff"/><circle cx="12" cy="12" r="4.2" fill="#6D5DF5"/></svg>
   </div>
 
   <!-- 4. Choisir et demander -->
@@ -112,10 +114,11 @@ tl.fromTo('#s1 .titre', { scale: 1.15 }, { scale: 1, duration: 1.6, ease: 'power
 // 3
 s = scene(2, $('#s2'));
 lignes($('#s2 .titre'), s.debut + .1);
-tl.fromTo('#s2 .tel', { y: 700, rotation: 8 }, { y: 0, rotation: -3, duration: 1, ease: 'power4.out' }, s.debut);
+tl.fromTo('#s2 .portable', { y: 600, scale: .9 }, { y: 0, scale: 1, duration: 1, ease: 'power4.out' }, s.debut);
+ecran($('#s2 .portable'), 0, s.debut);
+tl.fromTo('#s2 .tel', { y: 900, rotation: 10 }, { y: 0, rotation: 4, duration: 1, ease: 'power4.out' }, s.debut + .7);
 ecran($('#s2 .tel'), 0, s.debut);
-ecran($('#s2 .tel'), 1, s.debut + 1.4);
-ecran($('#s2 .tel'), 2, s.debut + 3.1);
+ecran($('#s2 .tel'), 1, s.debut + 3.1);
 $$('#s2 .carte-photo').forEach((c, k) => surgir(c, s.debut + 1.9 + k * .45, { y: 120, scale: .7, rotation: 0 }));
 $$('#s2 .epingle').forEach((c, k) => surgir(c, s.debut + 1.2 + k * .5, { y: -120, scale: .6 }));
 tl.to('#s2 .carte-photo', { y: '-=40', duration: 3, ease: 'none' }, s.debut + 2.5);
