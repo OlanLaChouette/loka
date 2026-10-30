@@ -15,7 +15,7 @@ const PUBLIER = path.join(ici, '..', 'A publier');
 const POUR_CLIENTS = ['clients', 'recherche', 'reservation'];
 const dossier = (c, f) => path.join(PUBLIER, f === 'a3' ? '4 Impression A3' : POUR_CLIENTS.includes(c) ? '2 Affiches clients' : '3 Affiches bailleurs');
 const NOMS = { statut: 'statut-9x16', fil: 'fil-4x5', carre: 'carre-1x1', a3: 'A3' };
-const PAGES = { clients: 'affiche.html', bailleurs: 'affiche.html', fonctionnalites: 'infos.html', tarifs: 'infos.html', recherche: 'infos.html', reservation: 'infos.html' };
+const PAGES = { clients: 'affiche.html', bailleurs: 'affiche.html', groupes: 'affiche.html', fonctionnalites: 'infos.html', tarifs: 'infos.html', recherche: 'infos.html', reservation: 'infos.html' };
 
 const b = await puppeteer.launch({ executablePath: CHROME, headless: 'shell', userDataDir: fs.mkdtempSync(path.join(os.tmpdir(), 'loka-aff-')), args: ['--allow-file-access-from-files'] });
 const p = await b.newPage();

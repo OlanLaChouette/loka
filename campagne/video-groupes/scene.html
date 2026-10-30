@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Loka · groupes de bailleurs</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../commun.css">
+<script src="../../video/node_modules/gsap/dist/gsap.min.js"></script>
+<script src="donnees.js"></script>
+<style>
+  html, body, #stage { width: 1080px; height: 1920px; }
+  .tel { width: 620px; height: 1340px; }
+  #s0 .titre { left: 70px; right: 70px; bottom: 300px; font-size: 94px; }
+  #s1 .titre, #s2 .titre, #s3 .titre, #s4 .titre { left: 70px; right: 70px; top: 120px; font-size: 100px; }
+  #s1 .puce { font-size: 54px; padding: 30px 44px; }
+  #s2 .portable { left: 60px; top: 560px; width: 960px; }
+  #s3 .tel, #s4 .tel { left: 230px; top: 500px; }
+  #s3 .notif { left: 60px; right: 60px; top: 1120px; }
+  #s4 .justif { position: absolute; left: 640px; top: 1020px; width: 380px; border-radius: 26px; border: 10px solid #fff; box-shadow: 0 40px 90px rgba(5,3,30,.55); opacity: 0; z-index: 20; }
+  #s5 .titre { left: 70px; right: 70px; top: 140px; font-size: 88px; }
+  #s5 .bilan { position: absolute; left: 70px; right: 70px; top: 1180px; background: #fff; color: #16161D; border-radius: 40px; padding: 44px 50px; box-shadow: 0 40px 90px rgba(5,3,30,.55); opacity: 0; }
+  #s5 .bilan small { font: 700 32px 'Inter'; color: #5E5E74; }
+  #s5 .bilan .montant { font: 800 112px/1.1 'Sora'; letter-spacing: -0.045em; color: #4B3BC9; margin-top: 6px; }
+  #s5 .bilan .montant span { font-size: 46px; color: #5E5E74; letter-spacing: 0; margin-left: 10px; }
+  #s5 .bilan .barres { display: flex; align-items: flex-end; gap: 16px; height: 120px; margin-top: 26px; }
+  #s5 .bilan .barres i { flex: 1; background: #E4E0FF; border-radius: 10px 10px 4px 4px; transform-origin: bottom; }
+  #s5 .bilan .barres i:last-child { background: #6D5DF5; }
+  #s6 { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #s6 .marque { font-size: 120px; }
+  #s6 .offre { margin-top: 50px; font: 800 150px/0.95 'Sora'; letter-spacing: -0.05em; }
+  #s6 .offre em { font-style: normal; color: #FFE7A3; display: block; font-size: 92px; letter-spacing: -0.04em; margin-top: 10px; }
+  #s6 .pilule { margin-top: 64px; }
+  #s6 .bas { display: flex; align-items: center; gap: 40px; margin-top: 80px; }
+  #s6 .qr { width: 270px; }
+  #s6 .bas p { font: 700 38px/1.35 'Inter'; text-align: left; color: #EDEBFF; }
+  #s6 .bas b { display: block; font: 800 50px 'Sora'; color: #fff; letter-spacing: -0.02em; }
+  .titre, .puce, .notif, .bilan { opacity: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1. La question -->
+  <div class="scene" id="s0">
+    <div class="plein" style="background-image:url(../photos/05-villa-crepuscule.jpg)"></div>
+    <div class="voile-bas"></div>
+    <div class="titre"><span class="ligne"><span>Combien vos biens</span></span><span class="ligne"><span>vous ont rapporté</span></span><span class="ligne"><span><em>le mois dernier ?</em></span></span></div>
+  </div>
+
+  <!-- 2. Le problème -->
+  <div class="scene nuit" id="s1">
+    <div class="anneau" style="width:1200px;height:1200px;left:-700px;top:800px"></div>
+    <div class="titre"><span class="ligne"><span>Sans outil,</span></span><span class="ligne"><span><em>on s’y perd vite.</em></span></span></div>
+    <div class="puce" data-r="-3" style="left:70px;top:700px">📒 Réservations au cahier</div>
+    <div class="puce jaune" data-r="2" style="left:130px;top:920px">💵 Où en est la caisse ?</div>
+    <div class="puce violette" data-r="-2" style="left:70px;top:1140px">🧾 Dépenses à vérifier</div>
+  </div>
+
+  <!-- 3. Le planning -->
+  <div class="scene violet" id="s2">
+    <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:900px"></div>
+    <div class="titre"><span class="ligne"><span>Un seul planning.</span></span><span class="ligne"><span><em>Aucun doublon.</em></span></span></div>
+    <div class="portable"><div class="couvercle"><div class="ecran"><img src="../ecrans/ordi-reservations.png"></div><div class="reflet"></div></div><div class="socle"></div></div>
+    <div class="puce jaune" data-r="-3" style="left:60px;top:1330px">✓ Jamais louée deux fois</div>
+  </div>
+
+  <!-- 4. Le gérant encaisse -->
+  <div class="scene nuit" id="s3">
+    <div class="anneau" style="width:1200px;height:1200px;right:-700px;top:700px"></div>
+    <div class="titre"><span class="ligne"><span>Le gérant encaisse.</span></span><span class="ligne"><span><em>Le reçu part.</em></span></span></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../ecrans/gerant-terrain.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <div class="notif"><div class="app" style="background:#25D366"><svg width="46" height="46" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" fill="#fff"/></svg></div><div style="flex:1"><small>WhatsApp · maintenant</small><b>Reçu envoyé au client</b></div></div>
+  </div>
+
+  <!-- 5. Les dépenses -->
+  <div class="scene violet" id="s4">
+    <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:900px"></div>
+    <div class="titre"><span class="ligne"><span>Chaque dépense,</span></span><span class="ligne"><span><em>avec sa photo.</em></span></span></div>
+    <div class="tel"><div class="bezel"><div class="ecran"><img src="../../guide/captures/09-depenses.png"><div class="ile"></div></div></div><div class="reflet"></div></div>
+    <img class="justif" src="../../tutos/assets/recu-fournisseur.jpg" alt="">
+    <div class="puce jaune" data-r="-3" style="left:50px;top:1560px">✓ C’est vous qui validez</div>
+  </div>
+
+  <!-- 6. Le bénéfice -->
+  <div class="scene" id="s5">
+    <div class="plein" style="background-image:url(../photos/16-homme-affaires-ordinateur.jpg)"></div>
+    <div class="voile-haut"></div>
+    <div class="titre"><span class="ligne"><span>Votre bénéfice réel,</span></span><span class="ligne"><span><em>site par site.</em></span></span></div>
+    <div class="bilan"><small>Bénéfice du mois · exemple</small><div class="montant"><b id="compteur">0</b><span>FCFA</span></div>
+      <div class="barres"><i style="height:38%"></i><i style="height:52%"></i><i style="height:45%"></i><i style="height:64%"></i><i style="height:58%"></i><i style="height:76%"></i><i style="height:100%"></i></div></div>
+  </div>
+
+  <!-- 7. Offre -->
+  <div class="scene violet" id="s6">
+    <div class="anneau" style="width:1300px;height:1300px;left:-640px;top:1000px"></div>
+    <div class="anneau" style="width:1000px;height:1000px;right:-560px;top:-260px"></div>
+    <div class="marque"><svg width="160" height="160" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>Loka</div>
+    <div class="offre">14 jours<em>gratuits</em></div>
+    <div class="pilule">loka.eyamtech.com</div>
+    <div class="bas"><div class="qr"><img src="../qr-loka.svg"></div><p>Démonstration<b>+226 62 82 67 02</b></p></div>
+  </div>
+
+  <div class="grain"></div>
+</div>
+<script src="../moteur.js"></script>
+<script>
+// 1
+let s = scene(0, $('#s0'));
+camera($('#s0 .plein'), 0, s.duree + .4, { s: 1.2, x: -2 }, { s: 1.04, x: 1 });
+lignes($('#s0 .titre'), .25, .3, .6);
+// 2
+s = scene(1, $('#s1'));
+lignes($('#s1 .titre'), s.debut + .1);
+$$('#s1 .puce').forEach((c, k) => surgir(c, s.voix + .4 + k * .95));
+// 3
+s = scene(2, $('#s2'));
+lignes($('#s2 .titre'), s.debut + .1, .4);
+tl.fromTo('#s2 .portable', { y: 600, scale: .9 }, { y: 0, scale: 1, duration: 1, ease: 'power4.out' }, s.debut - .1);
+ecran($('#s2 .portable'), 0, s.debut);
+surgir($('#s2 .puce'), s.voix + 2);
+// 4
+s = scene(3, $('#s3'));
+lignes($('#s3 .titre'), s.debut + .1, .4);
+tl.fromTo('#s3 .tel', { y: 600, rotation: -6 }, { y: 0, rotation: 2, duration: 1, ease: 'power4.out' }, s.debut);
+ecran($('#s3 .tel'), 0, s.debut);
+surgir($('#s3 .notif'), s.voix + 1.8, { y: -140, scale: .92 }, .6);
+// 5
+s = scene(4, $('#s4'));
+lignes($('#s4 .titre'), s.debut + .1, .4);
+tl.fromTo('#s4 .tel', { scale: .85, rotation: -4 }, { scale: 1, rotation: 0, duration: .9, ease: E }, s.debut - .1);
+ecran($('#s4 .tel'), 0, s.debut);
+tl.fromTo('#s4 .justif', { opacity: 0, scale: .6, rotation: 12 }, { opacity: 1, scale: 1, rotation: 5, duration: .6, ease: 'back.out(1.6)' }, s.voix + 1);
+surgir($('#s4 .puce'), s.voix + 2.2);
+// 6
+s = scene(5, $('#s5'));
+camera($('#s5 .plein'), s.debut - .2, s.duree + .6, { s: 1.12, x: 1 }, { s: 1.0, x: -1 });
+lignes($('#s5 .titre'), s.debut + .1);
+surgir($('#s5 .bilan'), s.debut + .3, { y: 140, scale: .9 }, .7);
+tl.fromTo('#s5 .barres i', { scaleY: 0 }, { scaleY: 1, duration: .6, stagger: .07, ease: E }, s.debut + .6);
+const n = { v: 0 }, cpt = $('#compteur');
+tl.fromTo(n, { v: 0 }, { v: 1256000, duration: 1.6, ease: 'power2.out', onUpdate: () => { cpt.textContent = Math.round(n.v / 1000).toLocaleString('fr-FR').replace(/\s/g, ' ') + ' 000'; } }, s.debut + .6);
+// 7
+s = scene(6, $('#s6'));
+tl.fromTo('#s6 .marque', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .8, ease: 'back.out(1.7)' }, s.debut + .1);
+tl.fromTo('#s6 .offre', { opacity: 0, y: 50, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .7, ease: 'back.out(1.5)' }, s.voix + .4);
+tl.fromTo('#s6 .pilule', { opacity: 0, y: 40, scale: .9 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'back.out(1.6)' }, s.voix + 2.2);
+tl.fromTo('#s6 .bas', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .6, ease: E }, s.voix + 3.2);
+tl.to('#s6 .pilule', { scale: 1.05, duration: .35, yoyo: true, repeat: 5, ease: 'sine.inOut' }, s.voix + 4.2);
+finir();
+</script>
+</body>
+</html>

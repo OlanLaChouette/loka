@@ -5,6 +5,7 @@ CAMPAGNE LOKA — FICHIERS PRÊTS À PUBLIER
   Loka-pub-clients-9x16.mp4    27 s, vertical  → Statut WhatsApp, Reels Instagram/Facebook, TikTok
   Loka-pub-bailleurs-9x16.mp4  31 s, vertical  → mêmes réseaux, pour attirer les propriétaires
   Loka-film-16x9.mp4           39 s, horizontal → YouTube, page Facebook, présentation sur écran
+  Loka-groupes-bailleurs-9x16.mp4  vertical → à joindre au post des groupes Facebook de bailleurs
 
 2 Affiches clients   (lien et QR : loka.eyamtech.com/villas)
   ...-statut-9x16.png  → Statut WhatsApp, Story Instagram/Facebook
@@ -18,6 +19,7 @@ CAMPAGNE LOKA — FICHIERS PRÊTS À PUBLIER
   mêmes formats que les affiches clients
   Loka-fonctionnalites-...     → ce que Loka fait pour le propriétaire
   Loka-tarifs-...              → les tarifs (hors taxes, à revoir si les prix changent)
+  Loka-groupes-...             → à joindre au post des groupes Facebook de bailleurs (le fil-4x5 en priorité)
 
 4 Impression A3
   Loka-clients-A3.pdf / Loka-bailleurs-A3.pdf  → à donner à l'imprimeur (format A3)

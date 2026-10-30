@@ -1,0 +1,14 @@
+{
+ "voix": "Charon",
+ "lignes": [
+  "Savez-vous ce que vos biens vous ont rapporté le mois dernier ?",
+  "Réservations au cahier, gérant qui encaisse sur place, dépenses difficiles à vérifier : on s'y perd vite.",
+  "Avec Loka, tout est sur un seul planning, et une villa ne peut pas être louée deux fois aux mêmes dates.",
+  "Votre gérant encaisse depuis son téléphone, et le client reçoit son reçu sur WhatsApp.",
+  "Chaque dépense arrive avec sa photo, et c'est vous qui validez.",
+  "Et vous voyez votre bénéfice réel, site par site, même à distance.",
+  "Essayez Loka gratuitement pendant quatorze jours, sur loka.eyamtech.com."
+ ],
+ "apres": [0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0],
+ "fin": 2.6
+}

@@ -53,12 +53,20 @@ const C = {
     puces: [['', '📩 Demandes de clients'], ['jaune', '📲 Acompte Mobile Money'], ['violette', '📈 Bénéfice en direct']],
     marque: 'Loka', url: 'loka.eyamtech.com', offre: '<b>14 jours gratuits</b> · sans engagement', qr: 'qr-loka.svg',
   },
+  groupes: {
+    photo: '05-villa-crepuscule.jpg', ecran: 'tablette-apercu.png', tablette: true,
+    titreMax: 92,
+    titre: 'Combien vos biens<br>vous ont rapporté<br><em>le mois dernier ?</em>',
+    sous: 'Réservations, gérants, dépenses et bénéfice : tout dans Loka.',
+    puces: [['', '📅 Planning sans doublon'], ['jaune', '🧾 Reçus par WhatsApp'], ['violette', '📈 Bénéfice réel']],
+    marque: 'Loka', url: 'loka.eyamtech.com', offre: '<b>14 jours gratuits</b> · sans engagement', qr: 'qr-loka.svg',
+  },
 }[campagne];
 
 const st = document.getElementById('stage');
 st.style.height = F.H + 'px';
 document.documentElement.style.height = document.body.style.height = F.H + 'px';
-const [tt, ts] = F.titre, [tx, ty, tw] = F.tel, [pt, pg, ps] = F.puces;
+const tt = F.titre[0], ts = Math.min(F.titre[1], C.titreMax || 999), [tx, ty, tw] = F.tel, [pt, pg, ps] = F.puces;
 const logo = (n) => `<svg width="${n}" height="${n}" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>`;
 st.innerHTML = `
   <div class="fond" style="background-image:url(../photos/${C.photo})"></div><div class="voile"></div>
