@@ -11,11 +11,17 @@ CAMPAGNE LOKA — FICHIERS PRÊTS À PUBLIER
   ...-fil-4x5.png      → publication dans le fil Facebook / Instagram
   ...-carre-1x1.png    → publication carrée, groupes WhatsApp
 
+  Loka-recherche-...           → les façons de chercher une résidence
+  Loka-reservation-...         → réserver en 4 étapes
+
 3 Affiches bailleurs (lien et QR : loka.eyamtech.com — 14 jours gratuits)
   mêmes formats que les affiches clients
+  Loka-fonctionnalites-...     → ce que Loka fait pour le propriétaire
+  Loka-tarifs-...              → les tarifs (hors taxes, à revoir si les prix changent)
 
 4 Impression A3
   Loka-clients-A3.pdf / Loka-bailleurs-A3.pdf  → à donner à l'imprimeur (format A3)
+  Loka-recherche-A3.pdf / Loka-reservation-A3.pdf / Loka-fonctionnalites-A3.pdf / Loka-tarifs-A3.pdf → idem
   Les .png sont les mêmes affiches en 300 dpi, si l'imprimeur préfère une image.
 
 Les noms, montants et avis visibles dans l'application sont des données de démonstration.

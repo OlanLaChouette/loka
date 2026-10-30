@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Affiche d'information Loka</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../commun.css">
+<style>
+  /* Affiches qui expliquent : ?<theme>-<format>, ex. ?tarifs-fil. Même habillage que affiche.html, largeur fixe 1080 px. */
+  html, body { background: #0E0B1F; }
+  #stage { width: 1080px; }
+  .fond { position: absolute; inset: 0; background-size: cover; background-position: center 30%; }
+  .voile { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14,11,31,.93) 0%, rgba(14,11,31,.8) 38%, rgba(40,28,140,.82) 82%, rgba(62,47,184,1) 100%); }
+  .contenu { position: absolute; left: 64px; right: 64px; display: flex; flex-direction: column; z-index: 5; }
+  .contenu .titre, .contenu .sous { position: static; }
+  .contenu .sous { max-width: none; }
+  .corps { flex: 1; min-height: 0; display: flex; align-items: stretch; }
+  .liste { flex: 1; min-width: 0; display: grid; }
+  .carte { background: #fff; color: #17132E; display: flex; align-items: center; box-shadow: 0 18px 40px rgba(10,5,40,.3); }
+  .carte h3 { font-family: 'Sora'; font-weight: 700; letter-spacing: -.02em; line-height: 1.12; }
+  .carte p { font-weight: 500; color: #5A5670; line-height: 1.28; }
+  .icone { flex: none; display: grid; place-items: center; border-radius: 28%; background: #EEEBFF; color: #5A49E6; }
+  .numero { flex: none; display: grid; place-items: center; border-radius: 50%; background: #5A49E6; color: #fff; font-family: 'Sora'; font-weight: 800; }
+  .tel { position: relative; flex: none; transform: rotate(3deg); align-self: center; }
+  .ecran img { opacity: 1; }
+
+  .prix { background: linear-gradient(165deg, #FFF3CF 0%, #FFE7A3 100%); color: #17132E; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 18px 40px rgba(10,5,40,.3); }
+  .prix .des { font: 700 1em 'Inter'; color: #4B3BC9; }
+  .prix .montant { font-family: 'Sora'; font-weight: 800; letter-spacing: -.045em; line-height: 1; }
+  .prix .essai { background: #4B3BC9; color: #fff; font-family: 'Inter'; font-weight: 800; border-radius: 999px; text-align: center; line-height: 1.15; }
+  .ligne-tarif { background: #fff; color: #17132E; display: flex; align-items: center; justify-content: space-between; gap: 24px; box-shadow: 0 12px 28px rgba(10,5,40,.24); }
+  .ligne-tarif h3 { font-family: 'Sora'; font-weight: 700; letter-spacing: -.02em; line-height: 1.12; }
+  .ligne-tarif p { font-weight: 500; color: #5A5670; line-height: 1.25; }
+  .ligne-tarif .valeur { flex: none; text-align: right; font-family: 'Sora'; font-weight: 800; color: #4B3BC9; letter-spacing: -.03em; line-height: 1.05; }
+  .ligne-tarif .valeur small { display: block; font: 600 .56em 'Inter'; letter-spacing: 0; color: #5A5670; margin-top: 4px; }
+  .note { color: #EDEBFF; font-weight: 600; line-height: 1.3; }
+
+  .bande { position: absolute; left: 0; right: 0; bottom: 0; z-index: 10; display: flex; align-items: center; gap: 30px; padding: 0 64px;
+    background: linear-gradient(165deg, #7566F7 0%, #5A49E6 45%, #3E2FB8 100%); }
+  .bande .marque span { color: #FFE7A3; }
+  .bande .info { flex: 1; }
+  .bande .url { display: inline-block; margin-top: 16px; background: #fff; color: #4B3BC9; border-radius: 999px; padding: 12px 28px; font: 800 34px 'Sora'; letter-spacing: -0.02em; }
+  .bande .offre { font: 700 28px 'Inter'; color: #EDEBFF; margin-top: 12px; }
+  .bande .offre b { color: #FFE7A3; font-size: 1.25em; }
+  .bande .qr { padding: 14px; border-radius: 22px; box-shadow: none; }
+  .bande .qr small { display: block; text-align: center; font: 800 18px 'Inter'; color: #4B3BC9; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+const [theme, format] = location.search.slice(1).split('-');
+// haut : début du contenu ; tel : largeur du téléphone (0 = pas de téléphone, la liste prend toute la largeur).
+const F = {
+  statut: { H: 1920, haut: 120, titre: 92, sous: 36, bande: 290, qr: 200, marque: 64, tel: 400, ec: 26, h3: 36, p: 27, ic: 92, rayon: 30, pad: 30, ecart: 26 },
+  fil:    { H: 1350, haut: 70, titre: 72, sous: 29, bande: 230, qr: 160, marque: 54, tel: 330, ec: 20, h3: 30, p: 23, ic: 72, rayon: 26, pad: 24, ecart: 18 },
+  carre:  { H: 1080, haut: 44, titre: 56, sous: 25, bande: 200, qr: 140, marque: 48, tel: 0, ec: 13, h3: 29, p: 23, ic: 62, rayon: 22, pad: 18, ecart: 14 },
+  a3:     { H: 1527, haut: 80, titre: 76, sous: 31, bande: 270, qr: 200, marque: 60, tel: 360, ec: 20, h3: 31, p: 24, ic: 68, rayon: 28, pad: 24, ecart: 20 },
+}[format];
+
+const svg = (d) => `<svg viewBox="0 0 24 24" width="56%" height="56%" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const I = {
+  planning: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/>',
+  argent: '<path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/><path d="M21 12h-4a2 2 0 0 0 0 4h4z"/>',
+  message: '<path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.7A8.4 8.4 0 1 1 21 11.5z"/>',
+  photo: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
+  courbe: '<path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-9"/>',
+  contrat: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8"/>',
+  autour: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+  lieu: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
+  budget: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>',
+  personnes: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
+  equipement: '<path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M8 9V5a2 2 0 0 1 4 0M14 9V5a2 2 0 0 1 4 0"/>',
+};
+
+const T = {
+  fonctionnalites: {
+    photo: '16-homme-affaires-ordinateur.jpg', qr: 'qr-loka.svg', marque: 'Loka', url: 'loka.eyamtech.com', offre: '<b>14 jours gratuits</b> · sans engagement',
+    titre: 'Toute votre gestion locative, <em>au même endroit.</em>',
+    sous: 'Sur Android et dans tout navigateur, pour le propriétaire, ses gérants et son comptable.',
+    cartes: [
+      ['planning', 'Réservations sans doublon', 'Loka refuse de louer deux fois la même nuit.'],
+      ['argent', 'Encaissements tracés', 'Chaque paiement a son reçu numéroté.'],
+      ['message', 'Reçus par WhatsApp', 'Envoyez les photos de la villa et le reçu PDF.'],
+      ['photo', 'Dépenses avec photo', 'Le gérant photographie le reçu, vous validez.'],
+      ['courbe', 'Bénéfice réel', 'Recettes moins dépenses, site par site.'],
+      ['contrat', 'Baux et loyers', 'Contrats en PDF, loyers en retard signalés.'],
+    ], colonnes: 2,
+  },
+  recherche: {
+    photo: '13-femme-telephone.jpg', ecran: 'client-accueil.png', qr: 'qr-villas.svg', marque: 'Loka <span>Villas</span>', url: 'loka.eyamtech.com/villas', offre: 'Recherche gratuite, sans compte',
+    titre: 'Cherchez votre résidence <em>à votre façon.</em>',
+    sous: 'Choisissez vos critères, Loka affiche les villas qui y répondent.',
+    cartes: [
+      ['autour', 'Autour de moi', 'Les villas les plus proches de vous.'],
+      ['lieu', 'Ville et quartier', 'Là où vous voulez séjourner.'],
+      ['planning', 'Vos dates', 'Seules les villas libres s’affichent.'],
+      ['budget', 'Votre budget', 'Votre prix maximum par nuit.'],
+      ['personnes', 'Votre groupe', 'Le nombre de personnes à loger.'],
+      ['equipement', 'Équipements', 'Piscine, clim, Wi-Fi, parking…'],
+    ], colonnes: 1, colonnesCarre: 2,
+  },
+  reservation: {
+    photo: '20-cles.jpg', ecran: 'client-demande.png', qr: 'qr-villas.svg', marque: 'Loka <span>Villas</span>', url: 'loka.eyamtech.com/villas', offre: 'Sans compte · rien à payer avant l’accord du gérant',
+    titre: 'Réservez en <em>4 étapes,</em> depuis votre téléphone.',
+    sous: 'Un code vous permet de suivre votre demande à tout moment.',
+    etapes: [
+      ['Choisissez votre villa', 'Photos, prix, équipements et avis vérifiés.'],
+      ['Envoyez votre demande', 'Vos dates, votre nom, votre téléphone : rien à payer.'],
+      ['Le gérant répond', 'Il vous dit si la villa est libre et accepte votre demande.'],
+      ['Garantissez votre séjour', 'Envoyez l’acompte par Mobile Money dans les 2 heures. Le reste se paie à l’arrivée.'],
+    ],
+  },
+  tarifs: {
+    photo: '09-villa-piscine-jour.jpg', qr: 'qr-loka.svg', marque: 'Loka', url: 'loka.eyamtech.com', offre: '<b>14 jours gratuits</b> · sans engagement',
+    titre: 'Un tarif <em>selon le nombre de biens.</em>',
+    sous: 'Sites et gérants sans limite. Assistance et mises à jour comprises.',
+    lignes: [
+      ['Location à la nuit', 'Pour chaque villa ou studio', '2 500 FCFA', 'par mois'],
+      ['Location au mois', 'Pour chaque appartement, magasin ou bureau', '1 000 FCFA', 'par mois'],
+      ['Minimum', 'Si le calcul donne moins, ce montant s’applique.', '25 000 FCFA', 'par mois'],
+      ['Paiement à l’année', 'Toute l’année d’avance : 2 mois offerts', '10 mois', 'payés sur 12'],
+      ['Frais de démarrage', 'Offerts si l’année est payée d’avance.', '150 000 FCFA', 'une seule fois'],
+    ],
+    note: 'Exemple : 20 villas à la nuit, 20 × 2 500 = 50 000 FCFA par mois. Hors taxes.',
+  },
+}[theme];
+
+const logo = (n) => `<svg width="${n}" height="${n}" viewBox="0 0 48 48"><rect width="48" height="48" rx="12" fill="#fff"/><path d="M16.5 36 V22.5 a7.5 7.5 0 0 1 15 0 V36 Z" fill="#6D5DF5"/><circle cx="27.6" cy="29.5" r="1.7" fill="#fff"/></svg>`;
+const texte = (titre, p) => `<div style="min-width:0"><h3 style="font-size:${F.h3}px">${titre}</h3><p style="font-size:${F.p}px;margin-top:${F.p * .3}px">${p}</p></div>`;
+const grille = (n, lignes) => `display:grid;grid-template-columns:repeat(${n},minmax(0,1fr));grid-template-rows:repeat(${lignes},minmax(0,1fr));gap:${F.ec}px`;
+
+let corps = '';
+if (T.cartes) {
+  const n = format === 'carre' ? (T.colonnesCarre || T.colonnes) : T.colonnes;
+  // À deux colonnes, l'icône passe au-dessus du texte, sauf sur le format carré où la hauteur manque.
+  const empile = n === 2 && format !== 'carre';
+  corps = `<div class="liste" style="${grille(n, Math.ceil(T.cartes.length / n))}">${T.cartes.map(([i, t, p]) => `
+    <div class="carte" style="border-radius:${F.rayon}px;padding:${F.pad}px;gap:${F.pad * .8}px;${empile ? 'flex-direction:column;align-items:flex-start;justify-content:center' : ''}">
+      <div class="icone" style="width:${F.ic}px;height:${F.ic}px">${svg(I[i])}</div>${texte(t, p)}</div>`).join('')}</div>`;
+}
+if (T.etapes) {
+  corps = `<div class="liste" style="${grille(1, T.etapes.length)}">${T.etapes.map(([t, p], k) => `
+    <div class="carte" style="border-radius:${F.rayon}px;padding:${F.pad}px;gap:${F.pad * .8}px">
+      <div class="numero" style="width:${F.ic}px;height:${F.ic}px;font-size:${F.ic * .46}px">${k + 1}</div>${texte(t, p)}</div>`).join('')}</div>`;
+}
+if (T.lignes) {
+  corps = `<div class="liste" style="${grille(1, T.lignes.length + 1)};grid-template-rows:1.25fr repeat(${T.lignes.length},minmax(0,1fr))">
+    <div class="prix" style="border-radius:${F.rayon}px;padding:0 ${F.pad * 1.3}px;font-size:${F.p * 1.15}px">
+      <div><div class="des">À partir de</div><div class="montant" style="font-size:${F.titre * .9}px">25 000 <span style="font-size:.4em;letter-spacing:-.01em">FCFA par mois</span></div></div>
+      <div class="essai" style="padding:${F.pad * .5}px ${F.pad}px;font-size:${F.p}px">Essai gratuit<br>14 jours</div>
+    </div>
+    ${T.lignes.map(([t, p, v, u]) => `<div class="ligne-tarif" style="border-radius:${F.rayon}px;padding:0 ${F.pad * 1.3}px">${texte(t, p)}<div class="valeur" style="font-size:${F.h3 * 1.2}px">${v}<small>${u}</small></div></div>`).join('')}
+  </div>`;
+}
+const telephone = T.ecran && F.tel
+  ? `<div class="tel" style="width:${F.tel}px;height:${F.tel * 2.164}px;margin-left:${F.ecart * 1.4}px"><div class="bezel"><div class="ecran"><img src="../ecrans/${T.ecran}"><div class="ile"></div></div></div><div class="reflet"></div></div>` : '';
+
+const st = document.getElementById('stage');
+st.style.height = F.H + 'px';
+document.documentElement.style.height = document.body.style.height = F.H + 'px';
+st.innerHTML = `
+  <div class="fond" style="background-image:url(../photos/${T.photo})"></div><div class="voile"></div>
+  <div class="contenu" style="top:${F.haut}px;bottom:${F.bande + F.ecart * 1.3}px">
+    <div class="titre" style="font-size:${F.titre}px;line-height:1.04">${T.titre}</div>
+    <div class="sous" style="font-size:${F.sous}px;margin:${F.ecart * .6}px 0 ${F.ecart}px">${T.sous}</div>
+    <div class="corps">${corps}${telephone}</div>
+    ${T.note ? `<div class="note" style="font-size:${F.p}px;margin-top:${F.ecart * .7}px">${T.note}</div>` : ''}
+  </div>
+  <div class="bande" style="height:${F.bande}px">
+    <div class="info"><div class="marque" style="font-size:${F.marque}px;gap:16px">${logo(F.marque * 1.1)}<div>${T.marque}</div></div>
+      <div class="url" style="font-size:${F.marque * .58}px">${T.url}</div>
+      ${format === 'carre' ? '' : `<div class="offre">${T.offre}</div>`}</div>
+    <div class="qr" style="width:${F.qr}px"><img src="../${T.qr}">${format === 'carre' ? '' : '<small>Scannez</small>'}</div>
+  </div>
+  <div class="grain"></div>`;
+window.TAILLE = { largeur: 1080, hauteur: F.H };
+</script>
+</body>
+</html>
