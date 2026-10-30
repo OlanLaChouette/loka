@@ -15,37 +15,7 @@
     },
     {
       "image": "02.png",
-      "texte": "Voici la dépense de votre gérant. Regardez d’abord le justificatif.",
-      "tap": {
-        "x": 77.984375,
-        "y": 346.578125,
-        "w": 97.96875,
-        "h": 38
-      }
-    },
-    {
-      "image": "03.png",
-      "texte": "C’est bien la photo du reçu.",
-      "tap": {
-        "x": 347,
-        "y": 331.671875,
-        "w": 36,
-        "h": 36
-      }
-    },
-    {
-      "image": "04.png",
-      "texte": "Acceptez-la, ou refusez-la avec un motif. Seules les dépenses acceptées comptent dans le bénéfice.",
-      "tap": {
-        "x": 277.7265625,
-        "y": 346.578125,
-        "w": 87.734375,
-        "h": 38
-      }
-    },
-    {
-      "image": "05.png",
-      "texte": "Les réductions au-delà de la limite attendent aussi votre accord, dans « Réservations ».",
+      "texte": "Elle mène d’abord aux réductions au-delà de la limite, dans « Réservations ».",
       "tap": {
         "x": 316.5546875,
         "y": 319,
@@ -54,7 +24,7 @@
       }
     },
     {
-      "image": "06.png",
+      "image": "03.png",
       "texte": "Vérifiez le motif, puis validez la réduction, ou annulez le séjour.",
       "tap": {
         "x": 287.9375,
@@ -64,9 +34,44 @@
       }
     },
     {
+      "image": "04.png",
+      "texte": "C’est validé : votre gérant peut maintenant encaisser. Appuyez de nouveau sur la cloche.",
+      "tap": {
+        "x": 240.171875,
+        "y": 26,
+        "w": 36,
+        "h": 36
+      }
+    },
+    {
+      "image": "05.png",
+      "texte": "Voici la dépense de votre gérant. Regardez d’abord le justificatif.",
+      "tap": {
+        "x": 133.390625,
+        "y": 346.578125,
+        "w": 97.96875,
+        "h": 38
+      }
+    },
+    {
+      "image": "06.png",
+      "texte": "C’est bien la photo du reçu.",
+      "tap": {
+        "x": 347,
+        "y": 331.671875,
+        "w": 36,
+        "h": 36
+      }
+    },
+    {
       "image": "07.png",
-      "texte": "C’est validé : votre gérant peut maintenant encaisser.",
-      "tap": null
+      "texte": "Acceptez-la, ou refusez-la avec un motif. Seules les dépenses acceptées comptent dans le bénéfice.",
+      "tap": {
+        "x": 317.1328125,
+        "y": 346.578125,
+        "w": 87.734375,
+        "h": 38
+      }
     }
   ]
 }

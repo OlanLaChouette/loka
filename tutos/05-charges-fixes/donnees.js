@@ -2,7 +2,7 @@ window.DONNEES = {
  "id": "05-charges-fixes",
  "numero": 5,
  "titre": "Déclarer ses charges fixes",
- "total_serie": 11,
+ "total_serie": 13,
  "suivant": "Réserver un séjour",
  "intro": 5.44,
  "etapes": [

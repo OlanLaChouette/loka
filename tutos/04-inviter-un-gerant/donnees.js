@@ -2,7 +2,7 @@ window.DONNEES = {
  "id": "04-inviter-un-gerant",
  "numero": 4,
  "titre": "Inviter un gérant",
- "total_serie": 11,
+ "total_serie": 13,
  "suivant": "Déclarer ses charges fixes",
  "intro": 4.6,
  "etapes": [
@@ -26,7 +26,7 @@ window.DONNEES = {
    "texte": "Puis choisissez « Gérants ».",
    "tap": {
     "x": 220.5,
-    "y": 370.5625,
+    "y": 414.5625,
     "w": 323,
     "h": 44
    },

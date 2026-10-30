@@ -1,0 +1,163 @@
+{
+ "id": "12-place-de-marche",
+ "numero": 12,
+ "titre": "Recevoir des clients par la place de marché",
+ "total_serie": 13,
+ "suivant": "Clés, départ et annulation",
+ "intro": 6.2,
+ "etapes": [
+  {
+   "image": "01.png",
+   "texte": "Pour proposer une villa aux clients de Loka, appuyez sur « Modifier ».",
+   "tap": {
+    "x": 320.0703125,
+    "y": 422.453125,
+    "w": 82.828125,
+    "h": 38
+   },
+   "debut": 6.2,
+   "duree": 5.51,
+   "voix": 6.6,
+   "dureeVoix": 4.16,
+   "zoom": 1.14
+  },
+  {
+   "image": "02.png",
+   "texte": "Cochez « Publier sur la place de marché », puis indiquez la capacité, la description et les équipements.",
+   "tap": {
+    "x": 195,
+    "y": 455.8671875,
+    "w": 340,
+    "h": 125.671875
+   },
+   "debut": 11.71,
+   "duree": 7.43,
+   "voix": 12.11,
+   "dureeVoix": 6.08,
+   "zoom": 1.0
+  },
+  {
+   "image": "03.png",
+   "texte": "« Tout publier » met d’un coup en ligne toutes les villas d’un site.",
+   "tap": {
+    "x": 82.0234375,
+    "y": 422.4375,
+    "w": 106.046875,
+    "h": 38
+   },
+   "debut": 19.14,
+   "duree": 4.69,
+   "voix": 19.54,
+   "dureeVoix": 3.34,
+   "zoom": 1.14
+  },
+  {
+   "image": "04.png",
+   "texte": "Les clients cherchent sur Loka Villas, sans compte, par ville, dates et budget. Seules les villas vraiment libres apparaissent.",
+   "tap": {
+    "x": 195,
+    "y": 422.59375,
+    "w": 358,
+    "h": 470.75
+   },
+   "debut": 23.83,
+   "duree": 8.87,
+   "voix": 24.23,
+   "dureeVoix": 7.52,
+   "zoom": 1.0
+  },
+  {
+   "image": "05.png",
+   "texte": "La fiche montre les photos, les équipements, les avis et vos conditions de séjour.",
+   "tap": null,
+   "debut": 32.7,
+   "duree": 5.14,
+   "voix": 33.1,
+   "dureeVoix": 4.34,
+   "zoom": 1.0
+  },
+  {
+   "image": "06.png",
+   "texte": "Le client envoie sa demande. Il n’a rien à payer tant que le gérant n’a pas accepté.",
+   "tap": {
+    "x": 195,
+    "y": 698.15625,
+    "w": 324,
+    "h": 48
+   },
+   "debut": 37.84,
+   "duree": 5.97,
+   "voix": 38.24,
+   "dureeVoix": 4.62,
+   "zoom": 1.14
+  },
+  {
+   "image": "07.png",
+   "texte": "Il reçoit un code pour suivre sa demande.",
+   "tap": null,
+   "debut": 43.81,
+   "duree": 2.7,
+   "voix": 44.21,
+   "dureeVoix": 1.9,
+   "zoom": 1.0
+  },
+  {
+   "image": "08.png",
+   "texte": "Côté gérant, la demande arrive en haut de l’écran Aujourd’hui. Acceptez-la, ou refusez-la. Loka propose de prévenir le client sur WhatsApp.",
+   "tap": {
+    "x": 317.1328125,
+    "y": 407.65625,
+    "w": 87.734375,
+    "h": 38
+   },
+   "debut": 46.51,
+   "duree": 9.87,
+   "voix": 46.91,
+   "dureeVoix": 8.52,
+   "zoom": 1.14
+  },
+  {
+   "image": "09.png",
+   "texte": "Le client a alors deux heures pour envoyer l’acompte par Mobile Money, puis il indique la référence de la transaction.",
+   "tap": {
+    "x": 195,
+    "y": 422.5,
+    "w": 292,
+    "h": 48
+   },
+   "debut": 56.38,
+   "duree": 6.97,
+   "voix": 56.78,
+   "dureeVoix": 5.62,
+   "zoom": 1.14
+  },
+  {
+   "image": "10.png",
+   "texte": "Vérifiez que l’argent est bien arrivé, puis appuyez sur « Acompte reçu » : le reçu est créé.",
+   "tap": {
+    "x": 88.7421875,
+    "y": 422.78125,
+    "w": 119.484375,
+    "h": 38
+   },
+   "debut": 63.35,
+   "duree": 6.43,
+   "voix": 63.75,
+   "dureeVoix": 5.08,
+   "zoom": 1.14
+  },
+  {
+   "image": "11.png",
+   "texte": "Le séjour est garanti. Sans acompte à temps, les dates sont libérées automatiquement.",
+   "tap": null,
+   "debut": 69.78,
+   "duree": 4.9,
+   "voix": 70.18,
+   "dureeVoix": 4.1,
+   "zoom": 1.0
+  }
+ ],
+ "fin": 74.68,
+ "duree": 78.28,
+ "voixIntro": 0.45
+}

@@ -2,8 +2,8 @@ window.DONNEES = {
  "id": "11-tableau-de-bord",
  "numero": 11,
  "titre": "Lire son tableau de bord",
- "total_serie": 11,
- "suivant": null,
+ "total_serie": 13,
+ "suivant": "Recevoir des clients par la place de marché",
  "intro": 5.26,
  "etapes": [
   {

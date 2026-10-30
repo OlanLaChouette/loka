@@ -2,7 +2,7 @@ window.DONNEES = {
  "id": "10-baux-et-loyers",
  "numero": 10,
  "titre": "Baux et loyers au mois",
- "total_serie": 11,
+ "total_serie": 13,
  "suivant": "Lire son tableau de bord",
  "intro": 5.3,
  "etapes": [

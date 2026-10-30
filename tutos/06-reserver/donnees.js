@@ -2,7 +2,7 @@ window.DONNEES = {
  "id": "06-reserver",
  "numero": 6,
  "titre": "Réserver un séjour",
- "total_serie": 11,
+ "total_serie": 13,
  "suivant": "Encaisser et envoyer le reçu",
  "intro": 4.92,
  "etapes": [
@@ -11,7 +11,7 @@ window.DONNEES = {
    "texte": "Un client veut voir une villa libre ? Appuyez sur son appareil photo.",
    "tap": {
     "x": 343,
-    "y": 422.671875,
+    "y": 422.65625,
     "w": 36,
     "h": 36
    },
@@ -81,7 +81,7 @@ window.DONNEES = {
    "texte": "Saisissez le nom et le téléphone du client.",
    "tap": {
     "x": 195,
-    "y": 455.875,
+    "y": 442.28125,
     "w": 340,
     "h": 43.75
    },

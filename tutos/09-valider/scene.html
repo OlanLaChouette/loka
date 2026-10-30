@@ -97,6 +97,8 @@ const E = 'power3.out';
 
 $('#pastille').textContent = `Tuto ${D.numero} / ${D.total_serie}`;
 $('#titre').textContent = D.titre;
+// Un titre long reste sur une ligne : sur deux, il passerait sous la barre de progression.
+if (D.titre.length > 30) { $('#titre').style.fontSize = (52 * 30 / D.titre.length) + 'px'; $('#titre').style.whiteSpace = 'nowrap'; }
 $('#introNum').textContent = `Tuto n° ${D.numero}`;
 $('#introTitre').textContent = D.titre;
 $('#finSuivant').innerHTML = D.suivant ? `Prochain tuto<b>${D.suivant}</b>` : `Retrouvez tous les tutos<b>sur notre WhatsApp</b>`;

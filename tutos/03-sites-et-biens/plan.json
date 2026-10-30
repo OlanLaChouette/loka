@@ -15,7 +15,7 @@
     },
     {
       "image": "02.png",
-      "texte": "Donnez-lui un nom et une ville, puis ajoutez-le.",
+      "texte": "Donnez-lui un nom, une ville et un quartier : c’est ainsi que les clients le trouveront. Puis ajoutez-le.",
       "tap": {
         "x": 327.0859375,
         "y": 800,
@@ -37,14 +37,34 @@
       "image": "04.png",
       "texte": "Choisissez une lettre, de un à huit par exemple, puis le prix par nuit et le nombre de chambres.",
       "tap": {
+        "x": 195,
+        "y": 455.96875,
+        "w": 340,
+        "h": 43.75
+      }
+    },
+    {
+      "image": "05.png",
+      "texte": "Ces villas seront publiées sur la place de marché : décochez la case pour les garder en interne.",
+      "tap": {
+        "x": 195,
+        "y": 455.59375,
+        "w": 340,
+        "h": 127.125
+      }
+    },
+    {
+      "image": "06.png",
+      "texte": "Ajoutez-les.",
+      "tap": {
         "x": 301.546875,
-        "y": 799.71875,
+        "y": 799.453125,
         "w": 126.90625,
         "h": 38
       }
     },
     {
-      "image": "05.png",
+      "image": "07.png",
       "texte": "Et voilà : huit villas créées en un seul geste.",
       "tap": {
         "x": 324.3671875,
@@ -54,32 +74,32 @@
       }
     },
     {
-      "image": "06.png",
+      "image": "08.png",
       "texte": "Pour changer le prix ou l’état d’une villa, appuyez simplement sur « Modifier ».",
       "tap": {
         "x": 320.0703125,
-        "y": 299.0625,
+        "y": 363.90625,
         "w": 82.828125,
         "h": 38
       }
     },
     {
-      "image": "07.png",
+      "image": "09.png",
       "texte": "Prix, standing, chambres, compteur électrique, ou mise en travaux : tout se règle ici.",
       "tap": null
     },
     {
-      "image": "08.png",
+      "image": "10.png",
       "texte": "Ajoutez enfin des photos : appuyez sur l’appareil photo de la villa.",
       "tap": {
         "x": 248.609375,
-        "y": 295.78125,
+        "y": 360.625,
         "w": 60.09375,
         "h": 38
       }
     },
     {
-      "image": "09.png",
+      "image": "11.png",
       "texte": "Jusqu’à six photos par villa, prises au téléphone ou choisies dans la galerie.",
       "tap": {
         "x": 107.5,
@@ -89,7 +109,7 @@
       }
     },
     {
-      "image": "10.png",
+      "image": "12.png",
       "texte": "Elles sont réduites automatiquement, et la première sert de couverture.",
       "tap": null
     }

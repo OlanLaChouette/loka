@@ -18,7 +18,7 @@
       "texte": "Indiquez pour quel site ou quelle villa, la catégorie et le montant.",
       "tap": {
         "x": 195,
-        "y": 492.09375,
+        "y": 499.09375,
         "w": 340,
         "h": 43.75
       }
@@ -27,10 +27,10 @@
       "image": "03.png",
       "texte": "Puis prenez en photo le reçu du fournisseur : c’est la preuve pour le propriétaire.",
       "tap": {
-        "x": 195,
-        "y": 659.90625,
-        "w": 340,
-        "h": 45
+        "x": 145.0234375,
+        "y": 663.40625,
+        "w": 240.046875,
+        "h": 38
       }
     },
     {

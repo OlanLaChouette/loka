@@ -2,7 +2,7 @@
  "id": "07-encaisser",
  "numero": 7,
  "titre": "Encaisser et envoyer le reçu",
- "total_serie": 11,
+ "total_serie": 13,
  "suivant": "Noter une dépense",
  "intro": 5.88,
  "etapes": [

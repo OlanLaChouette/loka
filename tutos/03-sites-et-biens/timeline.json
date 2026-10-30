@@ -2,9 +2,9 @@
  "id": "03-sites-et-biens",
  "numero": 3,
  "titre": "Créer ses sites et ses biens",
- "total_serie": 11,
+ "total_serie": 13,
  "suivant": "Inviter un gérant",
- "intro": 5.54,
+ "intro": 5.22,
  "etapes": [
   {
    "image": "01.png",
@@ -15,25 +15,25 @@
     "w": 296,
     "h": 38
    },
-   "debut": 5.54,
-   "duree": 5.29,
-   "voix": 5.94,
-   "dureeVoix": 3.94,
+   "debut": 5.22,
+   "duree": 5.45,
+   "voix": 5.62,
+   "dureeVoix": 4.1,
    "zoom": 1.14
   },
   {
    "image": "02.png",
-   "texte": "Donnez-lui un nom et une ville, puis ajoutez-le.",
+   "texte": "Donnez-lui un nom, une ville et un quartier : c’est ainsi que les clients le trouveront. Puis ajoutez-le.",
    "tap": {
     "x": 327.0859375,
     "y": 800,
     "w": 75.828125,
     "h": 38
    },
-   "debut": 10.83,
-   "duree": 4.49,
-   "voix": 11.23,
-   "dureeVoix": 3.14,
+   "debut": 10.67,
+   "duree": 7.57,
+   "voix": 11.07,
+   "dureeVoix": 6.22,
    "zoom": 1.14
   },
   {
@@ -45,29 +45,59 @@
     "w": 151.5,
     "h": 38
    },
-   "debut": 15.32,
-   "duree": 6.71,
-   "voix": 15.72,
-   "dureeVoix": 5.36,
+   "debut": 18.24,
+   "duree": 7.09,
+   "voix": 18.64,
+   "dureeVoix": 5.74,
    "zoom": 1.14
   },
   {
    "image": "04.png",
    "texte": "Choisissez une lettre, de un à huit par exemple, puis le prix par nuit et le nombre de chambres.",
    "tap": {
-    "x": 301.546875,
-    "y": 799.71875,
-    "w": 126.90625,
-    "h": 38
+    "x": 195,
+    "y": 455.96875,
+    "w": 340,
+    "h": 43.75
    },
-   "debut": 22.03,
-   "duree": 6.89,
-   "voix": 22.43,
-   "dureeVoix": 5.54,
+   "debut": 25.33,
+   "duree": 6.55,
+   "voix": 25.73,
+   "dureeVoix": 5.2,
    "zoom": 1.14
   },
   {
    "image": "05.png",
+   "texte": "Ces villas seront publiées sur la place de marché : décochez la case pour les garder en interne.",
+   "tap": {
+    "x": 195,
+    "y": 455.59375,
+    "w": 340,
+    "h": 127.125
+   },
+   "debut": 31.88,
+   "duree": 6.45,
+   "voix": 32.28,
+   "dureeVoix": 5.1,
+   "zoom": 1.0
+  },
+  {
+   "image": "06.png",
+   "texte": "Ajoutez-les.",
+   "tap": {
+    "x": 301.546875,
+    "y": 799.453125,
+    "w": 126.90625,
+    "h": 38
+   },
+   "debut": 38.33,
+   "duree": 2.6,
+   "voix": 38.73,
+   "dureeVoix": 0.58,
+   "zoom": 1.14
+  },
+  {
+   "image": "07.png",
    "texte": "Et voilà : huit villas créées en un seul geste.",
    "tap": {
     "x": 324.3671875,
@@ -75,54 +105,54 @@
     "w": 81.265625,
     "h": 38
    },
-   "debut": 28.92,
-   "duree": 4.35,
-   "voix": 29.32,
-   "dureeVoix": 3.0,
+   "debut": 40.93,
+   "duree": 4.27,
+   "voix": 41.33,
+   "dureeVoix": 2.92,
    "zoom": 1.14
-  },
-  {
-   "image": "06.png",
-   "texte": "Pour changer le prix ou l’état d’une villa, appuyez simplement sur « Modifier ».",
-   "tap": {
-    "x": 320.0703125,
-    "y": 299.0625,
-    "w": 82.828125,
-    "h": 38
-   },
-   "debut": 33.27,
-   "duree": 5.53,
-   "voix": 33.67,
-   "dureeVoix": 4.18,
-   "zoom": 1.14
-  },
-  {
-   "image": "07.png",
-   "texte": "Prix, standing, chambres, compteur électrique, ou mise en travaux : tout se règle ici.",
-   "tap": null,
-   "debut": 38.8,
-   "duree": 5.74,
-   "voix": 39.2,
-   "dureeVoix": 4.94,
-   "zoom": 1.0
   },
   {
    "image": "08.png",
-   "texte": "Ajoutez enfin des photos : appuyez sur l’appareil photo de la villa.",
+   "texte": "Pour changer le prix ou l’état d’une villa, appuyez simplement sur « Modifier ».",
    "tap": {
-    "x": 248.609375,
-    "y": 295.78125,
-    "w": 60.09375,
+    "x": 320.0703125,
+    "y": 363.90625,
+    "w": 82.828125,
     "h": 38
    },
-   "debut": 44.54,
-   "duree": 4.75,
-   "voix": 44.94,
-   "dureeVoix": 3.4,
+   "debut": 45.2,
+   "duree": 6.13,
+   "voix": 45.6,
+   "dureeVoix": 4.78,
    "zoom": 1.14
   },
   {
    "image": "09.png",
+   "texte": "Prix, standing, chambres, compteur électrique, ou mise en travaux : tout se règle ici.",
+   "tap": null,
+   "debut": 51.33,
+   "duree": 6.2,
+   "voix": 51.73,
+   "dureeVoix": 5.4,
+   "zoom": 1.0
+  },
+  {
+   "image": "10.png",
+   "texte": "Ajoutez enfin des photos : appuyez sur l’appareil photo de la villa.",
+   "tap": {
+    "x": 248.609375,
+    "y": 360.625,
+    "w": 60.09375,
+    "h": 38
+   },
+   "debut": 57.53,
+   "duree": 5.07,
+   "voix": 57.93,
+   "dureeVoix": 3.72,
+   "zoom": 1.14
+  },
+  {
+   "image": "11.png",
    "texte": "Jusqu’à six photos par villa, prises au téléphone ou choisies dans la galerie.",
    "tap": {
     "x": 107.5,
@@ -130,24 +160,24 @@
     "w": 165,
     "h": 123.75
    },
-   "debut": 49.29,
-   "duree": 5.07,
-   "voix": 49.69,
-   "dureeVoix": 3.72,
+   "debut": 62.6,
+   "duree": 5.25,
+   "voix": 63.0,
+   "dureeVoix": 3.9,
    "zoom": 1.0
   },
   {
-   "image": "10.png",
+   "image": "12.png",
    "texte": "Elles sont réduites automatiquement, et la première sert de couverture.",
    "tap": null,
-   "debut": 54.36,
-   "duree": 3.82,
-   "voix": 54.76,
-   "dureeVoix": 3.02,
+   "debut": 67.85,
+   "duree": 4.16,
+   "voix": 68.25,
+   "dureeVoix": 3.36,
    "zoom": 1.0
   }
  ],
- "fin": 58.18,
- "duree": 61.78,
+ "fin": 72.01,
+ "duree": 75.61,
  "voixIntro": 0.45
 }

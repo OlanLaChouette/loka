@@ -1,0 +1,41 @@
+{
+ "taux": 24000,
+ "durees": [
+  4.78,
+  2.8,
+  7.56,
+  2.36,
+  4.06,
+  1.8,
+  6.08,
+  2.26,
+  2.3,
+  5.08,
+  2.14,
+  1.36,
+  6.66,
+  5.68,
+  2.82,
+  5.16,
+  1.271
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 13 : Clés, départ et annulation.",
+  "Le jour de l’arrivée, ouvrez le séjour dans le planning.",
+  "Les clés se remettent après un acompte de cinquante pour cent : le bouton reste bloqué tant qu’il n’est pas payé. Appuyez sur « Encaisser ».",
+  "Saisissez l’acompte, puis validez.",
+  "L’acompte est payé : remettez les clés, à partir de quinze heures, l’heure d’arrivée.",
+  "Au départ, rouvrez le séjour.",
+  "Après l’heure de départ, Loka le signale et ajoute une nuit au séjour. Appuyez sur « Enregistrer le départ ».",
+  "Le client a séjourné : demandez-lui son avis.",
+  "Un lien part sur WhatsApp, en un seul geste.",
+  "Le client note son séjour. Seuls les vrais clients peuvent noter : ces avis comptent dans votre classement.",
+  "Un client annule ? Ouvrez son séjour.",
+  "Appuyez sur « Annuler ».",
+  "Loka calcule tout : c’est gratuit jusqu’à vingt-quatre heures avant l’arrivée. Ensuite, une nuit est retenue, et le reste revient au client.",
+  "Si c’est vous qui annulez, le client est remboursé en totalité, et Loka liste vos autres villas libres à lui proposer.",
+  "Ici, c’est le client qui annule : revenez à son cas.",
+  "Confirmez : l’annulation est enregistrée, avec le montant retenu et le montant à rendre.",
+  "Les dates sont de nouveau libres."
+ ]
+}

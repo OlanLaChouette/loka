@@ -1,12 +1,13 @@
 {
  "taux": 24000,
  "durees": [
-  3.8,
-  1.8,
-  1.88,
-  3.82,
-  4.78,
-  4.52,
+  4.24,
+  1.94,
+  2.08,
+  3.88,
+  5.24,
+  7.62,
+  4.74,
   3.62
  ],
  "lignes": [
@@ -15,6 +16,7 @@
   "Puis choisissez « Entreprise ».",
   "Ajoutez d’abord votre logo : il apparaîtra sur vos reçus et vos contrats.",
   "Complétez ensuite la forme juridique, le RCCM, l’IFU et l’adresse.",
+  "Vérifiez les règles de séjour : horaires, acompte, annulation. Et indiquez le numéro Mobile Money qui recevra les acomptes.",
   "Fixez enfin la réduction qu’un gérant peut accorder sans votre accord, puis enregistrez.",
   "C’est enregistré : ces informations figurent désormais sur tous vos documents."
  ]

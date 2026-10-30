@@ -18,7 +18,7 @@
       "texte": "Puis choisissez « Entreprise ».",
       "tap": {
         "x": 220.5,
-        "y": 414.5625,
+        "y": 458.5625,
         "w": 323,
         "h": 44
       }
@@ -38,23 +38,33 @@
       "texte": "Complétez ensuite la forme juridique, le RCCM, l’IFU et l’adresse.",
       "tap": {
         "x": 195,
-        "y": 422.71875,
+        "y": 422.28125,
         "w": 332,
         "h": 43.75
       }
     },
     {
       "image": "05.png",
+      "texte": "Vérifiez les règles de séjour : horaires, acompte, annulation. Et indiquez le numéro Mobile Money qui recevra les acomptes.",
+      "tap": {
+        "x": 195,
+        "y": 484.71875,
+        "w": 332,
+        "h": 43.75
+      }
+    },
+    {
+      "image": "06.png",
       "texte": "Fixez enfin la réduction qu’un gérant peut accorder sans votre accord, puis enregistrez.",
       "tap": {
         "x": 310.9765625,
-        "y": 725.59375,
+        "y": 725.625,
         "w": 100.046875,
         "h": 38
       }
     },
     {
-      "image": "06.png",
+      "image": "07.png",
       "texte": "C’est enregistré : ces informations figurent désormais sur tous vos documents.",
       "tap": null
     }

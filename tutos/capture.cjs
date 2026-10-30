@@ -15,7 +15,7 @@ const puppeteer = require(path.join(RACINE, 'video/node_modules/puppeteer-core')
 const { MOT_DE_PASSE } = require(path.join(RACINE, 'backend/src/scripts/comptes-demo'));
 const { courrielCode } = require(path.join(RACINE, 'backend/src/services/courriel'));
 
-const SITE = 'http://localhost:5174';
+const SITE = process.env.SITE || 'http://localhost:5174';
 const CHROME = path.join(RACINE, 'video/.navigateurs/chrome-headless-shell/win64-131.0.6778.204/chrome-headless-shell-win64/chrome-headless-shell.exe');
 const pause = (ms) => new Promise(r => setTimeout(r, ms));
 

@@ -11,7 +11,7 @@ const require = createRequire(path.join(ici, '../video/package.json'));
 const puppeteer = require('puppeteer-core');
 const { MOT_DE_PASSE } = require('../backend/src/scripts/comptes-demo.js');
 
-const SITE = 'http://localhost:5174';
+const SITE = process.env.SITE || 'http://localhost:5174';
 const SORTIE = path.join(ici, 'captures');
 fs.mkdirSync(SORTIE, { recursive: true });
 const CHROME = path.join(ici, '../video/.navigateurs/chrome-headless-shell/win64-131.0.6778.204/chrome-headless-shell-win64/chrome-headless-shell.exe');
@@ -48,6 +48,8 @@ async function capture(page, nom, pleine = false) {
   await page.screenshot({ path: path.join(SORTIE, nom + '.png'), fullPage: pleine });
   console.log('✓', nom);
 }
+
+const nouvelleSession = async (telephone) => { const page = await session(); await connecter(page, telephone); return page; };
 
 // Propriétaire
 let p = await session();
@@ -109,5 +111,64 @@ p = await session();
 await connecter(p, '70555555');
 await capture(p, '20-mise-en-route');
 await p.close();
+
+// Règles de séjour et place de marché : séjours et demande préparés par l'API de démonstration.
+{
+  const API = 'http://localhost:4100/api';
+  const jour = (d) => new Date(Date.now() + d * 864e5).toISOString().slice(0, 10);
+  const session = await (await fetch(API + '/auth/connexion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identifiant: '70111111', mot_de_passe: MOT_DE_PASSE }) })).json();
+  const h = { Authorization: 'Bearer ' + session.jeton, 'X-Espace': session.espaces[0].id, 'Content-Type': 'application/json' };
+  const post = async (c, corps, entetes = h) => (await fetch(API + c, { method: 'POST', headers: entetes, body: JSON.stringify(corps || {}) })).json();
+  const biens = await (await fetch(API + '/biens', { headers: h })).json();
+  const id = (ref) => biens.find(b => b.reference === ref).id;
+  const parti = await post('/reservations', { bien_id: id('B1'), arrivee: jour(-3), depart: jour(-1), client: { nom: 'Salif Zoungrana', telephone: '70551122' } });
+  await post('/paiements', { reservation_id: parti.id, montant: parti.total, moyen: 'especes' });
+  await post(`/reservations/${parti.id}/cles`);
+  await post('/reservations', { bien_id: id('B1'), arrivee: jour(-1), depart: jour(1), client: { nom: 'Moussa Diallo', telephone: '70551133' } });
+  const arrivee = jour(new Date().getUTCHours() >= 15 ? 1 : 0);
+  const tardive = await post('/reservations', { bien_id: id('K3'), arrivee, depart: new Date(new Date(arrivee).getTime() + 3 * 864e5).toISOString().slice(0, 10), client: { nom: 'Fatim Ouédraogo', telephone: '70551144' } });
+  await post('/paiements', { reservation_id: tardive.id, montant: 30000, moyen: 'mobile_money', reference: 'OM-3010-7712' });
+  const json = { 'Content-Type': 'application/json' };
+  const { code } = await post('/public/demandes', { bien_id: id('A2'), arrivee: jour(20), depart: jour(22), nom: 'Rokia Sanou', telephone: '70667788', message: 'Arrivée vers 17 h, deux personnes.' }, json);
+  const ouvrirSejour = async (page, nom) => { await page.evaluate((n) => [...document.querySelectorAll('.sejour')].find(b => b.textContent.includes(n)).click(), nom); await pause(1000); };
+  const defilerVers = async (page, css) => { await page.evaluate((c) => document.querySelector(c).scrollIntoView({ block: 'center' }), css); await pause(500); };
+
+  p = await nouvelleSession('70111111');
+  await aller(p, '/parametres');
+  await p.evaluate(() => [...document.querySelectorAll('h2')].find(t => t.textContent.includes('Règles de séjour')).scrollIntoView({ block: 'start' })); await pause(500);
+  await capture(p, '22-regles');
+  await aller(p, '/biens');
+  await p.evaluate(() => [...document.querySelectorAll('tr')].find(l => l.querySelector('td')?.textContent === 'A2').querySelector('button:nth-last-child(1)').click()); await pause(800);
+  await defilerVers(p, '.publication');
+  await capture(p, '23-publication');
+  await aller(p, '/reservations');
+  await ouvrirSejour(p, 'Moussa Diallo'); await capture(p, '24-cles');
+  await aller(p, '/reservations');
+  await ouvrirSejour(p, 'Salif Zoungrana'); await capture(p, '25-depart');
+  await aller(p, '/reservations');
+  await ouvrirSejour(p, 'Fatim Ouédraogo');
+  await cliquer(p, 'Annuler…'); await pause(800); await capture(p, '26-annulation');
+  await cliquer(p, 'Nous annulons'); await pause(800); await capture(p, '27-nous-annulons');
+  await p.close();
+
+  p = await nouvelleSession('70222222');
+  await aller(p, '/terrain'); await capture(p, '28-demande');
+  p.once('dialog', d => d.dismiss());
+  await cliquer(p, 'Accepter'); await pause(800);
+  await aller(p, `/demande/${code}`);
+  await defilerVers(p, '.mc-paiement'); await capture(p, '29-suivi');
+  await aller(p, '/villas'); await capture(p, '31-villas');
+  await aller(p, `/villas/${id('A2')}`);
+  await defilerVers(p, '.mc-regles'); await capture(p, '32-fiche');
+  await p.close();
+
+  // Avis : le lien n'existe qu'après le départ enregistré.
+  const avis = await post(`/reservations/${parti.id}/depart`);
+  p = await nouvelleSession('70111111');
+  await aller(p, '/avis/' + avis.code_avis);
+  await p.click('[aria-label="5 étoiles"]'); await pause(400);
+  await capture(p, '33-avis');
+  await p.close();
+}
 
 await navigateur.close();

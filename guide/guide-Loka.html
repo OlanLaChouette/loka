@@ -77,7 +77,7 @@
   .contact p { margin: 0; color: #E4E0FF; }
   .contact .num { font: 800 15pt 'Sora'; color: #fff; white-space: nowrap; text-align: right; }
   .faq table { font-size: 8.9pt; margin-bottom: 3mm; } .faq td, .faq th { padding: 1.5mm 3mm; } .faq h3 { margin-top: 3mm; } .faq .contact { margin-top: 4mm; padding: 4.5mm 6mm; }
-  .ouverture td, .ouverture th { padding: 1.5mm 3mm; } .ouverture h3 { margin-top: 4mm; } .ouverture .intro { margin-bottom: 3mm; }
+  .ouverture td, .ouverture th { padding: 1.5mm 3mm; } .ouverture h3 { margin-top: 4mm; } .ouverture .intro { margin-bottom: 3mm; } .ouverture .sommaire { columns: 3; column-gap: 6mm; font-size: 9pt; } .ouverture .sommaire li { padding: .9mm 0; } .ouverture .role { padding: 2.5mm 3.5mm; } .ouverture .attention { margin: 2mm 0; }
 </style>
 </head>
 <body>
@@ -111,8 +111,8 @@
   <h3>Qui fait quoi ?</h3>
   <p>Chaque personne se connecte avec <b>son propre numéro de téléphone</b>. Ce qu'elle voit dépend de son rôle.</p>
   <div class="roles">
-    <div class="role"><b>Propriétaire</b><ul><li>Crée les sites et les biens</li><li>Invite ses gérants</li><li>Valide les réductions et les dépenses</li><li>Suit les chiffres de tout le parc</li></ul></div>
-    <div class="role"><b>Gérant</b><ul><li>Réserve et encaisse sur le terrain</li><li>Envoie les reçus par WhatsApp</li><li>Note les dépenses avec photo</li><li>Ne voit que les sites qu'on lui confie</li></ul></div>
+    <div class="role"><b>Propriétaire</b><ul><li>Crée les sites et les biens</li><li>Invite ses gérants</li><li>Valide réductions et dépenses</li><li>Fixe les règles, publie ses villas</li><li>Suit les chiffres de tout le parc</li></ul></div>
+    <div class="role"><b>Gérant</b><ul><li>Réserve et encaisse sur le terrain</li><li>Répond aux clients, remet les clés</li><li>Envoie les reçus par WhatsApp</li><li>Note les dépenses avec photo</li><li>Ne voit que les sites qu'on lui confie</li></ul></div>
     <div class="role"><b>Comptable</b><ul><li>Consulte tout, sans rien modifier</li><li>Encaissements, dépenses, charges</li><li>Reçus et contrats en PDF</li></ul></div>
   </div>
 
@@ -135,10 +135,12 @@
     <li><span>4</span>La journée du gérant</li>
     <li><span>5</span>Le planning des réservations</li>
     <li><span>6</span>Les locations au mois (baux)</li>
-    <li><span>7</span>L'argent : encaissements, dépenses, charges</li>
-    <li><span>8</span>Le tableau de bord du propriétaire</li>
-    <li><span>9</span>Sans connexion Internet</li>
-    <li><span>10</span>Questions fréquentes</li>
+    <li><span>7</span>Les règles de séjour</li>
+    <li><span>8</span>La place de marché</li>
+    <li><span>9</span>L'argent</li>
+    <li><span>10</span>Le tableau de bord du propriétaire</li>
+    <li><span>11</span>Sans connexion Internet</li>
+    <li><span>12</span>Questions fréquentes</li>
   </ol>
 </section>
 
@@ -167,10 +169,10 @@
       <ul>
         <li><b>En haut</b> : le nom de votre entreprise (appuyez dessus pour changer d'espace si vous travaillez pour plusieurs bailleurs), la <b>cloche</b> des choses à traiter et le bouton <b>☰ Menu</b>.</li>
         <li><b>En bas</b> (sur téléphone) : quatre raccourcis — <b>Accueil</b>, <b>Planning</b>, <b>Caisse</b> et <b>Dépenses</b>.</li>
-        <li><b>Le menu</b> donne accès à toutes les pages : Aperçu, Biens, Réservations, Baux, Argent, Gérants, Entreprise.</li>
+        <li><b>Le menu</b> donne accès à toutes les pages : Aperçu, Biens, Réservations, Baux, Argent, Clients, Gérants, Entreprise.</li>
         <li>On y trouve aussi le <b>mode sombre</b>, le changement de mot de passe et <b>Se déconnecter</b>.</li>
       </ul>
-      <div class="astuce"><b>La cloche</b>Le chiffre rouge indique les réductions et les dépenses qui attendent la décision du propriétaire. Un appui vous y emmène.</div>
+      <div class="astuce"><b>La cloche (propriétaire)</b>Le chiffre rouge compte les demandes de clients, les réductions et les dépenses qui attendent une décision. Un appui mène d'abord aux réservations s'il y a des demandes ou des réductions, sinon aux dépenses.</div>
     </div>
   </div>
 </section>
@@ -202,6 +204,7 @@
     <div>
       <p>Menu › <b>Entreprise</b>. Renseignez le nom, l'adresse, le téléphone, le RCCM et l'IFU, puis <span class="bouton">Enregistrer</span>. Ajoutez votre logo avec <span class="bouton clair">Ajouter un logo</span> (une photo ou une image PNG/JPEG suffit, elle est réduite automatiquement).</p>
       <p>Sur cette page se règle aussi la <b>réduction maximale</b> qu'un gérant peut accorder sans votre accord (par exemple 10 %). Au-delà, la réservation attend votre validation.</p>
+      <p>La même page contient les <b>règles de séjour</b> (horaires, acompte, annulation) et le <b>numéro Mobile Money</b> des acomptes : voir le chapitre 7.</p>
     </div>
     <div><div class="tel"><img src="captures/14-entreprise.png" alt=""></div><div class="legende">Page Entreprise</div></div>
   </div>
@@ -212,11 +215,11 @@
   <div class="bloc">
     <div>
       <ol>
-        <li>Menu › <b>Biens</b>, puis <span class="bouton clair">+ Site</span> : donnez un nom (« Ouaga 2000 », « Résidence OH »…) et la ville.</li>
+        <li>Menu › <b>Biens</b>, puis <span class="bouton clair">+ Site</span> : donnez un nom (« Ouaga 2000 », « Résidence OH »…), la ville et le quartier. Sur place, <b>Utiliser ma position actuelle</b> enregistre la position pour la recherche « autour de moi ».</li>
         <li>Ajoutez les biens de ce site :
           <ul>
             <li><span class="bouton">+ Bien</span> pour un bien à la fois ;</li>
-            <li><span class="bouton clair">+ Plusieurs biens</span> pour en créer jusqu'à 100 d'un coup : une lettre (V), un numéro de début et de fin (1 à 10), et Loka crée V1, V2… V10.</li>
+            <li><span class="bouton clair">+ Plusieurs biens</span> pour en créer jusqu'à 100 d'un coup : une lettre (V), un numéro de début et de fin (1 à 10), et Loka crée V1, V2… V10. Attention : la case <b>Publier ces villas sur la place de marché</b> est déjà cochée ; décochez-la pour les garder en interne (chapitre 8).</li>
           </ul>
         </li>
         <li>Pour chaque bien, choisissez s'il <b>se loue à la nuit</b> (prix par nuit) ou <b>au mois</b> (loyer mensuel).</li>
@@ -253,8 +256,9 @@
       <p class="intro">Le gérant arrive directement sur l'écran <b>Aujourd'hui</b>. Tout ce dont il a besoin sur le terrain y est réuni.</p>
       <ul>
         <li><b>En haut</b> : le nombre de biens libres ce soir et trois gros boutons : <span class="bouton clair">Réserver</span>, <span class="bouton clair">Encaisser</span> et l'icône de reçu pour <b>noter une dépense</b>.</li>
-        <li><b>À encaisser</b> : les séjours commencés qui ne sont pas encore soldés.</li>
-        <li><b>Aujourd'hui</b> : les arrivées et départs du jour, avec ce qui reste à payer.</li>
+        <li><b>Demandes de la place de marché</b> : les clients à accepter ou à refuser, et les acomptes à vérifier (chapitre 8).</li>
+        <li><b>À encaisser</b> : les séjours commencés ou qui arrivent demain, pas encore soldés.</li>
+        <li><b>Aujourd'hui</b> : les arrivées et départs du jour, avec ce qui reste à payer. Un appui ouvre le séjour pour <b>remettre les clés</b> ou <b>enregistrer le départ</b> (chapitre 7).</li>
         <li><b>Biens</b> : l'état de chaque bien (Libre, Occupé, Travaux, Au mois).</li>
       </ul>
     </div>
@@ -317,7 +321,7 @@
         <li><b>Prenez en photo le reçu</b> du fournisseur : c'est la preuve pour le propriétaire.</li>
         <li>Envoyez. La dépense attend la validation du propriétaire.</li>
       </ol>
-      <div class="astuce"><b>Prépayé électricité</b>L'électricité est payée par le client lui-même : ce n'est pas une dépense à noter. Le gaz et le Wi-Fi, payés par le propriétaire, se déclarent en charges fixes (chapitre 7).</div>
+      <div class="astuce"><b>Prépayé électricité</b>L'électricité est payée par le client lui-même : ce n'est pas une dépense à noter. Le gaz et le Wi-Fi, payés par le propriétaire, se déclarent en charges fixes (chapitre 9).</div>
     </div>
   </div>
 </section>
@@ -331,11 +335,11 @@
       <ul>
         <li>Les flèches <b>‹ ›</b> avancent ou reculent d'une semaine ; un appui sur les dates revient à aujourd'hui.</li>
         <li><b>Barre pleine</b> : séjour payé. <b>Barre hachurée</b> : pas encore entièrement payé. <b>Barre orange</b> : réduction à valider.</li>
-        <li>Un appui sur une barre ouvre le détail du séjour : prix normal, réduction, déjà payé, et les boutons <b>Encaisser</b> ou <b>Annuler le séjour</b>.</li>
+        <li>Un appui sur une barre ouvre le détail du séjour : prix normal, réduction, déjà payé, et, selon l'état du séjour, les boutons <b>Encaisser</b>, <b>Remettre les clés</b>, <b>Enregistrer le départ</b> ou <b>Annuler…</b> (chapitre 7).</li>
         <li><span class="bouton">+ Nouvelle réservation</span> fonctionne comme sur l'écran du gérant.</li>
       </ul>
       <h3>Valider une réduction <span style="font:600 9pt 'Inter';color:var(--muet)">Propriétaire</span></h3>
-      <p>En haut du planning, le cadre orange <b>Réductions à valider</b> liste les demandes des gérants avec le motif et le pourcentage. Appuyez sur <b>Examiner</b>, puis <span class="bouton">Valider la réduction</span> ou <b>Annuler le séjour</b>.</p>
+      <p>En haut du planning, le cadre orange <b>Réductions à valider</b> liste les demandes des gérants avec le motif et le pourcentage. Appuyez sur <b>Examiner</b>, puis <span class="bouton">Valider la réduction</span> ou <b>Annuler…</b>.</p>
     </div>
     <div><div class="tel"><img src="captures/06-planning.png" alt=""></div><div class="legende">Le planning et les réductions à valider</div></div>
   </div>
@@ -356,9 +360,123 @@
   </div>
 </section>
 
-<!-- ================= 7. Argent ================= -->
+<!-- ================= 7. Règles de séjour ================= -->
 <section class="chap">
-  <h2><span class="num">7</span>L'argent : encaissements, dépenses, charges</h2>
+  <h2><span class="num">7</span>Les règles de séjour : acompte, clés, départ, annulation</h2>
+  <div class="bloc">
+    <div>
+      <p class="intro" style="margin-bottom:3mm">Menu › <b>Entreprise</b>, cadre <b>Règles de séjour</b> <span style="font:600 9pt 'Inter';color:var(--muet)">(propriétaire)</span>. Elles sont affichées aux clients, et Loka les applique aux clés, aux départs et aux annulations.</p>
+      <table>
+        <thead><tr><th>Règle</th><th style="width:27%">Par défaut</th></tr></thead>
+        <tbody>
+          <tr><td>Arrivées à partir de</td><td>15 h</td></tr>
+          <tr><td>Départs avant</td><td>12 h</td></tr>
+          <tr><td>Acompte avant la remise des clés</td><td>50 %</td></tr>
+          <tr><td>Annulation gratuite jusqu'à</td><td>24 h avant l'arrivée</td></tr>
+          <tr><td>Pénalité (annulation tardive, absence, départ en retard)</td><td>1 nuit</td></tr>
+          <tr><td>Tolérance au départ</td><td>30 minutes</td></tr>
+        </tbody>
+      </table>
+      <p>Indiquez aussi le <b>numéro Mobile Money</b> qui reçoit les acomptes et le <b>nom de son titulaire</b>. Sans numéro, les clients voient le téléphone de l'entreprise.</p>
+    </div>
+    <div><div class="tel"><img src="captures/22-regles.png" alt=""></div><div class="legende">Les règles, dans la page Entreprise</div></div>
+  </div>
+
+  <div class="trio">
+    <div><div class="tel petit"><img src="captures/24-cles.png" alt=""></div><div class="legende"><b>Clés</b><br>bloquées tant que l'acompte manque</div></div>
+    <div><div class="tel petit"><img src="captures/25-depart.png" alt=""></div><div class="legende"><b>Départ</b><br>une nuit de plus après l'heure</div></div>
+    <div><div class="tel petit"><img src="captures/26-annulation.png" alt=""></div><div class="legende"><b>Annulation</b><br>tout est calculé avant de confirmer</div></div>
+  </div>
+
+  <h3>Remettre les clés</h3>
+  <p>Ouvrez le séjour (écran Aujourd'hui ou planning). <span class="bouton">Remettre les clés</span> reste grisé tant que l'acompte n'est pas payé : Loka affiche ce qui manque, et le bouton <b>Encaisser</b> est à côté. Les clés se remettent le jour de l'arrivée, à partir de l'heure d'arrivée. Le séjour passe alors <b>Dans les lieux</b>.</p>
+  <h3>Enregistrer le départ</h3>
+  <p>Rouvrez le séjour et appuyez sur <span class="bouton">Enregistrer le départ</span>. Après l'heure de départ et sa tolérance, un cadre rouge vous prévient avant d'appuyer : la pénalité (une nuit par défaut) s'ajoute au total, et il reste à l'encaisser. Enregistrez donc le départ au moment où le client part.</p>
+  <p>Le séjour passe <b>Parti</b>, et le bouton <b>Demander un avis au client</b> apparaît. Il envoie par WhatsApp un lien que seul ce client possède : il donne une note de 1 à 5 étoiles et un commentaire, une seule fois par séjour. Les avis sont donc vérifiés.</p>
+</section>
+
+<section>
+  <h3>Annuler un séjour</h3>
+  <div class="bloc">
+    <div>
+      <p>Ouvrez le séjour, puis <span class="bouton clair">Annuler…</span>. Choisissez qui annule : Loka affiche ce qui est retenu et ce qui revient au client, <b>avant</b> que vous confirmiez.</p>
+      <table>
+        <thead><tr><th style="width:36%">Situation</th><th>Ce qui se passe (règles par défaut)</th></tr></thead>
+        <tbody>
+          <tr><td>Annulation gratuite</td><td>Le client annule plus de 24 h avant l'heure d'arrivée : rien n'est retenu, tout ce qu'il a payé lui revient.</td></tr>
+          <tr><td>Annulation tardive</td><td>Moins de 24 h avant : 1 nuit est retenue, le reste lui revient.</td></tr>
+          <tr><td>Non-présentation</td><td>L'heure d'arrivée est passée : même pénalité de 1 nuit.</td></tr>
+          <tr><td>Nous annulons</td><td>Rien n'est retenu : le client récupère tout ce qu'il a payé. Pour une réservation de la place de marché, vous payez une pénalité de 10 % du séjour (5 000 FCFA au moins), facturée avec l'abonnement, et votre fiabilité baisse.</td></tr>
+        </tbody>
+      </table>
+      <p>Si le client a payé moins que la pénalité, Loka indique la <b>pénalité encore due</b>. Avec <b>Nous annulons</b>, Loka liste vos villas libres aux mêmes dates : <b>Proposer une autre villa au client</b> prépare le message WhatsApp.</p>
+      <div class="attention"><b>Qui peut annuler ?</b>Un gérant peut annuler un séjour non payé. Dès qu'un paiement existe, seul le <b>propriétaire</b> peut confirmer, et lui seul voit le choix <b>Nous annulons</b>. Une fois les clés remises, on n'annule plus : on enregistre le départ.</div>
+      <div class="attention"><b>Le remboursement se fait hors de Loka</b>Loka calcule le montant à rendre, mais n'envoie pas l'argent. Notez le montant affiché avant de confirmer, puis remboursez le client par Mobile Money, en espèces ou par virement.</div>
+    </div>
+    <div><div class="tel"><img src="captures/27-nous-annulons.png" alt=""></div><div class="legende">« Nous annulons » : villas à proposer à la place</div></div>
+  </div>
+</section>
+
+<!-- ================= 8. Place de marché ================= -->
+<section class="chap">
+  <h2><span class="num">8</span>La place de marché : recevoir des clients</h2>
+  <div class="bloc">
+    <div>
+      <p class="intro" style="margin-bottom:3mm">Sur <b>loka.eyamtech.com/villas</b>, des clients cherchent une villa parmi tous les bailleurs, sans créer de compte : par ville, quartier, autour d'eux, dates, budget, nombre de personnes et équipements. Seules les villas vraiment libres sur leurs dates s'affichent : vos plannings font foi.</p>
+      <h3>Publier ses villas <span style="font:600 9pt 'Inter';color:var(--muet)">Propriétaire</span></h3>
+      <ol>
+        <li>Menu › <b>Biens</b>, puis <b>Modifier</b> sur une villa louée à la nuit.</li>
+        <li>Cochez <b>Publier sur la place de marché Loka</b>.</li>
+        <li>Renseignez la <b>capacité</b>, la <b>description</b> et les <b>équipements</b>, puis ajoutez des <b>photos</b>.</li>
+      </ol>
+      <p><b>Tout publier</b> met en ligne d'un coup toutes les villas d'un site, et <b>Retirer de la place de marché</b> les retire. Une villa en travaux ou retirée de la location n'apparaît plus.</p>
+      <p>Pour apparaître dans « Autour de moi », le site doit avoir sa position (<b>Biens</b> › <b>Modifier</b> sur le site). Les clients ne voient qu'une position arrondie à environ 1 km, jamais le numéro de compteur.</p>
+    </div>
+    <div><div class="tel"><img src="captures/23-publication.png" alt=""></div><div class="legende">Publier une villa</div></div>
+  </div>
+  <div class="trio">
+    <div><div class="tel petit"><img src="captures/31-villas.png" alt=""></div><div class="legende"><b>La recherche</b><br>ce que voit le client</div></div>
+    <div><div class="tel petit"><img src="captures/32-fiche.png" alt=""></div><div class="legende"><b>La fiche</b><br>avec vos conditions de séjour</div></div>
+    <div><div class="tel petit"><img src="captures/33-avis.png" alt=""></div><div class="legende"><b>L'avis</b><br>après le séjour</div></div>
+  </div>
+  <div class="astuce"><b>Partager vos annonces</b>L'icône de partage, sur la ligne d'une villa publiée, envoie son annonce. Dans <b>Entreprise</b>, le cadre <b>Votre page publique</b> donne une adresse qui réunit toutes vos villas publiées, à partager sur Facebook et WhatsApp.</div>
+</section>
+
+<section class="chap">
+  <h3 style="margin-top:0">Traiter une demande <span style="font:600 9pt 'Inter';color:var(--muet)">Gérant et propriétaire</span></h3>
+  <div class="bloc">
+    <div>
+      <p>La demande arrive en haut de l'écran <b>Aujourd'hui</b> et du <b>planning</b> ; le bailleur reçoit aussi un e-mail s'il a une adresse. Elle ne bloque pas les dates tant qu'elle n'est pas acceptée.</p>
+      <ol>
+        <li>Lisez les dates, le montant et le message. L'icône de message permet d'écrire au client sur WhatsApp.</li>
+        <li>Appuyez sur <span class="bouton">Accepter</span> ou <span class="bouton clair">Refuser</span> (avec un motif si vous le souhaitez). Loka propose ensuite de prévenir le client sur WhatsApp, avec un message déjà rédigé.</li>
+        <li>Accepter crée la réservation, avec l'origine <b>Place de marché</b>. Si les dates viennent d'être prises, Loka refuse et vous le dit.</li>
+      </ol>
+    </div>
+    <div><div class="tel"><img src="captures/28-demande.png" alt=""></div><div class="legende">Une demande à accepter ou à refuser</div></div>
+  </div>
+  <div class="bloc gauche">
+    <div><div class="tel"><img src="captures/29-suivi.png" alt=""></div><div class="legende">Le suivi du client, avec son code</div></div>
+    <div>
+      <h3 style="margin-top:0">L'acompte en 2 heures</h3>
+      <ol>
+        <li>Sur sa page de suivi, le client voit le montant et votre numéro Mobile Money. Il a <b>2 heures</b> pour payer, puis il saisit la référence de la transaction.</li>
+        <li>La demande affiche alors le montant et la référence. <b>Vérifiez que l'argent est bien arrivé</b>, puis appuyez sur <span class="bouton">Acompte reçu</span> : le paiement et son reçu sont créés, et le séjour est garanti. Le reste se paie à l'arrivée.</li>
+      </ol>
+      <p>Sans aucun paiement enregistré dans le délai, la réservation est annulée et les dates sont libérées automatiquement, dans la demi-heure qui suit. Si le client paie autrement, utilisez <b>Encaisser</b> sur son séjour. Le client peut aussi annuler depuis sa page, selon vos règles (chapitre 7).</p>
+    </div>
+  </div>
+  <h3>Avis, fiabilité et classement</h3>
+  <ul>
+        <li><b>Les étoiles</b> : la moyenne et le nombre de vos avis ; sans avis, « Nouveau sur Loka ».</li>
+        <li><b>La fiabilité</b> : la part de vos réservations de la place de marché non annulées par vous (6 derniers mois).</li>
+        <li><b>Le classement</b> : les résultats sont triés par réputation (étoiles et fiabilité), puis les photos, puis le prix. Annuler fait vite reculer. « Autour de moi » trie par distance.</li>
+      </ul>
+</section>
+
+<!-- ================= 9. Argent ================= -->
+<section class="chap">
+  <h2><span class="num">9</span>L'argent : encaissements, dépenses, charges</h2>
   <p class="intro">Menu › <b>Argent</b> (ou <b>Caisse</b> en bas de l'écran). Trois onglets : ce qui entre, ce qui sort au quotidien, et ce qui sort chaque mois.</p>
   <div class="trio">
     <div><div class="tel petit"><img src="captures/08-encaissements.png" alt=""></div><div class="legende"><b>Encaissements</b><br>tous les paiements et leurs reçus</div></div>
@@ -375,9 +493,9 @@
   </table>
 </section>
 
-<!-- ================= 8. Tableau de bord ================= -->
+<!-- ================= 10. Tableau de bord ================= -->
 <section class="chap">
-  <h2><span class="num">8</span>Le tableau de bord du propriétaire</h2>
+  <h2><span class="num">10</span>Le tableau de bord du propriétaire</h2>
   <div class="duo" style="grid-template-columns: 1fr 46mm 46mm; gap: 6mm; align-items:start">
     <div>
       <p class="intro">L'<b>Aperçu</b> est la page d'accueil du propriétaire et du comptable. Les flèches <b>‹ ›</b> changent de mois.</p>
@@ -394,8 +512,8 @@
     <div><div class="tel"><img src="captures/02b-apercu-bas.png" alt=""></div><div class="legende">Sites, bénéfice et activité</div></div>
   </div>
 
-  <!-- ================= 9. Hors ligne ================= -->
-  <h2 style="margin-top:9mm"><span class="num">9</span>Sans connexion Internet</h2>
+  <!-- ================= 11. Hors ligne ================= -->
+  <h2 style="margin-top:9mm"><span class="num">11</span>Sans connexion Internet</h2>
   <p>Le réseau coupe ? Le gérant peut continuer à <b>encaisser</b> et à <b>noter des dépenses</b> (avec photo). Loka les garde sur le téléphone et affiche « gardé sur l'appareil ».</p>
   <ul>
     <li>Dès que le réseau revient, tout part automatiquement. Un indicateur en haut de l'écran montre les envois en attente ; un appui permet de les envoyer tout de suite.</li>
@@ -404,14 +522,17 @@
   </ul>
 </section>
 
-<!-- ================= 10. FAQ ================= -->
+<!-- ================= 12. FAQ ================= -->
 <section class="chap faq">
-  <h2><span class="num">10</span>Questions fréquentes</h2>
+  <h2><span class="num">12</span>Questions fréquentes</h2>
   <table>
     <thead><tr><th style="width:38%">Question</th><th>Réponse</th></tr></thead>
     <tbody>
       <tr><td>Un client paie en deux fois ?</td><td>Encaissez l'acompte, puis le reste plus tard. Chaque paiement a son reçu ; le second indique « Soldé ».</td></tr>
-      <tr><td>Je me suis trompé de dates ou le client annule ?</td><td>Ouvrez le séjour dans le planning et appuyez sur <b>Annuler le séjour</b>, puis refaites la réservation. L'annulation reste tracée.</td></tr>
+      <tr><td>Le client annule ?</td><td>Ouvrez le séjour, <b>Annuler…</b>, <b>Le client annule</b>. C'est gratuit jusqu'à 24 h avant l'arrivée ; ensuite, 1 nuit est retenue et le reste lui revient (règles modifiables, chapitre 7). Loka affiche les montants avant de confirmer, et l'annulation reste tracée. Un séjour déjà payé ne peut être annulé que par le propriétaire.</td></tr>
+      <tr><td>Je me suis trompé de dates ?</td><td>Le propriétaire ouvre le séjour, <b>Annuler…</b>, <b>Nous annulons</b> : rien n'est retenu au client. Refaites ensuite la réservation. Pour une réservation de la place de marché, ce choix entraîne une pénalité et baisse la fiabilité. Un gérant peut lui-même annuler un séjour non payé, avec <b>Le client annule</b> : vérifiez la situation affichée.</td></tr>
+      <tr><td>Le bouton « Remettre les clés » est grisé ?</td><td>L'acompte n'est pas payé : encaissez ce qui manque, le montant est affiché. Si un message indique l'heure d'arrivée, attendez cette heure.</td></tr>
+      <tr><td>Une demande a disparu ?</td><td>Le client l'a annulée, ou l'acompte n'est pas arrivé dans les 2 heures : les dates ont été libérées.</td></tr>
       <tr><td>Un bien est en rénovation ?</td><td>Passez-le <b>En travaux</b> : il ne peut plus être réservé. Repassez-le <b>Disponible</b> à la fin des travaux.</td></tr>
       <tr><td>Mon gérant travaille aussi pour un autre bailleur ?</td><td>Aucun souci : avec le même numéro, il passe d'un espace à l'autre depuis le nom de l'entreprise en haut de l'écran. Chaque bailleur ne voit que ses propres données.</td></tr>
       <tr><td>Un gérant quitte l'entreprise ?</td><td>Page <b>Gérants</b> › <b>Désactiver</b>. Il ne peut plus se connecter à votre espace ; ce qu'il a saisi reste dans l'historique.</td></tr>
@@ -431,6 +552,9 @@
       <tr><td>Encaisser et envoyer le reçu</td><td>Accueil › <b>Encaisser</b> › <b>Envoyer par WhatsApp</b></td></tr>
       <tr><td>Noter un achat de gaz</td><td>Accueil › icône de reçu, avec la photo</td></tr>
       <tr><td>Valider les demandes des gérants</td><td>La <b>cloche</b> en haut de l'écran</td></tr>
+      <tr><td>Répondre à un client de la place de marché</td><td>Accueil › <b>Accepter</b> ou <b>Refuser</b></td></tr>
+      <tr><td>Remettre les clés, enregistrer un départ</td><td>Accueil ou Planning › le séjour</td></tr>
+      <tr><td>Publier une villa</td><td><b>Biens</b> › <b>Modifier</b> › <b>Publier</b></td></tr>
       <tr><td>Relancer un loyer en retard</td><td><b>Baux</b> › <b>Relancer</b></td></tr>
       <tr><td>Connaître mon bénéfice du mois</td><td><b>Aperçu</b> › Vos sites</td></tr>
     </tbody>

@@ -35,6 +35,36 @@ const ecranPhotosWhatsApp = () => `<style>*{box-sizing:border-box;margin:0}body{
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">${['facade', 'salon', 'chambre', 'piscine'].map(n => `<img src="${img64(n)}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:6px">`).join('')}</div>
 <div style="font-size:14.5px;padding:8px 6px 2px;line-height:1.4">Ouaga 2000 · A2<br>Standing · 2 chambres<br>25 000 FCFA / nuit<br>Résidences Kaboré</div>
 <div style="font-size:11px;color:#6b8f71;text-align:right;padding:0 6px 4px">maintenant ✓✓</div></div></div>`;
+// Appels à l'API de démonstration, pour préparer les séjours que montrent les tutos.
+async function apiDemo(telephone) {
+  const s = await (await fetch('http://localhost:4100/api/auth/connexion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ identifiant: telephone, mot_de_passe: MOT_DE_PASSE }) })).json();
+  const h = { Authorization: 'Bearer ' + s.jeton, 'X-Espace': s.espaces[0].id, 'Content-Type': 'application/json' };
+  return {
+    get: async (c) => (await fetch('http://localhost:4100/api' + c, { headers: h })).json(),
+    post: async (c, corps) => (await fetch('http://localhost:4100/api' + c, { method: 'POST', headers: h, body: JSON.stringify(corps || {}) })).json(),
+  };
+}
+const jourDemo = (decalage) => new Date(Date.now() + decalage * 864e5).toISOString().slice(0, 10);
+// Séjours du tuto 13 : l'un à son arrivée, l'autre déjà dans les lieux et parti en retard, le dernier à moins de 24 h de l'arrivée.
+async function sejoursDemo() {
+  const a = await apiDemo('70111111');
+  const biens = await a.get('/biens');
+  const id = (ref) => biens.find(b => b.reference === ref).id;
+  const parti = await a.post('/reservations', { bien_id: id('B1'), arrivee: jourDemo(-3), depart: jourDemo(-1), client: { nom: 'Salif Zoungrana', telephone: '70551122' } });
+  await a.post('/paiements', { reservation_id: parti.id, montant: parti.total, moyen: 'especes' });
+  await a.post(`/reservations/${parti.id}/cles`);
+  await a.post('/reservations', { bien_id: id('B1'), arrivee: jourDemo(-1), depart: jourDemo(1), client: { nom: 'Moussa Diallo', telephone: '70551133' } });
+  const arrivee = jourDemo(new Date().getUTCHours() >= 15 ? 1 : 0); // toujours moins de 24 h avant 15 h, et avant l'heure d'arrivée
+  const tardive = await a.post('/reservations', { bien_id: id('K3'), arrivee, depart: new Date(new Date(arrivee).getTime() + 3 * 864e5).toISOString().slice(0, 10), client: { nom: 'Fatim Ouédraogo', telephone: '70551144' } });
+  await a.post('/paiements', { reservation_id: tardive.id, montant: 30000, moyen: 'mobile_money', reference: 'OM-3010-7712' });
+  return parti.id;
+}
+// Pages publiques : leurs champs ne sont pas des « label.champ ».
+async function remplirPublic(t, libelle, valeur) {
+  const h = await t.page.evaluateHandle((l) => [...document.querySelectorAll('label')].find(x => x.textContent.trim().startsWith(l))?.querySelector('input, textarea'), libelle);
+  await h.asElement().type(String(valeur), { delay: 5 });
+  await pause(150);
+}
 const NOUVEAU = { nom: 'Aminata Sawadogo', entreprise: 'Résidence Les Palmiers', ville: 'Ouagadougou', telephone: '70456789', email: 'aminata@palmiers.test', mdp: 'palmiers-2026' };
 
 async function connecterNouveau(t) {
@@ -81,6 +111,9 @@ const SCENARIOS = [
       await t.saisir('IFU', '00098765X');
       await t.saisir('Adresse', 'Ouaga 2000, rue 15.42');
       await t.ecran('Complétez ensuite la forme juridique, le RCCM, l’IFU et l’adresse.', { champ: 'RCCM' }, { cliquer: false });
+      await t.saisir('Numéro Mobile Money', '70456789');
+      await t.saisir('Nom du titulaire', 'Aminata Sawadogo');
+      await t.ecran('Vérifiez les règles de séjour : horaires, acompte, annulation. Et indiquez le numéro Mobile Money qui recevra les acomptes.', { champ: 'Numéro Mobile Money' }, { cliquer: false });
       await t.saisir('Réduction maximale', '10');
       await t.ecran('Fixez enfin la réduction qu’un gérant peut accorder sans votre accord, puis enregistrez.', 'Enregistrer', { apres: 1200 });
       await t.defiler(0);
@@ -94,8 +127,9 @@ const SCENARIOS = [
       await t.ecran('Créez maintenant votre premier site : une résidence, ou un immeuble.', 'Créer un site');
       await t.saisir('Nom du site', 'Les Palmiers');
       await t.saisir('Ville', 'Ouagadougou');
-      await t.saisir('Adresse', 'Ouaga 2000');
-      await t.ecran('Donnez-lui un nom et une ville, puis ajoutez-le.', 'Ajouter', { apres: 1200 });
+      await t.saisir('Quartier', 'Ouaga 2000');
+      await t.saisir('Adresse', 'Rue 15.42');
+      await t.ecran('Donnez-lui un nom, une ville et un quartier : c’est ainsi que les clients le trouveront. Puis ajoutez-le.', 'Ajouter', { apres: 1200 });
       await t.ecran('Votre site est créé. Pour ajouter ses villas d’un coup, appuyez sur « Plusieurs biens ».', 'Plusieurs biens');
       await t.saisir('Lettre ou préfixe', 'V');
       await t.saisir('De', '1');
@@ -103,9 +137,11 @@ const SCENARIOS = [
       await t.saisir('Prix par nuit', '30000');
       await t.saisir('Chambres', '2');
       await t.saisir('Standing', 'Villa meublée');
-      await t.ecran('Choisissez une lettre, de un à huit par exemple, puis le prix par nuit et le nombre de chambres.', 'Ajouter 8 biens', { apres: 1300 });
+      await t.ecran('Choisissez une lettre, de un à huit par exemple, puis le prix par nuit et le nombre de chambres.', { champ: 'Prix par nuit' }, { cliquer: false });
+      await t.ecran('Ces villas seront publiées sur la place de marché : décochez la case pour les garder en interne.', { css: '.publication' }, { cliquer: false });
+      await t.ecran('Ajoutez-les.', 'Ajouter 8 biens', { apres: 1300 });
       await t.ecran('Et voilà : huit villas créées en un seul geste.', 'Terminé');
-      await t.ecran('Pour changer le prix ou l’état d’une villa, appuyez simplement sur « Modifier ».', 'Modifier');
+      await t.ecran('Pour changer le prix ou l’état d’une villa, appuyez simplement sur « Modifier ».', { texte: 'Modifier', n: 1 });
       await t.ecran('Prix, standing, chambres, compteur électrique, ou mise en travaux : tout se règle ici.');
       await t.page.keyboard.press('Escape'); await pause(500);
       await t.ecran('Ajoutez enfin des photos : appuyez sur l’appareil photo de la villa.', { css: '[aria-label="Photos de V1"]' });
@@ -197,9 +233,8 @@ const SCENARIOS = [
       await t.saisir('Catégorie', 'Recharge gaz');
       await t.saisir('Montant', '7500');
       await t.ecran('Indiquez pour quel site ou quelle villa, la catégorie et le montant.', { champ: 'Montant' }, { cliquer: false });
-      await t.page.evaluate(() => { const i = document.querySelector('.modale input[type=file]'); i.scrollIntoView({ block: 'center' }); });
-      await t.ecran('Puis prenez en photo le reçu du fournisseur : c’est la preuve pour le propriétaire.', { css: '.modale input[type=file]' }, { cliquer: false });
-      const [choix] = await Promise.all([t.page.waitForFileChooser(), t.page.click('.modale input[type=file]')]);
+      await t.ecran('Puis prenez en photo le reçu du fournisseur : c’est la preuve pour le propriétaire.', { css: '.modale .champ-fichier .bouton' }, { cliquer: false });
+      const [choix] = await Promise.all([t.page.waitForFileChooser(), t.page.click('.modale .champ-fichier .bouton')]);
       await choix.accept([path.join(ASSETS, 'recu-fournisseur.jpg')]);
       await pause(1800);
       await t.ecran('Envoyez.', 'Envoyer', { apres: 1500 });
@@ -214,13 +249,12 @@ const SCENARIOS = [
       await t.page.evaluate(() => { try { localStorage.setItem('loka-mise-en-route-masquee-' + localStorage.getItem('loka-espace'), '1'); } catch {} });
       await t.aller('/');
       await t.ecran('La cloche, en haut, signale ce qui attend votre accord.', { css: '.bouton-rond[aria-label*="traiter"]' });
+      await t.ecran('Elle mène d’abord aux réductions au-delà de la limite, dans « Réservations ».', 'Examiner');
+      await t.ecran('Vérifiez le motif, puis validez la réduction, ou annulez le séjour.', 'Valider la réduction', { apres: 1000 });
+      await t.ecran('C’est validé : votre gérant peut maintenant encaisser. Appuyez de nouveau sur la cloche.', { css: '.bouton-rond[aria-label*="traiter"]' });
       await t.ecran('Voici la dépense de votre gérant. Regardez d’abord le justificatif.', 'Justificatif');
       await t.ecran('C’est bien la photo du reçu.', { css: '.modale .bouton-rond' });
       await t.ecran('Acceptez-la, ou refusez-la avec un motif. Seules les dépenses acceptées comptent dans le bénéfice.', 'Accepter', { apres: 1000 });
-      await t.aller('/reservations');
-      await t.ecran('Les réductions au-delà de la limite attendent aussi votre accord, dans « Réservations ».', 'Examiner');
-      await t.ecran('Vérifiez le motif, puis validez la réduction, ou annulez le séjour.', 'Valider la réduction', { apres: 1000 });
-      await t.ecran('C’est validé : votre gérant peut maintenant encaisser.');
     },
   },
   {
@@ -261,6 +295,74 @@ const SCENARIOS = [
       await t.ecran('Et en direct, tout ce que font vos gérants : réservations, encaissements, dépenses.');
       await t.defiler(0);
       await t.ecran('Les flèches, en haut, permettent de revoir les mois passés.', { css: '.segment button', n: 0 }, { cliquer: false });
+    },
+  },
+  {
+    id: '12-place-de-marche', numero: 12, titre: 'Recevoir des clients par la place de marché',
+    async jouer(t) {
+      await photosDemo();
+      const arrivee = jourDemo(20), depart = jourDemo(22);
+      await t.connecter('70111111');
+      await t.aller('/biens');
+      await t.page.evaluate(() => { [...document.querySelectorAll('tr')].find(l => l.querySelector('td')?.textContent === 'A2').querySelector('button:nth-last-child(1)').id = 'modifier-a2'; });
+      await t.ecran('Pour proposer une villa aux clients de Loka, appuyez sur « Modifier ».', { css: '#modifier-a2' });
+      await t.ecran('Cochez « Publier sur la place de marché », puis indiquez la capacité, la description et les équipements.', { css: '.publication' }, { cliquer: false });
+      await t.page.keyboard.press('Escape'); await pause(500);
+      await t.ecran('« Tout publier » met d’un coup en ligne toutes les villas d’un site.', 'Tout publier', { cliquer: false });
+      await t.aller(`/villas?arrivee=${arrivee}&depart=${depart}`);
+      await t.ecran('Les clients cherchent sur Loka Villas, sans compte, par ville, dates et budget. Seules les villas vraiment libres apparaissent.', { css: '.mc-carte' });
+      await t.page.evaluate(() => document.querySelector('.mc-regles').scrollIntoView({ block: 'center' })); await pause(400);
+      await t.ecran('La fiche montre les photos, les équipements, les avis et vos conditions de séjour.');
+      await remplirPublic(t, 'Votre nom', 'Rokia Sanou');
+      await remplirPublic(t, 'Votre téléphone', '70667788');
+      await t.ecran('Le client envoie sa demande. Il n’a rien à payer tant que le gérant n’a pas accepté.', 'Envoyer ma demande', { apres: 1500 });
+      const code = await t.page.evaluate(() => document.querySelector('.mc-code b').textContent);
+      await t.ecran('Il reçoit un code pour suivre sa demande.');
+      await t.page.evaluate(() => { localStorage.clear(); localStorage.setItem('loka-theme', 'clair'); }); // on change de compte
+      await t.connecter('70222222');
+      t.page.once('dialog', d => d.dismiss());
+      await t.ecran('Côté gérant, la demande arrive en haut de l’écran Aujourd’hui. Acceptez-la, ou refusez-la. Loka propose de prévenir le client sur WhatsApp.', 'Accepter', { apres: 1500 });
+      await t.aller(`/demande/${code}`);
+      await remplirPublic(t, 'Après l’envoi', 'PP261030.1532.C12345');
+      await t.ecran('Le client a alors deux heures pour envoyer l’acompte par Mobile Money, puis il indique la référence de la transaction.', 'J’ai envoyé l’acompte', { apres: 1200 });
+      await t.page.evaluate(() => localStorage.removeItem('loka-cache')); // l'écran se rafraîchit seul chaque minute : on n'attend pas
+      await t.aller('/terrain');
+      await t.ecran('Vérifiez que l’argent est bien arrivé, puis appuyez sur « Acompte reçu » : le reçu est créé.', 'Acompte reçu', { apres: 1200 });
+      await t.ecran('Le séjour est garanti. Sans acompte à temps, les dates sont libérées automatiquement.');
+    },
+  },
+  {
+    id: '13-cles-depart-annulation', numero: 13, titre: 'Clés, départ et annulation',
+    async jouer(t) {
+      const parti = await sejoursDemo();
+      await t.connecter('70111111');
+      await t.aller('/reservations');
+      await t.ecran('Le jour de l’arrivée, ouvrez le séjour dans le planning.', 'Moussa Diallo');
+      await t.ecran('Les clés se remettent après un acompte de cinquante pour cent : le bouton reste bloqué tant qu’il n’est pas payé. Appuyez sur « Encaisser ».', 'Encaisser');
+      await t.saisir('Montant', '25000');
+      await t.ecran('Saisissez l’acompte, puis validez.', { css: '.modale .actions .principal' }, { apres: 1400 });
+      await t.page.keyboard.press('Escape'); await pause(500);
+      await t.aller('/reservations');
+      await t.page.evaluate(() => [...document.querySelectorAll('.sejour')].find(b => b.textContent.includes('Moussa Diallo')).click()); await pause(900);
+      await t.ecran('L’acompte est payé : remettez les clés, à partir de quinze heures, l’heure d’arrivée.', 'Remettre les clés', { apres: 1200 });
+      await t.ecran('Au départ, rouvrez le séjour.', 'Salif Zoungrana', { apres: 1300 });
+      await t.ecran('Après l’heure de départ, Loka le signale et ajoute une nuit au séjour. Appuyez sur « Enregistrer le départ ».', 'Enregistrer le départ', { apres: 1200 });
+      await t.page.evaluate(() => localStorage.removeItem('loka-cache'));
+      await t.aller('/reservations');
+      await t.ecran('Le client a séjourné : demandez-lui son avis.', 'Salif Zoungrana', { apres: 1200 });
+      await t.ecran('Un lien part sur WhatsApp, en un seul geste.', 'Demander un avis', { cliquer: false });
+      const a = await apiDemo('70111111');
+      const r = (await a.get(`/reservations?du=${jourDemo(-4)}&au=${jourDemo(0)}`)).find(x => x.id === parti);
+      await t.aller('/avis/' + r.code_avis);
+      await t.ecran('Le client note son séjour. Seuls les vrais clients peuvent noter : ces avis comptent dans votre classement.', { css: '[aria-label="5 étoiles"]' });
+      await t.aller('/reservations');
+      await t.ecran('Un client annule ? Ouvrez son séjour.', 'Fatim Ouédraogo');
+      await t.ecran('Appuyez sur « Annuler ».', 'Annuler…', { apres: 1200 });
+      await t.ecran('Loka calcule tout : c’est gratuit jusqu’à vingt-quatre heures avant l’arrivée. Ensuite, une nuit est retenue, et le reste revient au client.');
+      await t.ecran('Si c’est vous qui annulez, le client est remboursé en totalité, et Loka liste vos autres villas libres à lui proposer.', 'Nous annulons', { apres: 1200 });
+      await t.ecran('Ici, c’est le client qui annule : revenez à son cas.', 'Le client annule', { apres: 900 });
+      await t.ecran('Confirmez : l’annulation est enregistrée, avec le montant retenu et le montant à rendre.', 'Confirmer l’annulation', { apres: 1300 });
+      await t.ecran('Les dates sont de nouveau libres.');
     },
   },
 ];

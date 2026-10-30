@@ -1,0 +1,31 @@
+{
+ "taux": 24000,
+ "durees": [
+  4.9,
+  4.16,
+  6.08,
+  3.34,
+  7.52,
+  4.34,
+  4.62,
+  1.9,
+  8.52,
+  5.62,
+  5.08,
+  4.1
+ ],
+ "lignes": [
+  "Tuto Loka, numéro 12 : Recevoir des clients par la place de marché.",
+  "Pour proposer une villa aux clients de Loka, appuyez sur « Modifier ».",
+  "Cochez « Publier sur la place de marché », puis indiquez la capacité, la description et les équipements.",
+  "« Tout publier » met d’un coup en ligne toutes les villas d’un site.",
+  "Les clients cherchent sur Loka Villas, sans compte, par ville, dates et budget. Seules les villas vraiment libres apparaissent.",
+  "La fiche montre les photos, les équipements, les avis et vos conditions de séjour.",
+  "Le client envoie sa demande. Il n’a rien à payer tant que le gérant n’a pas accepté.",
+  "Il reçoit un code pour suivre sa demande.",
+  "Côté gérant, la demande arrive en haut de l’écran Aujourd’hui. Acceptez-la, ou refusez-la. Loka propose de prévenir le client sur WhatsApp.",
+  "Le client a alors deux heures pour envoyer l’acompte par Mobile Money, puis il indique la référence de la transaction.",
+  "Vérifiez que l’argent est bien arrivé, puis appuyez sur « Acompte reçu » : le reçu est créé.",
+  "Le séjour est garanti. Sans acompte à temps, les dates sont libérées automatiquement."
+ ]
+}
