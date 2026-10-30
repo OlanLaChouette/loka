@@ -18,11 +18,12 @@ async function expirerReservations(maintenant = new Date()) {
   });
 }
 
-// Lancement périodique (toutes les 5 minutes) par le serveur.
+// Lancement périodique (toutes les 30 minutes) par le serveur. Pas plus souvent : Neon ne se met en veille
+// qu'après 5 minutes sans requête, et une base qui ne dort jamais épuise son quota gratuit.
 function demarrerExpirations() {
   const tourner = () => expirerReservations().then(n => { if (n) console.log(`${n} réservation(s) libérée(s) faute d’acompte`); }).catch(e => console.error('Expirations :', e.message));
   setTimeout(tourner, 10000);
-  return setInterval(tourner, 5 * 60 * 1000);
+  return setInterval(tourner, 30 * 60 * 1000);
 }
 
 module.exports = { expirerReservations, demarrerExpirations };

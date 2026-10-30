@@ -19,7 +19,7 @@ app.use(cors({ origin: (process.env.FRONTEND_URL || '').split(',').concat(['http
 app.use(express.json({ limit: '1mb' }));
 if (process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
 
-app.get('/api/sante', (req, res) => res.json({ ok: true }));
+app.get('/api/sante', (req, res) => res.json({ ok: true, version: process.env.RENDER_GIT_COMMIT?.slice(0, 7) }));
 app.use('/api', contexteRequete);
 app.use('/api/auth', require('./src/routes/auth').router);
 app.use('/api/comptes', require('./src/routes/inscription'));
@@ -34,7 +34,7 @@ app.use(gestionnaireErreurs);
 const PORT = Number(process.env.PORT || 4100);
 if (require.main === module) {
   sequelize.authenticate()
-    .then(() => { app.listen(PORT, () => console.log(`API Loka sur http://localhost:${PORT}`)); require('./src/services/expirations').demarrerExpirations(); })
+    .then(() => { app.listen(PORT, () => console.log(`API Loka sur http://localhost:${PORT}`)); require('./src/services/expirations').demarrerExpirations(); require('./src/services/eveil').demarrerEveil(); })
     .catch((e) => { console.error('Base de données inaccessible :', e.message, '\n→ Vérifiez .env puis lancez : npm run db:creer'); process.exit(1); });
 }
 

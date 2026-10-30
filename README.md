@@ -56,8 +56,8 @@ Chaque nouvel espace est signalé à `ADMIN_COURRIEL`. Sans clé, en local, les 
 
 ## Mise en ligne (gratuite)
 
-- API et site : Render, offre gratuite (`render.yaml`). L'API se met en veille après 15 minutes sans visite ;
-  la première ouverture prend alors environ une minute.
+- API et site : Render, offre gratuite (`render.yaml`). L'API s'appelle elle-même de 6 h à 23 h pour rester éveillée.
+  La nuit, elle s'endort après 15 minutes sans visite ; la première ouverture prend alors plus d'une minute.
 - Base : Neon, offre gratuite (0,5 Go). Les logos et photos y sont rangés, compressés sur le téléphone avant l'envoi.
 
 Étapes : créer le projet Neon, connecter le dépôt dans Render (New → Blueprint), renseigner `DATABASE_URL`,
