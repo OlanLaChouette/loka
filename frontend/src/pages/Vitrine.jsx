@@ -19,6 +19,14 @@ const ETAPES = [
   { titre: 'Invitez vos gérants', texte: 'Ils réservent et encaissent depuis leur téléphone. Vous suivez tout en direct.' },
 ];
 
+const LIGNES_TARIF = [
+  ['Location à la nuit', 'Pour chaque villa ou studio', '2 500 FCFA', 'par mois'],
+  ['Location au mois', 'Pour chaque appartement, magasin ou bureau', '1 000 FCFA', 'par mois'],
+  ['Minimum', 'Si le calcul donne moins, vous payez ce montant', '25 000 FCFA', 'par mois'],
+  ['Paiement à l’année', 'Toute l’année d’avance : 2 mois offerts', '10 mois', 'payés sur 12'],
+  ['Frais de démarrage', 'Saisie de vos biens et formation de vos gérants. Offerts si l’année est payée d’avance.', '150 000 FCFA', 'une seule fois'],
+];
+
 const QUESTIONS = [
   ['Faut-il un ordinateur ?', 'Non. Loka fonctionne sur téléphone Android (application) et dans n’importe quel navigateur, sur téléphone comme sur ordinateur.'],
   ['Et quand le réseau coupe ?', 'Le gérant continue d’encaisser et de noter ses dépenses : tout part automatiquement au retour de la connexion.'],
@@ -162,11 +170,20 @@ export default function Vitrine() {
             </div>
             <div className="vt-tarif">
               <div className="vt-tarif-carte">
-                <span className="vt-pastille">14 jours gratuits</span>
-                <div className="vt-prix"><small>dès</small> 25 000 <small>FCFA / mois</small></div>
-                <p>Le montant dépend du nombre de biens enregistrés. Paiement mensuel ou annuel : l’année est facturée 10 mois au lieu de 12.</p>
+                <span className="vt-pastille">Essai gratuit de 14 jours</span>
+                <div className="vt-prix"><small className="vt-prix-des">à partir de</small>25 000 <small>FCFA par mois</small></div>
+                <p>Le prix dépend du nombre de biens enregistrés dans Loka, qu’ils soient loués, libres ou en travaux.</p>
+                <dl className="vt-tarif-lignes">
+                  {LIGNES_TARIF.map(([titre, detail, valeur, unite]) => (
+                    <div key={titre}>
+                      <dt>{titre}{detail && <small>{detail}</small>}</dt>
+                      <dd>{valeur}<small>{unite}</small></dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="vt-tarif-note">Exemple : 20 villas louées à la nuit, 20 × 2 500 = 50 000 FCFA par mois. Montants hors taxes.</p>
                 <ul>
-                  <li><Check size={18} />Sites, biens et gérants illimités</li>
+                  <li><Check size={18} />Autant de sites et de gérants que vous voulez, sans supplément</li>
                   <li><Check size={18} />Application Android et site web</li>
                   <li><Check size={18} />Reçus et contrats PDF à votre logo</li>
                   <li><Check size={18} />Formation et assistance à distance (WhatsApp, Zoom, Meet)</li>
