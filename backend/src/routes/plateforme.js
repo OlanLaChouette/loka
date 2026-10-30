@@ -3,7 +3,7 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const { fn, col } = require('sequelize');
 const { Op } = require('sequelize');
-const { sequelize, Bailleur, Utilisateur, Membre, Bien, Site, Reservation, Avis } = require('../models');
+const { sequelize, Bailleur, Utilisateur, Verification, Membre, Bien, Site, Client, Reservation, Demande, Avis, Bail, Paiement, ChargeFixe, Depense, Journal, Fichier } = require('../models');
 const { authentifier, adminPlateforme } = require('../middleware/auth');
 const { Erreur, route } = require('../utils/erreurs');
 const { transaction, lier, definir } = require('../middleware/contexte');
@@ -70,6 +70,35 @@ router.post('/bailleurs/:id/mot-de-passe', route(async (req, res) => {
   if (!m) throw new Erreur(404, 'Propriétaire introuvable');
   await Utilisateur.update({ mot_de_passe_hash: await bcrypt.hash(mot_de_passe, 10) }, { where: { id: m.utilisateur_id } });
   res.json({ ok: true });
+}));
+
+// Supprime définitivement un espace et toutes ses données. Le nom de l'espace doit être retapé.
+// Les tables sont vidées dans l'ordre : certaines références (réservation → bien…) bloqueraient une suppression en cascade.
+// Une personne qui travaille aussi ailleurs garde son compte ; l'administration Loka aussi.
+router.delete('/bailleurs/:id', route(async (req, res) => {
+  const b = await Bailleur.findByPk(req.params.id);
+  if (!b) throw new Erreur(404, 'Bailleur introuvable');
+  if ((req.body?.confirmation || '').trim() !== b.nom.trim()) throw new Erreur(400, 'Le nom saisi ne correspond pas à celui de l’espace');
+  const resultat = await transaction(async (t) => {
+    const membres = await Membre.findAll({ where: { bailleur_id: b.id }, attributes: ['utilisateur_id'], transaction: t });
+    const where = { bailleur_id: b.id };
+    for (const M of [Avis, Paiement, Demande, Depense, Bail, Reservation, ChargeFixe, Bien, Client, Site, Journal, Fichier, Membre]) await M.destroy({ where, transaction: t });
+    await b.destroy({ transaction: t });
+    const orphelins = await Utilisateur.findAll({ where: { id: membres.map(m => m.utilisateur_id), est_admin_plateforme: false }, attributes: ['id', 'email'], transaction: t });
+    let comptes = 0;
+    for (const u of orphelins) {
+      const encoreLie = await Membre.count({ where: { utilisateur_id: u.id }, transaction: t })
+        || await Depense.count({ where: { saisie_par: u.id }, transaction: t })
+        || await Journal.count({ where: { utilisateur_id: u.id }, transaction: t });
+      if (encoreLie) continue;
+      if (u.email) await Verification.destroy({ where: { email: u.email }, transaction: t });
+      await u.destroy({ transaction: t });
+      comptes += 1;
+    }
+    return { comptes_supprimes: comptes, comptes_conserves: membres.length - comptes };
+  });
+  console.log(`Espace supprimé : ${b.nom} (${b.id}) par ${req.utilisateur.id}`);
+  res.json({ ok: true, ...resultat });
 }));
 
 // Propriétaire de chaque espace, pour l'afficher dans la liste.

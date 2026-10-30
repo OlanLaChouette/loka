@@ -531,3 +531,32 @@ test('place de marché : deux demandes sur les mêmes dates, le client est prév
   // D'autres dates : aucune alerte.
   assert.equal((await pub('/demandes', { ...client, arrivee: jour(130), depart: jour(131), bien_id: v2.id })).statut, 201);
 });
+
+// À garder en dernier : efface l'espace de démonstration le plus complet.
+test('l’administration supprime un espace et tout son contenu, sans toucher aux autres', async () => {
+  const admin = await connecter('70000000');
+  const liste = async () => (await appel('GET', '/api/plateforme/bailleurs', { jeton: admin.jeton })).corps;
+  const kabore = (await liste()).find(b => b.nom === 'Résidences Kaboré');
+  const chemin = '/api/plateforme/bailleurs/' + kabore.id;
+  const issa = await connecter('70111111');
+  assert.equal((await appel('DELETE', chemin, { jeton: issa.jeton, corps: { confirmation: kabore.nom } })).statut, 403);
+  assert.equal((await appel('DELETE', chemin, { jeton: admin.jeton, corps: { confirmation: 'Autre nom' } })).statut, 400);
+  assert.equal((await appel('DELETE', chemin, { jeton: admin.jeton })).statut, 400);
+  assert.ok((await liste()).some(b => b.id === kabore.id), 'un refus ne supprime rien');
+
+  const supprime = await appel('DELETE', chemin, { jeton: admin.jeton, corps: { confirmation: kabore.nom } });
+  assert.equal(supprime.statut, 200);
+  assert.ok(supprime.corps.comptes_supprimes >= 2);
+  assert.equal(supprime.corps.comptes_conserves, 1);
+  assert.deepEqual((await liste()).map(b => b.nom).includes('Résidences Kaboré'), false);
+  // Le compte du propriétaire et l'espace ont disparu.
+  assert.equal((await appel('POST', '/api/auth/connexion', { corps: { identifiant: '70111111', mot_de_passe: MOT_DE_PASSE } })).statut, 401);
+  assert.equal((await appel('GET', chemin + '/proprietaire', { jeton: admin.jeton })).statut, 404);
+  // Mariam travaille aussi pour Wendpanga : elle garde son compte et cet espace reste entier.
+  const mariam = await connecter('70333333');
+  assert.deepEqual(mariam.espaces.map(e => e.nom), ['SCI Wendpanga']);
+  const paul = await connecter('70555555');
+  assert.deepEqual((await appel('GET', '/api/biens', { jeton: paul.jeton, espace: paul.espaces[0].id })).corps.map(b => b.reference), ['W1']);
+  // Une seconde demande ne trouve plus rien.
+  assert.equal((await appel('DELETE', chemin, { jeton: admin.jeton, corps: { confirmation: kabore.nom } })).statut, 404);
+});

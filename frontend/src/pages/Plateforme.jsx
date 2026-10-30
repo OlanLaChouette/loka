@@ -27,10 +27,26 @@ function NouveauBailleur({ onFermer }) {
   );
 }
 
+// Suppression définitive : le nom de l'espace doit être retapé pour éviter toute erreur de ligne.
+function SupprimerBailleur({ bailleur, onFermer }) {
+  const client = useQueryClient();
+  const [confirmation, setConfirmation] = useState('');
+  const envoi = useMutation({ mutationFn: () => api.delete(`/plateforme/bailleurs/${bailleur.id}`, { data: { confirmation } }), onSuccess: () => { client.invalidateQueries(); onFermer(); } });
+  return (
+    <Modale titre={`Supprimer ${bailleur.nom}`} onFermer={onFermer} actions={<><button className="bouton" onClick={onFermer}>Annuler</button><button className="bouton danger" disabled={confirmation.trim() !== bailleur.nom.trim() || envoi.isPending} onClick={() => envoi.mutate()}>Supprimer définitivement</button></>}>
+      <Erreur message={envoi.error && messageErreur(envoi.error)} />
+      <p style={{ margin: 0 }}>Cette action est <b>définitive</b>. Seront effacés : {bailleur.sites} site{bailleur.sites > 1 ? 's' : ''}, {bailleur.biens_enregistres} bien{bailleur.biens_enregistres > 1 ? 's' : ''}, ainsi que les clients, réservations, paiements, dépenses et fichiers de l’espace.</p>
+      <p className="petit muet" style={{ margin: 0 }}>Les comptes de ses membres sont effacés aussi, sauf pour les personnes qui travaillent dans un autre espace.</p>
+      <Champ label={`Retapez « ${bailleur.nom} » pour confirmer`} plein><input value={confirmation} onChange={e => setConfirmation(e.target.value)} autoComplete="off" /></Champ>
+    </Modale>
+  );
+}
+
 export default function Plateforme() {
   const client = useQueryClient();
   const [nouveau, setNouveau] = useState(false);
   const [motDePasse, setMotDePasse] = useState(null);
+  const [aSupprimer, setASupprimer] = useState(null);
   const { data, isLoading } = useQuery({ queryKey: ['plateforme'], queryFn: () => api.get('/plateforme/bailleurs').then(r => r.data) });
   const statut = useMutation({ mutationFn: ({ id, statut }) => api.patch(`/plateforme/bailleurs/${id}/statut`, { statut }), onSuccess: () => client.invalidateQueries() });
   if (isLoading) return <Chargement />;
@@ -59,6 +75,7 @@ export default function Plateforme() {
                 <button className="bouton discret" onClick={() => setMotDePasse(b)}>Mot de passe</button>
                 {b.statut !== 'actif' && <button className="bouton discret" onClick={() => statut.mutate({ id: b.id, statut: 'actif' })}>Activer</button>}
                 {b.statut !== 'suspendu' && <button className="bouton discret danger" onClick={() => window.confirm(`Suspendre ${b.nom} ? Ses équipes ne pourront plus que consulter.`) && statut.mutate({ id: b.id, statut: 'suspendu' })}>Suspendre</button>}
+                <button className="bouton discret danger" onClick={() => setASupprimer(b)}>Supprimer</button>
               </td>
             </tr>
           ))}</tbody>
@@ -68,6 +85,7 @@ export default function Plateforme() {
         texte="Mot de passe provisoire à transmettre au propriétaire ; il pourra le changer depuis son menu."
         envoyer={(mdp) => api.post(`/plateforme/bailleurs/${motDePasse.id}/mot-de-passe`, { mot_de_passe: mdp })} />}
       {nouveau && <NouveauBailleur onFermer={() => setNouveau(false)} />}
+      {aSupprimer && <SupprimerBailleur bailleur={aSupprimer} onFermer={() => setASupprimer(null)} />}
     </main>
   );
 }
